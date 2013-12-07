@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
+	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/keystone-client"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/keystone-model"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/openstack-client"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/swift-client"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/swift-model"/>
+	<classpathentry kind="output" path="bin/classes"/>
+</classpath>

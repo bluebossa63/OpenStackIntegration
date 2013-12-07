@@ -1,0 +1,142 @@
+h1. OpenStack Java SDK v2.0
+
+h1. Important
+
+You can continue using the latest source from v1.x essex branch
+
+h2. Maven
+
+|groupId|artifactId|version|
+|com.woorea|keystone-client|3.0.0-SNAPSHOT|
+|com.woorea|nova-client|3.0.0-SNAPSHOT|
+|com.woorea|glance-client|3.0.0-SNAPSHOT|
+|com.woorea|swift-client|3.0.0-SNAPSHOT|
+
+h3. Maven Repositories
+
+https://maven.java.net/content/repositories/snapshots
+https://raw.github.com/woorea/maven/master/snapshots
+
+h1. Available artifacts
+
+h2. OpenStack Identity Service
+
+OpenStack Keystone Model
+
+OpenStack Keystone Client
+
+<pre>
+KeystoneClient keystone = new KeystoneClient(KEYSTONE_AUTH_URL);
+Authentication authentication = new Authentication();
+PasswordCredentials passwordCredentials = new PasswordCredentials();
+passwordCredentials.setUsername(KEYSTONE_USERNAME);
+passwordCredentials.setPassword(KEYSTONE_PASSWORD);
+authentication.setPasswordCredentials(passwordCredentials);
+
+//access with unscoped token
+Access access = keystone.execute(new Authenticate(authentication));
+
+//use the token in the following requests
+keystone.setToken(access.getToken().getId());
+
+Tenants tenants = keystone.execute(new ListTenants());
+
+//try to exchange token using the first tenant
+if(tenants.getList().size() > 0) {
+	
+	authentication = new Authentication();
+	Token token = new Token();
+	token.setId(access.getToken().getId());
+	authentication.setToken(token);
+	authentication.setTenantId(tenants.getList().get(0).getId());
+	
+	access = keystone.execute(new Authenticate(authentication));
+	
+	...
+</pre>
+
+h2. OpenStack Compute Service
+
+OpenStack Nova Model
+
+OpenStack Nova Client
+
+<pre>
+NovaClient novaClient = new NovaClient(KeystoneUtils.findEndpointURL(access.getServiceCatalog(), "compute", null, "public"), access.getToken().getId());
+			
+Servers servers = novaClient.execute(ServersCore.listServers());
+for(Server server : servers) {
+	System.out.println(server);
+}
+</pre>
+
+h2. OpenStack Image Store Service
+
+OpenStack Glance Model
+
+OpenStack Glance Client
+
+h2. OpenStack Object Store Service
+
+OpenStack Swift Model
+
+OpenStack Swift Client
+
+h2. OpenStack Ceilometer Service
+
+h3. MongoDB Installation
+
+OpenStack Ceilometer Service uses MongoDB as storage.
+
+h3. Ceilometer Compute Agent Installation
+
+OpenStack Ceilometer Compute Agent
+
+This artefact should be installed on each compute node
+
+<pre>
+mvn clean compile assembly:assembly
+Properties can be configured in /etc/ceilometer/ceilometer-agent.properties
+java -jar ceilometer-compute-agent-jar-with-dependencies.jar 
+</pre>
+
+h3. Ceilometer Collector Installation
+
+OpenStack Ceilometer Collector
+
+<pre>
+mvn clean compile assembly:assembly
+Properties can be configured in /etc/ceilometer/ceilometer-collector.properties
+java -jar ceilometer-collector.jar 
+</pre>
+
+h3. OpenStack Ceilometer API Installation
+
+OpenStack Ceilometer API
+
+<pre>
+mvn clean compile assembly:assembly
+Properties can be configured in /etc/ceilometer/ceilometer-api.properties
+java -jar ceilometer-api.jar 
+</pre>
+OpenStack Ceilometer Client
+
+h1. License
+
+<pre>
+This software is licensed under the Apache 2 license, quoted below.
+
+Copyright 2012 Luis Gervaso and OpenStack Java SDK
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not
+use this file except in compliance with the License. You may obtain a copy of
+the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+License for the specific language governing permissions and limitations under
+the License.
+</pre>
