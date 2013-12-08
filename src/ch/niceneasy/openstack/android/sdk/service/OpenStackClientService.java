@@ -14,15 +14,19 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
+import ch.niceneasy.openstack.android.object.PseudoFileSystem;
 import ch.niceneasy.openstack.android.sdk.connector.AndroidOpenStackClientConnector;
 
 import com.woorea.openstack.base.client.OpenStackSimpleTokenProvider;
 import com.woorea.openstack.keystone.Keystone;
 import com.woorea.openstack.keystone.model.Access;
+import com.woorea.openstack.keystone.model.Tenant;
 import com.woorea.openstack.keystone.model.authentication.TokenAuthentication;
 import com.woorea.openstack.keystone.model.authentication.UsernamePassword;
 import com.woorea.openstack.keystone.utils.KeystoneUtils;
 import com.woorea.openstack.swift.Swift;
+import com.woorea.openstack.swift.model.Container;
+import com.woorea.openstack.swift.model.Objects;
 
 public class OpenStackClientService {
 
@@ -43,14 +47,18 @@ public class OpenStackClientService {
 	private Map<String, Swift> swiftMap = new HashMap<String, Swift>();
 	private ObjectMapper defaultMapper = new ObjectMapper();
 	private ObjectMapper wrappedMapper = new ObjectMapper();
-	private String keystoneAuthUrl = "http://192.168.0.20:5000/v2.0";
-	private String keystoneAdminAuthUrl = "http://192.168.0.20:35357/v2.0";
+	private String keystoneAuthUrl = "http://192.168.0.20:5000/v2.0/";
+	private String keystoneAdminAuthUrl = "http://192.168.0.20:35357/v2.0/";
 	private String keystoneUsername = "admin";
 	private String keystonePassword = "Benz0lieren1";
-	private String keystoneEendpoint = "http://192.168.0.20:8776/v2.0";
+	private String keystoneEndpoint = "http://192.168.0.20:8776/v2.0/";
 	private String tenantName = "demo";
-	private String novaEndpoint = "http://192.168.0.20:8774/v2";
+	private String novaEndpoint = "http://192.168.0.20:8774/v2/";
 	private String ceilometerEndpoint = "";
+	
+	private Tenant selectedTenant;
+	private Container selectedContainer;
+	private PseudoFileSystem pseudoFileSystem;
 
 	private OpenStackClientService() {
 		defaultMapper.setSerializationInclusion(Inclusion.NON_NULL);
@@ -107,11 +115,11 @@ public class OpenStackClientService {
 	}
 
 	public String getKeystoneEendpoint() {
-		return keystoneEendpoint;
+		return keystoneEndpoint;
 	}
 
 	public void setKeystoneEendpoint(String keystoneEendpoint) {
-		this.keystoneEendpoint = keystoneEendpoint;
+		this.keystoneEndpoint = keystoneEendpoint;
 	}
 
 	public String getTenantName() {
@@ -218,6 +226,34 @@ public class OpenStackClientService {
 		while ((entitySize = stream.read(entity)) != -1) {
 			os.write(entity, 0, entitySize);
 		}
+	}
+
+	public Tenant getSelectedTenant() {
+		return selectedTenant;
+	}
+
+	public void setSelectedTenant(Tenant selectedTenant) {
+		this.selectedTenant = selectedTenant;
+	}
+
+	public Container getSelectedContainer() {
+		return selectedContainer;
+	}
+
+	public void setSelectedContainer(Container selectedContainer) {
+		this.selectedContainer = selectedContainer;
+	}
+
+	public void parseSelectedPseudoFileSystem(Objects objects) {
+		this.setPseudoFileSystem(PseudoFileSystem.readFromObjects(objects));
+	}
+
+	public PseudoFileSystem getPseudoFileSystem() {
+		return pseudoFileSystem;
+	}
+
+	public void setPseudoFileSystem(PseudoFileSystem pseudoFileSystem) {
+		this.pseudoFileSystem = pseudoFileSystem;
 	}
 
 }

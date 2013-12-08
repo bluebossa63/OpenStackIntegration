@@ -15,6 +15,7 @@ import org.codehaus.jackson.map.ObjectMapper;
 
 import com.woorea.openstack.base.client.OpenStackResponse;
 import com.woorea.openstack.base.client.OpenStackResponseException;
+import com.woorea.openstack.swift.model.ObjectDownload;
 
 public class AndroidOpenStackResponse implements OpenStackResponse {
 
@@ -59,11 +60,17 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 			throw new OpenStackResponseException(getStatusPhrase(),
 					getStatusCode());
 		}
-		ObjectMapper mapper = mapper(returnType);
-		try {
-			return mapper.readValue(is, returnType);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		if (returnType.equals(ObjectDownload.class)) {
+			ObjectDownload objectDownload = new ObjectDownload();
+			objectDownload.setInputStream(getInputStream());
+			return (T) objectDownload;
+		} else {
+			ObjectMapper mapper = mapper(returnType);
+			try {
+				return mapper.readValue(is, returnType);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
 	}
 

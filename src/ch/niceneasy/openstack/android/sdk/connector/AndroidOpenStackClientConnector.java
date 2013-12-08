@@ -41,7 +41,7 @@ public class AndroidOpenStackClientConnector implements
 			}
 		}
 
-		String sUrl = request.endpoint() + "/" + request.path();
+		String sUrl = request.endpoint() + request.path();
 		if (queryParameters.length() > 0) {
 			sUrl += queryParameters;
 		}
