@@ -50,7 +50,7 @@ public class OpenStackClientService {
 	private String keystoneAuthUrl = "http://192.168.0.20:5000/v2.0/";
 	private String keystoneAdminAuthUrl = "http://192.168.0.20:35357/v2.0/";
 	private String keystoneUsername = "admin";
-	private String keystonePassword = "Benz0lieren1";
+	private String keystonePassword = "admin";
 	private String keystoneEndpoint = "http://192.168.0.20:8776/v2.0/";
 	private String tenantName = "demo";
 	private String novaEndpoint = "http://192.168.0.20:8774/v2/";
