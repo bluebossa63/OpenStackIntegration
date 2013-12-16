@@ -46,8 +46,6 @@ import ch.niceneasy.openstack.android.R;
 import ch.niceneasy.openstack.android.base.GraphicsUtil;
 import ch.niceneasy.openstack.android.base.OpenstackListActivity;
 import ch.niceneasy.openstack.android.base.TaskResult;
-import ch.niceneasy.openstack.android.container.ContainerListAdapter;
-import ch.niceneasy.openstack.android.container.ContainerListViewActivity;
 import ch.niceneasy.openstack.android.tenant.TenantListViewActivity;
 
 import com.woorea.openstack.swift.Swift;
@@ -117,6 +115,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 				if (getApplicationState().getSelectedDirectory().getParent() == null) {
 					// startActivity(new Intent(ObjectListViewActivity.this,
 					// TenantListViewActivity.class));
+					getApplicationState().setSelectedDirectory(null);
 					finish();
 				} else {
 					getApplicationState().setSelectedDirectory(
@@ -159,7 +158,9 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 									public void onClick(DialogInterface dialog,
 											int which) {
 										DeleteDirectoryTask deleteDirectoryTask = new DeleteDirectoryTask(
-												 selectedObject, getApplicationState().getPseudoFileSystem());
+												selectedObject,
+												getApplicationState()
+														.getPseudoFileSystem());
 										deleteDirectoryTask.execute();
 										return;
 									}
@@ -236,12 +237,12 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.add:
+			DirectoryNamePromptDialog dlg = new DirectoryNamePromptDialog();
+			dlg.show(getFragmentManager(), "Container Name Prompter");
+			return true;
 		case R.id.camera:
 			Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			// cameraIntent
-			// .putExtra(
-			// MediaStore.EXTRA_OUTPUT,
-			// android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 			startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
 			return true;
 		case R.id.gallery:
@@ -409,6 +410,9 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 							PseudoFileSystem.findChild(getApplicationState()
 									.getSelectedDirectory().getRoot(),
 									selectedDirectory.getMetaData().getName()));
+				} else {
+					getApplicationState().setSelectedDirectory(
+							getApplicationState().getPseudoFileSystem());
 				}
 				updateLists();
 			} else {
@@ -561,7 +565,8 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		private Object object;
 		private PseudoFileSystem pseudoFileSystem;
 
-		private DeleteDirectoryTask(Object object, PseudoFileSystem pseudoFileSystem) {
+		private DeleteDirectoryTask(Object object,
+				PseudoFileSystem pseudoFileSystem) {
 			this.pseudoFileSystem = pseudoFileSystem;
 			this.object = object;
 		}
@@ -576,8 +581,10 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 								getApplicationState().getSelectedContainer()
 										.getName()).delete(object.getName())
 						.execute();
-				PseudoFileSystem pseudoFileSystem = PseudoFileSystem.findChild(this.pseudoFileSystem.getRoot(), object.getName());
-				pseudoFileSystem.getParent().getDirectories().remove(pseudoFileSystem);
+				PseudoFileSystem pseudoFileSystem = PseudoFileSystem.findChild(
+						this.pseudoFileSystem.getRoot(), object.getName());
+				pseudoFileSystem.getParent().getDirectories()
+						.remove(pseudoFileSystem);
 				return new TaskResult<PseudoFileSystem>(pseudoFileSystem);
 			} catch (Exception e) {
 				return new TaskResult<PseudoFileSystem>(e);
@@ -620,6 +627,71 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 
 	public DirectoryListAdapter getDirectoryListAdapter() {
 		return directoryListAdapter;
+	}
+
+	public void createFolder(String name) {
+		progressBar.setVisibility(ProgressBar.VISIBLE);
+		CreateDirectoryTask createDirectoryTask = new CreateDirectoryTask(name);
+		createDirectoryTask.execute();
+	}
+
+	private class CreateDirectoryTask extends
+			AsyncTask<String, Object, TaskResult<PseudoFileSystem>> {
+
+		private String folderName;
+
+		private CreateDirectoryTask(String folderName) {
+			this.folderName = folderName;
+			if (!folderName.endsWith("/")) {
+				this.folderName += "/";
+			}
+		}
+
+		@Override
+		protected TaskResult<PseudoFileSystem> doInBackground(String... params) {
+			try {
+				Container container = new Container();
+				container.setName(folderName);
+				String path = "";
+				if (getApplicationState().getSelectedDirectory().getMetaData() != null
+						&& getApplicationState().getSelectedDirectory().getParent() != null) {
+					path += getApplicationState().getSelectedDirectory()
+							.getMetaData().getName();
+				}
+				path += folderName;
+
+				Swift swift = getService().getSwift(
+						getApplicationState().getSelectedTenant().getId());
+				swift.containers()
+						.container(
+								getApplicationState().getSelectedContainer()
+										.getName()).createDirectory(path)
+						.execute();
+
+				PseudoFileSystem
+						.findOrCreateChild(getApplicationState()
+								.getSelectedDirectory().getRoot(), folderName);
+				return new TaskResult<PseudoFileSystem>(getApplicationState()
+						.getSelectedDirectory());
+			} catch (Exception e) {
+				return new TaskResult<PseudoFileSystem>(e);
+			}
+		}
+
+		@Override
+		protected void onPostExecute(TaskResult<PseudoFileSystem> result) {
+			super.onPostExecute(result);
+			progressBar.setVisibility(ProgressBar.GONE);
+			if (result.isValid()) {
+				directoryListAdapter
+						.setDirectories((List<PseudoFileSystem>) new ArrayList<PseudoFileSystem>(
+								result.getResult().getDirectories().values()));
+				ListView directoryListView = (ListView) findViewById(R.id.folders);
+				directoryListView.setAdapter(directoryListAdapter);
+			} else {
+				showErrorDialog(R.string.error_dlg, result.getException(), null);
+			}
+		}
 	}
 
 }

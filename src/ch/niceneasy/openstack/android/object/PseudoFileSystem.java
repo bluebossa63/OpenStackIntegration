@@ -11,9 +11,12 @@ public class PseudoFileSystem {
 	private Map<String, com.woorea.openstack.swift.model.Object> files = new LinkedHashMap<String, com.woorea.openstack.swift.model.Object>();
 	private com.woorea.openstack.swift.model.Object metaData;
 	private PseudoFileSystem parent;
-	
-	public PseudoFileSystem(PseudoFileSystem parent) {
+
+	public PseudoFileSystem(PseudoFileSystem parent, String childPath) {
 		this.parent = parent;
+		com.woorea.openstack.swift.model.Object object = new com.woorea.openstack.swift.model.Object();
+		object.setName(childPath);
+		this.setMetaData(object);
 	}
 
 	public Map<String, PseudoFileSystem> getDirectories() {
@@ -25,7 +28,7 @@ public class PseudoFileSystem {
 	}
 
 	public static PseudoFileSystem readFromObjects(Objects objects) {
-		PseudoFileSystem fs = new PseudoFileSystem(null);
+		PseudoFileSystem fs = new PseudoFileSystem(null, "");
 		for (com.woorea.openstack.swift.model.Object object : objects) {
 			String name = object.getName();
 			if (!name.contains("/")) {
@@ -54,7 +57,7 @@ public class PseudoFileSystem {
 		for (int i = 0; i < path.length; i++) {
 			if (!currentLevel.directories.containsKey(path[i])) {
 				currentLevel.directories.put(path[i],
-						new PseudoFileSystem(currentLevel));
+						new PseudoFileSystem(currentLevel, childPath));
 			}
 			currentLevel = currentLevel.directories.get(path[i]);
 		}	
@@ -77,7 +80,7 @@ public class PseudoFileSystem {
 		return metaData;
 	}
 
-	private void setMetaData(com.woorea.openstack.swift.model.Object metaData) {
+	public void setMetaData(com.woorea.openstack.swift.model.Object metaData) {
 		this.metaData = metaData;
 	}	
 	

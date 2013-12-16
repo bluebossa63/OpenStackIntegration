@@ -51,17 +51,21 @@ public final class R {
         public static final int action_settings=0x7f0a0003;
         public static final int actionbar_cancel=0x7f0a0000;
         public static final int actionbar_done=0x7f0a0001;
-        public static final int add=0x7f0a000c;
+        public static final int add=0x7f0a0010;
         public static final int back=0x7f0a0005;
-        public static final int camera=0x7f0a000d;
+        public static final int camera=0x7f0a0011;
         public static final int container_name=0x7f0a000a;
+        public static final int folder_name=0x7f0a000c;
         public static final int folders=0x7f0a0008;
-        public static final int gallery=0x7f0a000b;
+        public static final int gallery=0x7f0a000f;
         public static final int image1=0x7f0a0006;
         public static final int lbl_container_name=0x7f0a0009;
+        public static final int lbl_folder_name=0x7f0a000b;
         public static final int menu=0x7f0a0002;
         public static final int servicesProgressBar=0x7f0a0004;
         public static final int text1=0x7f0a0007;
+        public static final int type_selection=0x7f0a000e;
+        public static final int type_selection_label=0x7f0a000d;
     }
     public static final class layout {
         public static final int actionbar_custom_view_done_cancel=0x7f030000;
@@ -78,6 +82,8 @@ public final class R {
         public static final int list_objects=0x7f03000b;
         public static final int list_tenants=0x7f03000c;
         public static final int prompt_container_name=0x7f03000d;
+        public static final int prompt_folder_name=0x7f03000e;
+        public static final int select_type_dialog=0x7f03000f;
     }
     public static final class menu {
         public static final int homemenu=0x7f090000;
@@ -97,6 +103,7 @@ public final class R {
         public static final int add=0x7f060020;
         public static final int app_name=0x7f060000;
         public static final int back=0x7f060001;
+        public static final int camera=0x7f060029;
         public static final int cancel=0x7f06001f;
         public static final int default_msisdn=0x7f060011;
         public static final int done=0x7f06001e;
@@ -106,9 +113,13 @@ public final class R {
         public static final int easypay_trial=0x7f06000b;
         public static final int editSettings=0x7f06000f;
         public static final int error_dlg=0x7f060007;
+        public static final int file=0x7f060026;
+        public static final int folder=0x7f060027;
         public static final int hello=0x7f060004;
         public static final int hello_world=0x7f060003;
+        public static final int image=0x7f060028;
         public static final int lbl_container_name=0x7f060023;
+        public static final int lbl_folder_name=0x7f060024;
         public static final int manageIntroduction=0x7f060009;
         public static final int manageSubscriptions=0x7f06000e;
         public static final int menu=0x7f060022;
@@ -120,6 +131,7 @@ public final class R {
         public static final int settings=0x7f060021;
         public static final int showServices=0x7f06000d;
         public static final int tokenIntroduction=0x7f060005;
+        public static final int type_selection_label=0x7f060025;
     }
     public static final class style {
         /** 
