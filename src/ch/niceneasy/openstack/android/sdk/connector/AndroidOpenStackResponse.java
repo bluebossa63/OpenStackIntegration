@@ -13,11 +13,15 @@ import java.util.Map.Entry;
 
 import org.codehaus.jackson.map.ObjectMapper;
 
+import android.util.Log;
+
 import com.woorea.openstack.base.client.OpenStackResponse;
 import com.woorea.openstack.base.client.OpenStackResponseException;
 import com.woorea.openstack.swift.model.ObjectDownload;
 
 public class AndroidOpenStackResponse implements OpenStackResponse {
+	
+	public static String TAG = "AndroidOpenStackResponse";
 
 	private HttpURLConnection urlConnection;
 
@@ -32,19 +36,30 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 	public AndroidOpenStackResponse(HttpURLConnection urlConnection)
 			throws IOException {
 		this.urlConnection = urlConnection;
-		this.statusCode = urlConnection.getResponseCode();
-		this.statusPhrase = urlConnection.getResponseMessage();
-		headers = new HashMap<String, String>();
 		try {
+			this.statusCode = urlConnection.getResponseCode();
+			Log.i(TAG, this.statusCode+"");
+		} catch (IOException ioe) {
+			//intolerant implementation, see http://stackoverflow.com/a/15893389
+			if ("No authentication challenges found".equals(ioe.getMessage())) {
+				this.statusCode = 401;
+			}
+		}
+		try {
+			this.statusPhrase = urlConnection.getResponseMessage();
+			Log.i(TAG, this.statusPhrase);
+			headers = new HashMap<String, String>();
 			for (Entry<String, List<String>> iterable_element : urlConnection
 					.getHeaderFields().entrySet()) {
 				for (String value : iterable_element.getValue()) {
 					headers.put(iterable_element.getKey(), value);
+					Log.i(TAG, "response header " + iterable_element.getKey() + ": " + value);
 				}
 			}
 			is = copyStream(urlConnection.getInputStream());
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new OpenStackResponseException(getStatusPhrase(),
+					getStatusCode());
 		} finally {
 			try {
 				urlConnection.disconnect();
@@ -54,6 +69,7 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getEntity(Class<T> returnType) {
 		if (getStatusCode() >= 400) {

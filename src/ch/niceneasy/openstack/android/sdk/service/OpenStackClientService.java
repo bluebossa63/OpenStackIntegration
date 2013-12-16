@@ -14,19 +14,22 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
-import ch.niceneasy.openstack.android.object.PseudoFileSystem;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import ch.niceneasy.openstack.android.R;
+import ch.niceneasy.openstack.android.base.OpenstackApplicationState;
 import ch.niceneasy.openstack.android.sdk.connector.AndroidOpenStackClientConnector;
 
 import com.woorea.openstack.base.client.OpenStackSimpleTokenProvider;
 import com.woorea.openstack.keystone.Keystone;
 import com.woorea.openstack.keystone.model.Access;
-import com.woorea.openstack.keystone.model.Tenant;
 import com.woorea.openstack.keystone.model.authentication.TokenAuthentication;
 import com.woorea.openstack.keystone.model.authentication.UsernamePassword;
 import com.woorea.openstack.keystone.utils.KeystoneUtils;
 import com.woorea.openstack.swift.Swift;
-import com.woorea.openstack.swift.model.Container;
-import com.woorea.openstack.swift.model.Objects;
 
 public class OpenStackClientService {
 
@@ -50,15 +53,11 @@ public class OpenStackClientService {
 	private String keystoneAuthUrl = "http://192.168.0.20:5000/v2.0/";
 	private String keystoneAdminAuthUrl = "http://192.168.0.20:35357/v2.0/";
 	private String keystoneUsername = "admin";
-	private String keystonePassword = "admin";
+	private String keystonePassword = "adminPassword";
 	private String keystoneEndpoint = "http://192.168.0.20:8776/v2.0/";
 	private String tenantName = "demo";
 	private String novaEndpoint = "http://192.168.0.20:8774/v2/";
 	private String ceilometerEndpoint = "";
-	
-	private Tenant selectedTenant;
-	private Container selectedContainer;
-	private PseudoFileSystem pseudoFileSystem;
 
 	private OpenStackClientService() {
 		defaultMapper.setSerializationInclusion(Inclusion.NON_NULL);
@@ -149,8 +148,13 @@ public class OpenStackClientService {
 	public Keystone getKeystone() {
 		if (keystone == null) {
 			keystone = new Keystone(getKeystoneAuthUrl(), connector);
-			keystone.setTokenProvider(new OpenStackSimpleTokenProvider(
-					getAccess().getToken().getId()));
+			try {
+				keystone.setTokenProvider(new OpenStackSimpleTokenProvider(
+						getAccess().getToken().getId()));
+			} catch (RuntimeException e) {
+				keystone = null;
+				throw e;
+			}
 		}
 		return keystone;
 	}
@@ -228,32 +232,100 @@ public class OpenStackClientService {
 		}
 	}
 
-	public Tenant getSelectedTenant() {
-		return selectedTenant;
+	public boolean isLoggedIn() {
+		return access != null;
 	}
 
-	public void setSelectedTenant(Tenant selectedTenant) {
-		this.selectedTenant = selectedTenant;
+	public void resetConnection() {
+		this.access = null;
+		this.adminAccess = null;
+		this.keystone = null;
+		this.adminKeystone = null;
+		this.swiftMap.clear();
+		OpenstackApplicationState.getInstance().clear();
 	}
 
-	public Container getSelectedContainer() {
-		return selectedContainer;
+	public void copyServiceValues(Context context) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		OpenStackClientService service = OpenStackClientService.getInstance();
+		Editor edit = prefs.edit();
+		edit.putString(context.getString(R.string.USERNAME),
+				service.getKeystoneUsername());
+		edit.putString(context.getString(R.string.PASSWORD),
+				service.getKeystonePassword());
+		edit.putString(context.getString(R.string.TENANT_NAME),
+				service.getTenantName());
+		edit.putString(context.getString(R.string.KEYSTONE_AUTH_URL),
+				service.getKeystoneAuthUrl());
+		edit.putString(context.getString(R.string.KEYSTONE_ADMIN_AUTH_URL),
+				service.getKeystoneAdminAuthUrl());
+		edit.putString(context.getString(R.string.KEYSTONE_ENDPOINT),
+				service.getKeystoneEendpoint());
+		edit.putString(context.getString(R.string.NOVA_ENDPOINT),
+				service.getNovaEndpoint());
+		edit.putString(context.getString(R.string.CEILOMETER_ENDPOINT),
+				service.getCeilometerEndpoint());
+		edit.commit();
+		dump(context);
 	}
 
-	public void setSelectedContainer(Container selectedContainer) {
-		this.selectedContainer = selectedContainer;
+	public void updateService(Context context) {
+		SharedPreferences prefs = PreferenceManager
+				.getDefaultSharedPreferences(context);
+		OpenStackClientService service = OpenStackClientService.getInstance();
+		service.setKeystoneUsername(prefs.getString(
+				context.getString(R.string.USERNAME), "admin"));
+		service.setKeystonePassword(prefs.getString(
+				context.getString(R.string.PASSWORD), "adminPassword"));
+		service.setTenantName(prefs.getString(
+				context.getString(R.string.TENANT_NAME), "demo"));
+		service.setKeystoneAuthUrl(prefs.getString(
+				context.getString(R.string.KEYSTONE_AUTH_URL),
+				"http://192.168.0.20:5000/v2.0/"));
+		service.setKeystoneAdminAuthUrl(prefs.getString(
+				context.getString(R.string.KEYSTONE_ADMIN_AUTH_URL),
+				"http://192.168.0.20:35357/v2.0/"));
+		service.setKeystoneEendpoint(prefs.getString(
+				context.getString(R.string.KEYSTONE_ENDPOINT),
+				"http://192.168.0.20:8776/v2.0/"));
+		service.setNovaEndpoint(prefs.getString(
+				context.getString(R.string.NOVA_ENDPOINT),
+				"http://192.168.0.20:8774/v2/"));
+		service.setCeilometerEndpoint(prefs.getString(
+				context.getString(R.string.CEILOMETER_ENDPOINT), ""));
+		dump(context);
 	}
 
-	public void parseSelectedPseudoFileSystem(Objects objects) {
-		this.setPseudoFileSystem(PseudoFileSystem.readFromObjects(objects));
-	}
+	// private String getSafeString(String value) {
+	// return value == null || "0".equals(value) || "".equals(value.trim()) ?
+	// null
+	// : value;
+	// }
 
-	public PseudoFileSystem getPseudoFileSystem() {
-		return pseudoFileSystem;
-	}
-
-	public void setPseudoFileSystem(PseudoFileSystem pseudoFileSystem) {
-		this.pseudoFileSystem = pseudoFileSystem;
+	public void dump(Context context) {
+		String TAG = "ServicePreferences";
+		OpenStackClientService service = OpenStackClientService.getInstance();
+		Log.i(TAG,
+				context.getString(R.string.USERNAME) + "="
+						+ service.getKeystoneUsername());
+		Log.i(TAG,
+				context.getString(R.string.PASSWORD) + "="
+						+ service.getKeystonePassword());
+		Log.i(TAG,
+				context.getString(R.string.TENANT_NAME) + "="
+						+ service.getTenantName());
+		Log.i(TAG, context.getString(R.string.KEYSTONE_AUTH_URL) + "="
+				+ service.getKeystoneAuthUrl());
+		Log.i(TAG, context.getString(R.string.KEYSTONE_ADMIN_AUTH_URL) + "="
+				+ service.getKeystoneAdminAuthUrl());
+		Log.i(TAG, context.getString(R.string.KEYSTONE_ENDPOINT) + "="
+				+ service.getKeystoneEendpoint());
+		Log.i(TAG,
+				context.getString(R.string.NOVA_ENDPOINT) + "="
+						+ service.getNovaEndpoint());
+		Log.i(TAG, context.getString(R.string.CEILOMETER_ENDPOINT) + "="
+				+ service.getCeilometerEndpoint());
 	}
 
 }

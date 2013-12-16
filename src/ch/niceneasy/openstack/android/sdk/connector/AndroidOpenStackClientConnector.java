@@ -23,6 +23,8 @@ import com.woorea.openstack.base.client.OpenStackResponseException;
 
 public class AndroidOpenStackClientConnector implements
 		OpenStackClientConnector {
+	
+	public static String TAG = "AndroidOpenStackClientConnector";
 
 	@Override
 	public <T> OpenStackResponse request(OpenStackRequest<T> request) {
@@ -40,16 +42,24 @@ public class AndroidOpenStackClientConnector implements
 						+ encode(o.toString());
 			}
 		}
-
-		String sUrl = request.endpoint() + request.path();
+		
+		String sUrl = null;
+		if (!request.endpoint().endsWith("/") && !request.path().startsWith("/")) {
+			sUrl = request.endpoint() + "/" + request.path();
+		} else {
+			sUrl = request.endpoint() + request.path();
+		}
 		if (queryParameters.length() > 0) {
 			sUrl += queryParameters;
 		}
+		
+		sUrl = sUrl.replaceAll(" ", "%20");
 
 		AndroidOpenStackResponse resp = null;
 
 		try {
 
+			Log.i(TAG, request.method().name() + " " + sUrl);
 			HttpURLConnection urlConnection = (HttpURLConnection) new URL(sUrl)
 					.openConnection();
 			for (Map.Entry<String, List<Object>> h : request.headers()
@@ -59,12 +69,15 @@ public class AndroidOpenStackClientConnector implements
 					sb.append(String.valueOf(v));
 				}
 				urlConnection.addRequestProperty(h.getKey(), sb.toString());
+				Log.i(TAG, "add header " + h.getKey() + ": " + sb.toString());
 			}
 			urlConnection.setRequestMethod(request.method().name());
 			if (request.entity() != null) {
 				urlConnection.setDoOutput(true);
 				urlConnection.setRequestProperty("Content-Type", request
 						.entity().getContentType());
+				Log.i(TAG, "add header " + "Content-Type" + ": " + request
+						.entity().getContentType());				
 				if (request.entity().getContentType()
 						.equals("application/json")) {
 					ObjectMapper mapper = mapper(request.entity().getEntity()
@@ -81,6 +94,8 @@ public class AndroidOpenStackClientConnector implements
 			}
 			resp = new AndroidOpenStackResponse(urlConnection);
 			return resp;
+		} catch (OpenStackResponseException osre) {
+			throw osre;
 		} catch (Exception e) {
 			throw new OpenStackResponseException(e.getLocalizedMessage(),
 					resp != null ? resp.getStatusCode() : -1);

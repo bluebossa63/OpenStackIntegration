@@ -12,11 +12,16 @@
 		android:id="@+id/servicesProgressBar" android:layout_height="wrap_content"
 		style="?android:attr/progressBarStyleLarge"
 		android:layout_centerInParent="true" />
-	<Button android:text="@string/back" android:id="@+id/back"
-		android:layout_width="100dp" android:layout_height="wrap_content"
-		android:padding="5dp" android:layout_alignParentTop="true"
-		android:layout_alignParentLeft="true" android:background="@android:color/transparent" 
-		android:textAppearance="@style/selectText" android:textAlignment="textStart"/>
+    <Button
+        android:id="@+id/back"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:drawableLeft="@drawable/out_icon"
+        android:gravity="center_horizontal|center_vertical"
+        android:text="@string/back"
+        android:textAppearance="@style/menuText" />
     <ListView
         android:id="@+id/folders"
 		android:padding="5dp" 

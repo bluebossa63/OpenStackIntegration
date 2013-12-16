@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+	<PreferenceCategory android:title="Credentials">
+		<EditTextPreference android:name="Username"
+			android:summary=""
+			android:defaultValue="admin" android:title="Username"
+			android:key="@string/USERNAME" android:inputType="text"/>
+		<EditTextPreference android:name="Password"
+			android:summary=""
+			android:defaultValue="adminPassword" android:title="Password"
+			android:key="@string/PASSWORD" android:inputType="text"/>
+		<EditTextPreference android:name="TenantName" 
+			android:summary=""
+			android:defaultValue="demo" android:title="Selected Tenant"
+			android:key="@string/TENANT_NAME" android:inputType="text" />			
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Service URLs">
+		<EditTextPreference android:name="keystoneAuthUrl"
+			android:summary="" 
+			android:defaultValue="http://192.168.0.20:5000/v2.0/" android:title="authorization url"
+			android:key="@string/KEYSTONE_AUTH_URL"  android:inputType="text"/>
+		<EditTextPreference android:name="keystoneAdminAuthUrl"
+			android:summary=""
+			android:defaultValue="http://192.168.0.20:35357/v2.0/" android:title="authorization admin url"
+			android:key="@string/KEYSTONE_ADMIN_AUTH_URL"  android:inputType="text"/>
+		<EditTextPreference android:name="keystoneEndpoint" 
+			android:summary=""
+			android:defaultValue="http://192.168.0.20:8776/v2.0/" android:title="keystone endpoint url"
+			android:key="@string/KEYSTONE_ENDPOINT"  android:inputType="text"/>
+		<EditTextPreference android:name="novaEndpoint" 
+			android:summary=""
+			android:defaultValue="http://192.168.0.20:8774/v2/" android:title="nova endpoint url"
+			android:key="@string/NOVA_ENDPOINT"  android:inputType="text"/>
+		<EditTextPreference android:name="ceilometerEndpoint" 
+			android:summary=""
+			android:defaultValue="" android:title="ceilometer endpoint url"
+			android:key="@string/CEILOMETER_ENDPOINT"  android:inputType="text"/>		
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Local Storage">
+		<EditTextPreference android:name="localStorage"
+			android:summary="" 
+			android:defaultValue="/sdcard/Download/" android:title="local storage"
+			android:key="@string/LOCAL_STORAGE"  android:inputType="text"/>
+	</PreferenceCategory>
+</PreferenceScreen>

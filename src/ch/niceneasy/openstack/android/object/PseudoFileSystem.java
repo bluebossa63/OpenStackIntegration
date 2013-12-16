@@ -1,6 +1,7 @@
 package ch.niceneasy.openstack.android.object;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import com.woorea.openstack.swift.model.Objects;
 
@@ -9,6 +10,11 @@ public class PseudoFileSystem {
 	private Map<String, PseudoFileSystem> directories = new LinkedHashMap<String, PseudoFileSystem>();
 	private Map<String, com.woorea.openstack.swift.model.Object> files = new LinkedHashMap<String, com.woorea.openstack.swift.model.Object>();
 	private com.woorea.openstack.swift.model.Object metaData;
+	private PseudoFileSystem parent;
+	
+	public PseudoFileSystem(PseudoFileSystem parent) {
+		this.parent = parent;
+	}
 
 	public Map<String, PseudoFileSystem> getDirectories() {
 		return directories;
@@ -19,7 +25,7 @@ public class PseudoFileSystem {
 	}
 
 	public static PseudoFileSystem readFromObjects(Objects objects) {
-		PseudoFileSystem fs = new PseudoFileSystem();
+		PseudoFileSystem fs = new PseudoFileSystem(null);
 		for (com.woorea.openstack.swift.model.Object object : objects) {
 			String name = object.getName();
 			if (!name.contains("/")) {
@@ -48,7 +54,7 @@ public class PseudoFileSystem {
 		for (int i = 0; i < path.length; i++) {
 			if (!currentLevel.directories.containsKey(path[i])) {
 				currentLevel.directories.put(path[i],
-						new PseudoFileSystem());
+						new PseudoFileSystem(currentLevel));
 			}
 			currentLevel = currentLevel.directories.get(path[i]);
 		}	
@@ -76,7 +82,6 @@ public class PseudoFileSystem {
 	}	
 	
 	public String toString() {
-		int i=1;
 		return toString("  ");
 	}
 	
@@ -91,4 +96,17 @@ public class PseudoFileSystem {
 		}
 		return builder.toString();
 	}
+
+	public PseudoFileSystem getParent() {
+		return parent;
+	}
+
+	public PseudoFileSystem getRoot() {
+		PseudoFileSystem p = this;
+		while (p.getParent()!=null) {
+			p = p.getParent();
+		}
+		return p;
+	}
+
 }
