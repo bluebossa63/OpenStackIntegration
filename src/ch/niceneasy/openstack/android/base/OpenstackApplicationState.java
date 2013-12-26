@@ -1,12 +1,12 @@
 package ch.niceneasy.openstack.android.base;
 
+import android.content.Intent;
 import ch.niceneasy.openstack.android.object.PseudoFileSystem;
 
 import com.woorea.openstack.keystone.model.Tenant;
 import com.woorea.openstack.swift.model.Container;
 import com.woorea.openstack.swift.model.Object;
 import com.woorea.openstack.swift.model.Objects;
-import android.content.Intent;
 
 public class OpenstackApplicationState {
 

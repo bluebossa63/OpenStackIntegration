@@ -23,7 +23,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import ch.niceneasy.openstack.android.R;
 import ch.niceneasy.openstack.android.base.OpenstackListActivity;
 import ch.niceneasy.openstack.android.base.TaskResult;
@@ -75,6 +74,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 						.setMessage("are you sure that you want to delete this folder?");
 				alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
 								DeleteContainerTask deleteContainerTask = new DeleteContainerTask(
@@ -85,6 +85,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 						});
 				alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
 						"Cancel", new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
 								return;
@@ -163,7 +164,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		@Override
 		protected void onPostExecute(TaskResult<List<Container>> result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(ProgressBar.GONE);
+			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
 				((ContainerListAdapter) getListAdapter()).setContainers(result
 						.getResult());
@@ -176,7 +177,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 	}
 
 	public void createContainer(String name) {
-		progressBar.setVisibility(ProgressBar.VISIBLE);
+		progressBar.setVisibility(View.VISIBLE);
 		CreateContainerTask createContainerTask = new CreateContainerTask(name);
 		createContainerTask.execute();
 	}
@@ -220,7 +221,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		@Override
 		protected void onPostExecute(TaskResult<List<Container>> result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(ProgressBar.GONE);
+			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
 				((ContainerListAdapter) getListAdapter()).setContainers(result
 						.getResult());
@@ -270,7 +271,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		@Override
 		protected void onPostExecute(TaskResult<List<Container>> result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(ProgressBar.GONE);
+			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
 				((ContainerListAdapter) getListAdapter()).setContainers(result
 						.getResult());

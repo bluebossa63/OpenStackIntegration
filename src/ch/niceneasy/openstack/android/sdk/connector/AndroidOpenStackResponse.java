@@ -20,7 +20,7 @@ import com.woorea.openstack.base.client.OpenStackResponseException;
 import com.woorea.openstack.swift.model.ObjectDownload;
 
 public class AndroidOpenStackResponse implements OpenStackResponse {
-	
+
 	public static String TAG = "AndroidOpenStackResponse";
 
 	private HttpURLConnection urlConnection;
@@ -38,9 +38,10 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 		this.urlConnection = urlConnection;
 		try {
 			this.statusCode = urlConnection.getResponseCode();
-			Log.i(TAG, this.statusCode+"");
+			Log.i(TAG, this.statusCode + "");
 		} catch (IOException ioe) {
-			//intolerant implementation, see http://stackoverflow.com/a/15893389
+			// intolerant implementation, see
+			// http://stackoverflow.com/a/15893389
 			if ("No authentication challenges found".equals(ioe.getMessage())) {
 				this.statusCode = 401;
 			}
@@ -53,7 +54,8 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 					.getHeaderFields().entrySet()) {
 				for (String value : iterable_element.getValue()) {
 					headers.put(iterable_element.getKey(), value);
-					Log.i(TAG, "response header " + iterable_element.getKey() + ": " + value);
+					Log.i(TAG, "response header " + iterable_element.getKey()
+							+ ": " + value);
 				}
 			}
 			is = copyStream(urlConnection.getInputStream());

@@ -23,7 +23,7 @@ import com.woorea.openstack.base.client.OpenStackResponseException;
 
 public class AndroidOpenStackClientConnector implements
 		OpenStackClientConnector {
-	
+
 	public static String TAG = "AndroidOpenStackClientConnector";
 
 	@Override
@@ -42,9 +42,10 @@ public class AndroidOpenStackClientConnector implements
 						+ encode(o.toString());
 			}
 		}
-		
+
 		String sUrl = null;
-		if (!request.endpoint().endsWith("/") && !request.path().startsWith("/")) {
+		if (!request.endpoint().endsWith("/")
+				&& !request.path().startsWith("/")) {
 			sUrl = request.endpoint() + "/" + request.path();
 		} else {
 			sUrl = request.endpoint() + request.path();
@@ -52,7 +53,7 @@ public class AndroidOpenStackClientConnector implements
 		if (queryParameters.length() > 0) {
 			sUrl += queryParameters;
 		}
-		
+
 		sUrl = sUrl.replaceAll(" ", "%20");
 
 		AndroidOpenStackResponse resp = null;
@@ -76,8 +77,8 @@ public class AndroidOpenStackClientConnector implements
 				urlConnection.setDoOutput(true);
 				urlConnection.setRequestProperty("Content-Type", request
 						.entity().getContentType());
-				Log.i(TAG, "add header " + "Content-Type" + ": " + request
-						.entity().getContentType());				
+				Log.i(TAG, "add header " + "Content-Type" + ": "
+						+ request.entity().getContentType());
 				if (request.entity().getContentType()
 						.equals("application/json")) {
 					ObjectMapper mapper = mapper(request.entity().getEntity()

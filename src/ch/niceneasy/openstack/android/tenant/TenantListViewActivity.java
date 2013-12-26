@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import ch.niceneasy.openstack.android.R;
 import ch.niceneasy.openstack.android.base.OpenstackListActivity;
@@ -22,6 +21,8 @@ import ch.niceneasy.openstack.android.base.TaskResult;
 import ch.niceneasy.openstack.android.container.ContainerListViewActivity;
 import ch.niceneasy.openstack.android.sdk.service.OpenStackClientService;
 import ch.niceneasy.openstack.android.sdk.service.ServicePreferences;
+import ch.niceneasy.openstack.android.signup.SignupActivity;
+import ch.niceneasy.openstack.android.signup.SignupService;
 
 import com.woorea.openstack.keystone.model.Tenant;
 
@@ -30,6 +31,12 @@ public class TenantListViewActivity extends OpenstackListActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		ServicePreferences.updateService(this);
+		if (SignupService.getInstance().getUser().getId() == null
+				|| SignupService.getInstance().getUser().getId().trim()
+						.length() == 0) {
+			startActivity(new Intent(this, SignupActivity.class));
+		}
 		setListAdapter(new TenantListAdapter(this));
 		getListView().setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -43,41 +50,46 @@ public class TenantListViewActivity extends OpenstackListActivity {
 			}
 		});
 		loadData();
-		
+
 		Intent intent = getIntent();
 		String action = intent.getAction();
 		String type = intent.getType();
-		
-	    if (Intent.ACTION_SEND.equals(action) && type != null) {
-	    	getApplicationState().setShareIntent(intent);
-	    	Toast.makeText(this, "select folder to updload and confirm in action bar", Toast.LENGTH_LONG).show();
-	    } else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
-	    	getApplicationState().setShareIntent(intent);
-	    	Toast.makeText(this, "select folder to updload and confirm in action bar", Toast.LENGTH_LONG).show();
-	    }		
-	    
+
+		if (Intent.ACTION_SEND.equals(action) && type != null) {
+			getApplicationState().setShareIntent(intent);
+			Toast.makeText(this,
+					"select folder to updload and confirm in action bar",
+					Toast.LENGTH_LONG).show();
+		} else if (Intent.ACTION_SEND_MULTIPLE.equals(action) && type != null) {
+			getApplicationState().setShareIntent(intent);
+			Toast.makeText(this,
+					"select folder to updload and confirm in action bar",
+					Toast.LENGTH_LONG).show();
+		}
+
 		// BEGIN_INCLUDE (inflate_set_custom_view)
 		// Inflate a "Done/Cancel" custom action bar view.
 		final LayoutInflater inflater = (LayoutInflater) getActionBar()
-				.getThemedContext().getSystemService(
-						LAYOUT_INFLATER_SERVICE);
+				.getThemedContext().getSystemService(LAYOUT_INFLATER_SERVICE);
 		final View customActionBarView = inflater.inflate(
 				R.layout.ctionbar_custom_view_settings_cancel, null);
-		customActionBarView.findViewById(R.id.menu)
-				.setOnClickListener(new View.OnClickListener() {
+		customActionBarView.findViewById(R.id.menu).setOnClickListener(
+				new View.OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						PopupMenu menu = new PopupMenu(TenantListViewActivity.this,v);
-						menu.getMenuInflater().inflate(R.menu.homemenu, menu.getMenu());
+						PopupMenu menu = new PopupMenu(
+								TenantListViewActivity.this, v);
+						menu.getMenuInflater().inflate(R.menu.homemenu,
+								menu.getMenu());
 						menu.show();
 					}
 				});
-//		customActionBarView.findViewById(R.id.actionbar_cancel)
-//				.setOnClickListener(new View.OnClickListener() {
-//					@Override
-//					public void onClick(View v) {
-//					}
-//				});
+		// customActionBarView.findViewById(R.id.actionbar_cancel)
+		// .setOnClickListener(new View.OnClickListener() {
+		// @Override
+		// public void onClick(View v) {
+		// }
+		// });
 
 		// Show the custom action bar view and hide the normal Home icon and
 		// title.
@@ -86,8 +98,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 				ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME
 						| ActionBar.DISPLAY_SHOW_TITLE);
 		actionBar.setCustomView(customActionBarView,
-				new ActionBar.LayoutParams(
-						ViewGroup.LayoutParams.MATCH_PARENT,
+				new ActionBar.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
 						ViewGroup.LayoutParams.MATCH_PARENT));
 		// END_INCLUDE (inflate_set_custom_view)
 	}
@@ -100,8 +111,9 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		@Override
 		protected TaskResult<List<Tenant>> doInBackground(String... params) {
 			try {
-				return new TaskResult<List<Tenant>>(OpenStackClientService.getInstance().getKeystone()
-						.tenants().list().execute().getList());
+				return new TaskResult<List<Tenant>>(OpenStackClientService
+						.getInstance().getKeystone().tenants().list().execute()
+						.getList());
 			} catch (Exception e) {
 				getService().resetConnection();
 				return new TaskResult<List<Tenant>>(e);
@@ -111,17 +123,18 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		@Override
 		protected void onPostExecute(TaskResult<List<Tenant>> result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(ProgressBar.GONE);
+			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
-				((TenantListAdapter) getListAdapter()).setTenants(result.getResult());
+				((TenantListAdapter) getListAdapter()).setTenants(result
+						.getResult());
 				if (editSettings) {
 					startActivity(new Intent(TenantListViewActivity.this,
 							ServicePreferences.class));
 				}
 			} else {
-				showErrorDialog(R.string.error_dlg, result.getException(), new Intent(
-						TenantListViewActivity.this,
-						TenantListViewActivity.class));				
+				showErrorDialog(R.string.error_dlg, result.getException(),
+						new Intent(TenantListViewActivity.this,
+								TenantListViewActivity.class));
 			}
 		}
 
@@ -170,6 +183,4 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		super.finish();
 	}
 
-	
-		
 }

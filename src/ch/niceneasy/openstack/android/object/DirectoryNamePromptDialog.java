@@ -10,7 +10,7 @@ import android.widget.EditText;
 import ch.niceneasy.openstack.android.R;
 
 public class DirectoryNamePromptDialog extends DialogFragment {
-	
+
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Use the Builder class for convenient dialog construction
@@ -19,19 +19,26 @@ public class DirectoryNamePromptDialog extends DialogFragment {
 		builder.setView(inflater.inflate(R.layout.prompt_folder_name, null))
 				.setPositiveButton(R.string.done,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
-								EditText editText = (EditText) DirectoryNamePromptDialog.this.getDialog().findViewById(R.id.folder_name);
-								((ObjectListViewActivity)getActivity()).createFolder(editText.getText().toString());
+								EditText editText = (EditText) DirectoryNamePromptDialog.this
+										.getDialog().findViewById(
+												R.id.folder_name);
+								((ObjectListViewActivity) getActivity())
+										.createFolder(editText.getText()
+												.toString());
 								DirectoryNamePromptDialog.this.dismiss();
 							}
 						})
 				.setNegativeButton(R.string.cancel,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
-								DirectoryNamePromptDialog.this.getDialog().cancel();
+								DirectoryNamePromptDialog.this.getDialog()
+										.cancel();
 							}
 						});
 		return builder.create();
 	}
-	
+
 }

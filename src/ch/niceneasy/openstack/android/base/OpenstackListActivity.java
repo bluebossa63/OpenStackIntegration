@@ -39,8 +39,9 @@ public abstract class OpenstackListActivity extends ListActivity {
 	}
 
 	public void showErrorDialog(int ressource, Exception e, final Intent onOK) {
-		//showErrorDialog("Fehlermeldung", e, onOK);
-		Toast.makeText(this, "Fehlermeldung: " + e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+		// showErrorDialog("Fehlermeldung", e, onOK);
+		Toast.makeText(this, "Fehlermeldung: " + e.getLocalizedMessage(),
+				Toast.LENGTH_LONG).show();
 	}
 
 	protected void showDialog(String title, String message, final Intent onOK) {
@@ -50,13 +51,14 @@ public abstract class OpenstackListActivity extends ListActivity {
 		if (onOK != null) {
 			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
 					new DialogInterface.OnClickListener() {
+						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							startActivity(onOK);
 							return;
 						}
 					});
 		}
-		alertDialog.show();	
+		alertDialog.show();
 	}
 
 	@Override

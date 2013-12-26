@@ -1,45 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-	<PreferenceCategory android:title="Credentials">
-		<EditTextPreference android:name="Username"
-			android:summary=""
-			android:defaultValue="admin" android:title="Username"
-			android:key="@string/USERNAME" android:inputType="text"/>
-		<EditTextPreference android:name="Password"
-			android:summary=""
-			android:defaultValue="adminPassword" android:title="Password"
-			android:key="@string/PASSWORD" android:inputType="text"/>
-		<EditTextPreference android:name="TenantName" 
-			android:summary=""
-			android:defaultValue="demo" android:title="Selected Tenant"
-			android:key="@string/TENANT_NAME" android:inputType="text" />			
-	</PreferenceCategory>
-	<PreferenceCategory android:title="Service URLs">
-		<EditTextPreference android:name="keystoneAuthUrl"
-			android:summary="" 
-			android:defaultValue="http://192.168.0.20:5000/v2.0/" android:title="authorization url"
-			android:key="@string/KEYSTONE_AUTH_URL"  android:inputType="text"/>
-		<EditTextPreference android:name="keystoneAdminAuthUrl"
-			android:summary=""
-			android:defaultValue="http://192.168.0.20:35357/v2.0/" android:title="authorization admin url"
-			android:key="@string/KEYSTONE_ADMIN_AUTH_URL"  android:inputType="text"/>
-		<EditTextPreference android:name="keystoneEndpoint" 
-			android:summary=""
-			android:defaultValue="http://192.168.0.20:8776/v2.0/" android:title="keystone endpoint url"
-			android:key="@string/KEYSTONE_ENDPOINT"  android:inputType="text"/>
-		<EditTextPreference android:name="novaEndpoint" 
-			android:summary=""
-			android:defaultValue="http://192.168.0.20:8774/v2/" android:title="nova endpoint url"
-			android:key="@string/NOVA_ENDPOINT"  android:inputType="text"/>
-		<EditTextPreference android:name="ceilometerEndpoint" 
-			android:summary=""
-			android:defaultValue="" android:title="ceilometer endpoint url"
-			android:key="@string/CEILOMETER_ENDPOINT"  android:inputType="text"/>		
-	</PreferenceCategory>
-	<PreferenceCategory android:title="Local Storage">
-		<EditTextPreference android:name="localStorage"
-			android:summary="" 
-			android:defaultValue="/sdcard/Download/" android:title="local storage"
-			android:key="@string/LOCAL_STORAGE"  android:inputType="text"/>
-	</PreferenceCategory>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory android:title="Userdata" >
+        <EditTextPreference
+            android:name="Full Name"
+            android:defaultValue=""
+            android:inputType="text"
+            android:key="@string/FULLNAME"
+            android:summary=""
+            android:title="Full Name" />
+        <EditTextPreference
+            android:name="E-Mail"
+            android:defaultValue=""
+            android:inputType="textEmailAddress"
+            android:key="@string/EMAIL"
+            android:summary=""
+            android:title="E-Mail" />
+        <EditTextPreference
+            android:name="User ID"
+            android:defaultValue=""
+            android:editable="false"
+            android:inputType="text"
+            android:key="@string/USERID"
+            android:summary=""
+            android:title="User ID" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Credentials" >
+        <EditTextPreference
+            android:name="Username"
+            android:defaultValue="admin"
+            android:inputType="text"
+            android:key="@string/USERNAME"
+            android:summary=""
+            android:title="Username" />
+        <EditTextPreference
+            android:name="Password"
+            android:defaultValue="adminPassword"
+            android:inputType="textVisiblePassword"
+            android:key="@string/PASSWORD"
+            android:summary=""
+            android:title="Password" />
+        <EditTextPreference
+            android:name="TenantName"
+            android:defaultValue="demo"
+            android:inputType="text"
+            android:key="@string/TENANT_NAME"
+            android:summary=""
+            android:title="Selected Tenant" />
+        <EditTextPreference
+            android:name="Tenant ID"
+            android:defaultValue=""
+            android:editable="false"
+            android:inputType="text"
+            android:key="@string/TENANT_ID"
+            android:summary=""
+            android:title="Tenant ID" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Service URLs" >
+        <EditTextPreference
+            android:name="keystoneAuthUrl"
+            android:defaultValue="http://192.168.0.20:5000/v2.0/"
+            android:inputType="text"
+            android:key="@string/KEYSTONE_AUTH_URL"
+            android:summary=""
+            android:title="authorization url" />
+        <EditTextPreference
+            android:name="keystoneAdminAuthUrl"
+            android:defaultValue="http://192.168.0.20:35357/v2.0/"
+            android:inputType="text"
+            android:key="@string/KEYSTONE_ADMIN_AUTH_URL"
+            android:summary=""
+            android:title="authorization admin url" />
+        <EditTextPreference
+            android:name="keystoneEndpoint"
+            android:defaultValue="http://192.168.0.20:8776/v2.0/"
+            android:inputType="text"
+            android:key="@string/KEYSTONE_ENDPOINT"
+            android:summary=""
+            android:title="keystone endpoint url" />
+        <EditTextPreference
+            android:name="novaEndpoint"
+            android:defaultValue="http://192.168.0.20:8774/v2/"
+            android:inputType="text"
+            android:key="@string/NOVA_ENDPOINT"
+            android:summary=""
+            android:title="nova endpoint url" />
+        <EditTextPreference
+            android:name="ceilometerEndpoint"
+            android:defaultValue=""
+            android:inputType="text"
+            android:key="@string/CEILOMETER_ENDPOINT"
+            android:summary=""
+            android:title="ceilometer endpoint url" />
+        <EditTextPreference
+            android:name="ceilometerEndpoint"
+            android:defaultValue="http://cassiopeia.ne.local:8081/account-management/rest/users/"
+            android:inputType="text"
+            android:key="@string/SIGNUP_ENDPOINT"
+            android:summary=""
+            android:title="signup endpoint url" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Local Storage" >
+        <EditTextPreference
+            android:name="localStorage"
+            android:defaultValue="/sdcard/Download/"
+            android:inputType="text"
+            android:key="@string/LOCAL_STORAGE"
+            android:summary=""
+            android:title="local storage" />
+    </PreferenceCategory>
 </PreferenceScreen>

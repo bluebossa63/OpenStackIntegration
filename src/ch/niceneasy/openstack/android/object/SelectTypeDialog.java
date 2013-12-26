@@ -15,7 +15,7 @@ import android.widget.BaseAdapter;
 import ch.niceneasy.openstack.android.R;
 
 public class SelectTypeDialog extends DialogFragment {
-	
+
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Use the Builder class for convenient dialog construction
@@ -24,27 +24,27 @@ public class SelectTypeDialog extends DialogFragment {
 		builder.setView(inflater.inflate(R.layout.select_type_dialog, null))
 				.setNegativeButton(R.string.cancel,
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog, int id) {
 								SelectTypeDialog.this.getDialog().cancel();
 							}
 						});
 		Dialog dialog = builder.create();
-		
-		//inflater.inflate(resource, root)
-		//dialog.findViewById(id)
+
+		// inflater.inflate(resource, root)
+		// dialog.findViewById(id)
 		return dialog;
 	}
-	
-	
+
 	private class MediaType {
 		int ressourceId;
 		String name;
 	}
-	
+
 	private class TypeAdapter extends BaseAdapter {
-		
+
 		List<MediaType> mediaTypes = new ArrayList<MediaType>();
-		
+
 		TypeAdapter() {
 			MediaType mediaType = new MediaType();
 			mediaType.ressourceId = R.drawable.folder_media_icon;
@@ -58,10 +58,8 @@ public class SelectTypeDialog extends DialogFragment {
 			mediaType.ressourceId = R.drawable.camera_icon;
 			mediaType.name = getActivity().getString(R.string.camera);
 			mediaTypes.add(mediaType);
-			
+
 		}
-		
-		
 
 		@Override
 		public int getCount() {
@@ -86,7 +84,7 @@ public class SelectTypeDialog extends DialogFragment {
 			// TODO Auto-generated method stub
 			return null;
 		}
-		
+
 	}
 
 }

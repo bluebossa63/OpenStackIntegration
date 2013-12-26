@@ -1,12 +1,8 @@
 package ch.niceneasy.openstack.android.object;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import com.woorea.openstack.swift.model.Container;
-
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +40,7 @@ public class ObjectListAdapter extends BaseAdapter {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater mInflater = (LayoutInflater) context
-				.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		TextView textView;
 		if (convertView == null) {
 			convertView = mInflater.inflate(

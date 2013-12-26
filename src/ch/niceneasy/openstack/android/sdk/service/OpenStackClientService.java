@@ -113,12 +113,12 @@ public class OpenStackClientService {
 		this.keystonePassword = keystonePassword;
 	}
 
-	public String getKeystoneEendpoint() {
+	public String getKeystoneEndpoint() {
 		return keystoneEndpoint;
 	}
 
-	public void setKeystoneEendpoint(String keystoneEendpoint) {
-		this.keystoneEndpoint = keystoneEendpoint;
+	public void setKeystoneEndpoint(String keystoneEndpoint) {
+		this.keystoneEndpoint = keystoneEndpoint;
 	}
 
 	public String getTenantName() {
@@ -245,87 +245,5 @@ public class OpenStackClientService {
 		OpenstackApplicationState.getInstance().clear();
 	}
 
-	public void copyServiceValues(Context context) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		OpenStackClientService service = OpenStackClientService.getInstance();
-		Editor edit = prefs.edit();
-		edit.putString(context.getString(R.string.USERNAME),
-				service.getKeystoneUsername());
-		edit.putString(context.getString(R.string.PASSWORD),
-				service.getKeystonePassword());
-		edit.putString(context.getString(R.string.TENANT_NAME),
-				service.getTenantName());
-		edit.putString(context.getString(R.string.KEYSTONE_AUTH_URL),
-				service.getKeystoneAuthUrl());
-		edit.putString(context.getString(R.string.KEYSTONE_ADMIN_AUTH_URL),
-				service.getKeystoneAdminAuthUrl());
-		edit.putString(context.getString(R.string.KEYSTONE_ENDPOINT),
-				service.getKeystoneEendpoint());
-		edit.putString(context.getString(R.string.NOVA_ENDPOINT),
-				service.getNovaEndpoint());
-		edit.putString(context.getString(R.string.CEILOMETER_ENDPOINT),
-				service.getCeilometerEndpoint());
-		edit.commit();
-		dump(context);
-	}
-
-	public void updateService(Context context) {
-		SharedPreferences prefs = PreferenceManager
-				.getDefaultSharedPreferences(context);
-		OpenStackClientService service = OpenStackClientService.getInstance();
-		service.setKeystoneUsername(prefs.getString(
-				context.getString(R.string.USERNAME), "admin"));
-		service.setKeystonePassword(prefs.getString(
-				context.getString(R.string.PASSWORD), "adminPassword"));
-		service.setTenantName(prefs.getString(
-				context.getString(R.string.TENANT_NAME), "demo"));
-		service.setKeystoneAuthUrl(prefs.getString(
-				context.getString(R.string.KEYSTONE_AUTH_URL),
-				"http://192.168.0.20:5000/v2.0/"));
-		service.setKeystoneAdminAuthUrl(prefs.getString(
-				context.getString(R.string.KEYSTONE_ADMIN_AUTH_URL),
-				"http://192.168.0.20:35357/v2.0/"));
-		service.setKeystoneEendpoint(prefs.getString(
-				context.getString(R.string.KEYSTONE_ENDPOINT),
-				"http://192.168.0.20:8776/v2.0/"));
-		service.setNovaEndpoint(prefs.getString(
-				context.getString(R.string.NOVA_ENDPOINT),
-				"http://192.168.0.20:8774/v2/"));
-		service.setCeilometerEndpoint(prefs.getString(
-				context.getString(R.string.CEILOMETER_ENDPOINT), ""));
-		dump(context);
-	}
-
-	// private String getSafeString(String value) {
-	// return value == null || "0".equals(value) || "".equals(value.trim()) ?
-	// null
-	// : value;
-	// }
-
-	public void dump(Context context) {
-		String TAG = "ServicePreferences";
-		OpenStackClientService service = OpenStackClientService.getInstance();
-		Log.i(TAG,
-				context.getString(R.string.USERNAME) + "="
-						+ service.getKeystoneUsername());
-		Log.i(TAG,
-				context.getString(R.string.PASSWORD) + "="
-						+ service.getKeystonePassword());
-		Log.i(TAG,
-				context.getString(R.string.TENANT_NAME) + "="
-						+ service.getTenantName());
-		Log.i(TAG, context.getString(R.string.KEYSTONE_AUTH_URL) + "="
-				+ service.getKeystoneAuthUrl());
-		Log.i(TAG, context.getString(R.string.KEYSTONE_ADMIN_AUTH_URL) + "="
-				+ service.getKeystoneAdminAuthUrl());
-		Log.i(TAG, context.getString(R.string.KEYSTONE_ENDPOINT) + "="
-				+ service.getKeystoneEendpoint());
-		Log.i(TAG,
-				context.getString(R.string.NOVA_ENDPOINT) + "="
-						+ service.getNovaEndpoint());
-		Log.i(TAG, context.getString(R.string.CEILOMETER_ENDPOINT) + "="
-				+ service.getCeilometerEndpoint());
-	}
 
 }

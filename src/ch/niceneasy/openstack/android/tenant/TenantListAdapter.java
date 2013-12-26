@@ -3,7 +3,6 @@ package ch.niceneasy.openstack.android.tenant;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -43,7 +42,7 @@ public class TenantListAdapter extends BaseAdapter {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// ViewHolder holder = null;
 		LayoutInflater mInflater = (LayoutInflater) context
-				.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		TextView textView;
 		if (convertView == null) {
 			convertView = mInflater.inflate(

@@ -35,36 +35,39 @@ public class PseudoFileSystem {
 				fs.getFiles().put(name, object);
 			} else {
 				if (name.endsWith("/")) {
-					PseudoFileSystem targetDirectory = findOrCreateChild(fs, name);
+					PseudoFileSystem targetDirectory = findOrCreateChild(fs,
+							name);
 					targetDirectory.setMetaData(object);
 				} else {
 					String[] path = name.split("/");
 					String directory = "";
-					for (int i = 0; i < path.length-1; i++) {
+					for (int i = 0; i < path.length - 1; i++) {
 						directory += path[i] + "/";
 					}
 					PseudoFileSystem targetDirectory = findChild(fs, directory);
-					targetDirectory.files.put(path[path.length-1], object);
+					targetDirectory.files.put(path[path.length - 1], object);
 				}
 			}
 		}
 		return fs;
 	}
-	
-	public static PseudoFileSystem findOrCreateChild(PseudoFileSystem root, String childPath) {
+
+	public static PseudoFileSystem findOrCreateChild(PseudoFileSystem root,
+			String childPath) {
 		PseudoFileSystem currentLevel = root;
 		String[] path = childPath.split("/");
 		for (int i = 0; i < path.length; i++) {
 			if (!currentLevel.directories.containsKey(path[i])) {
-				currentLevel.directories.put(path[i],
-						new PseudoFileSystem(currentLevel, childPath));
+				currentLevel.directories.put(path[i], new PseudoFileSystem(
+						currentLevel, childPath));
 			}
 			currentLevel = currentLevel.directories.get(path[i]);
-		}	
+		}
 		return currentLevel;
 	}
-	
-	public static PseudoFileSystem findChild(PseudoFileSystem root, String childPath) {
+
+	public static PseudoFileSystem findChild(PseudoFileSystem root,
+			String childPath) {
 		PseudoFileSystem currentLevel = root;
 		String[] path = childPath.split("/");
 		for (int i = 0; i < path.length; i++) {
@@ -72,7 +75,7 @@ public class PseudoFileSystem {
 				return null;
 			}
 			currentLevel = currentLevel.directories.get(path[i]);
-		}	
+		}
 		return currentLevel;
 	}
 
@@ -82,20 +85,25 @@ public class PseudoFileSystem {
 
 	public void setMetaData(com.woorea.openstack.swift.model.Object metaData) {
 		this.metaData = metaData;
-	}	
-	
+	}
+
+	@Override
 	public String toString() {
 		return toString("  ");
 	}
-	
+
 	public String toString(String ident) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(getMetaData()).append("\n");
-		for (Map.Entry<String, com.woorea.openstack.swift.model.Object> entry : getFiles().entrySet()) {
-			builder.append(ident).append("file ").append(entry.getValue()).append("\n");	
+		for (Map.Entry<String, com.woorea.openstack.swift.model.Object> entry : getFiles()
+				.entrySet()) {
+			builder.append(ident).append("file ").append(entry.getValue())
+					.append("\n");
 		}
-		for (Map.Entry<String, PseudoFileSystem> children : getDirectories().entrySet()) {
-			builder.append(ident).append("dir ").append(children.getValue().toString(ident + "   "));
+		for (Map.Entry<String, PseudoFileSystem> children : getDirectories()
+				.entrySet()) {
+			builder.append(ident).append("dir ")
+					.append(children.getValue().toString(ident + "   "));
 		}
 		return builder.toString();
 	}
@@ -106,7 +114,7 @@ public class PseudoFileSystem {
 
 	public PseudoFileSystem getRoot() {
 		PseudoFileSystem p = this;
-		while (p.getParent()!=null) {
+		while (p.getParent() != null) {
 			p = p.getParent();
 		}
 		return p;

@@ -8,7 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -40,7 +40,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import ch.niceneasy.openstack.android.R;
 import ch.niceneasy.openstack.android.base.GraphicsUtil;
@@ -147,7 +146,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 							View arg1, int item, long arg3) {
 						PseudoFileSystem fs = (PseudoFileSystem) ObjectListViewActivity.this
 								.getDirectoryListAdapter().getItem(item);
-						final Object selectedObject = (Object) fs.getMetaData();
+						final Object selectedObject = fs.getMetaData();
 						AlertDialog alertDialog = new AlertDialog.Builder(
 								ObjectListViewActivity.this).create();
 						alertDialog.setTitle("delecte top folder");
@@ -155,6 +154,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 								.setMessage("are you sure that you want to delete this folder?");
 						alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
 								"OK", new DialogInterface.OnClickListener() {
+									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
 										DeleteDirectoryTask deleteDirectoryTask = new DeleteDirectoryTask(
@@ -168,6 +168,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 						alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
 								"Cancel",
 								new DialogInterface.OnClickListener() {
+									@Override
 									public void onClick(DialogInterface dialog,
 											int which) {
 										return;
@@ -203,6 +204,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 						.setMessage("are you sure that you want to delete this folder?");
 				alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
 						new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
 								DeleteObjectTask deleteObjectTask = new DeleteObjectTask(
@@ -213,6 +215,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 						});
 				alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
 						"Cancel", new DialogInterface.OnClickListener() {
+							@Override
 							public void onClick(DialogInterface dialog,
 									int which) {
 								return;
@@ -264,7 +267,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		case GALLERY_PIC_REQUEST:
 		case CAMERA_PIC_REQUEST:
 			if (resultCode == RESULT_OK) {
-				Uri uri = (Uri) intentData.getData();
+				Uri uri = intentData.getData();
 				String imagePath = GraphicsUtil.getOriginalFilePath(
 						ObjectListViewActivity.this, uri);
 				MimeTypeMap map = MimeTypeMap.getSingleton();
@@ -337,7 +340,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		@Override
 		protected void onPostExecute(TaskResult<File> result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(ProgressBar.GONE);
+			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
 				File file = result.getResult();
 				Intent intent = new Intent();
@@ -352,7 +355,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 					} else {
 						try {
 							FileInputStream fis = new FileInputStream(file);
-							String guessed = HttpURLConnection
+							String guessed = URLConnection
 									.guessContentTypeFromStream(fis);
 							if (guessed != null) {
 								object.setContentType(guessed);
@@ -397,7 +400,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		@Override
 		protected void onPostExecute(TaskResult<Objects> result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(ProgressBar.GONE);
+			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
 				PseudoFileSystem selectedDirectory = getApplicationState()
 						.getSelectedDirectory();
@@ -486,7 +489,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		@Override
 		protected void onPostExecute(TaskResult<ObjectForUpload> result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(ProgressBar.GONE);
+			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
 				if (getApplicationState().isInSharingMode()) {
 					Intent tempIntent = getApplicationState().getShareIntent();
@@ -546,7 +549,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		@Override
 		protected void onPostExecute(TaskResult<List<Object>> result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(ProgressBar.GONE);
+			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
 				((ObjectListAdapter) getListAdapter()).setObjects(result
 						.getResult());
@@ -594,7 +597,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		@Override
 		protected void onPostExecute(TaskResult<PseudoFileSystem> result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(ProgressBar.GONE);
+			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
 				directoryListView.setAdapter(getDirectoryListAdapter());
 			} else {
@@ -630,7 +633,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 	}
 
 	public void createFolder(String name) {
-		progressBar.setVisibility(ProgressBar.VISIBLE);
+		progressBar.setVisibility(View.VISIBLE);
 		CreateDirectoryTask createDirectoryTask = new CreateDirectoryTask(name);
 		createDirectoryTask.execute();
 	}
@@ -654,7 +657,8 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 				container.setName(folderName);
 				String path = "";
 				if (getApplicationState().getSelectedDirectory().getMetaData() != null
-						&& getApplicationState().getSelectedDirectory().getParent() != null) {
+						&& getApplicationState().getSelectedDirectory()
+								.getParent() != null) {
 					path += getApplicationState().getSelectedDirectory()
 							.getMetaData().getName();
 				}
@@ -668,9 +672,8 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 										.getName()).createDirectory(path)
 						.execute();
 
-				PseudoFileSystem
-						.findOrCreateChild(getApplicationState()
-								.getSelectedDirectory().getRoot(), folderName);
+				PseudoFileSystem.findOrCreateChild(getApplicationState()
+						.getSelectedDirectory().getRoot(), folderName);
 				return new TaskResult<PseudoFileSystem>(getApplicationState()
 						.getSelectedDirectory());
 			} catch (Exception e) {
@@ -681,10 +684,10 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		@Override
 		protected void onPostExecute(TaskResult<PseudoFileSystem> result) {
 			super.onPostExecute(result);
-			progressBar.setVisibility(ProgressBar.GONE);
+			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
 				directoryListAdapter
-						.setDirectories((List<PseudoFileSystem>) new ArrayList<PseudoFileSystem>(
+						.setDirectories(new ArrayList<PseudoFileSystem>(
 								result.getResult().getDirectories().values()));
 				ListView directoryListView = (ListView) findViewById(R.id.folders);
 				directoryListView.setAdapter(directoryListAdapter);
