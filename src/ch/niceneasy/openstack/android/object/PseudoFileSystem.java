@@ -69,6 +69,9 @@ public class PseudoFileSystem {
 	public static PseudoFileSystem findChild(PseudoFileSystem root,
 			String childPath) {
 		PseudoFileSystem currentLevel = root;
+		if (childPath.trim().length()==0) {
+			return root;
+		}
 		String[] path = childPath.split("/");
 		for (int i = 0; i < path.length; i++) {
 			if (!currentLevel.directories.containsKey(path[i])) {

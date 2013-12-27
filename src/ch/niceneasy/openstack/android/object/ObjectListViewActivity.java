@@ -267,6 +267,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		case GALLERY_PIC_REQUEST:
 		case CAMERA_PIC_REQUEST:
 			if (resultCode == RESULT_OK) {
+				getApplicationState().setShareIntent(null);
 				Uri uri = intentData.getData();
 				String imagePath = GraphicsUtil.getOriginalFilePath(
 						ObjectListViewActivity.this, uri);

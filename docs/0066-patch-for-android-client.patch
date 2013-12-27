@@ -1,0 +1,1833 @@
+From 1a03e63974e63d8c85dbcdbb890cfae2c1375f66 Mon Sep 17 00:00:00 2001
+From: Daniele Ulrich <daniele.ulrich@gmail.com>
+Date: Fri, 27 Dec 2013 17:24:30 +0100
+Subject: [PATCH 66/67] patch for android client
+
+---
+ .../openstack/keystone/api/UsersResource.java      | 183 +++++++------
+ .../com/woorea/openstack/keystone/model/Extra.java |  27 ++
+ .../com/woorea/openstack/keystone/model/User.java  | 284 +++++++++++----------
+ openstack-examples/logging.properties              |   8 +
+ .../openstack/examples/ExamplesConfiguration.java  |  62 ++---
+ .../objectstore/ContainersMessageBodyReader.java   |  62 +++++
+ .../ObjectDownloadMessageBodyReader.java           |  49 ++++
+ .../examples/objectstore/PseudoFileSystem.java     | 120 +++++++++
+ .../examples/objectstore/SwiftExample2.java        |  97 +++++++
+ pom.xml                                            |   2 +-
+ .../openstack/swift/api/ContainerResource.java     | 245 ++++++++----------
+ .../openstack/swift/api/ContainersResource.java    | 192 ++++++++------
+ .../swift/deserializer/ContainersDeserializer.java |  22 ++
+ .../swift/deserializer/ObjectsDeserializer.java    |  21 ++
+ .../woorea/openstack/swift/model/Containers.java   |  48 ++++
+ .../com/woorea/openstack/swift/model/Object.java   | 222 ++++++++--------
+ .../com/woorea/openstack/swift/model/Objects.java  |  48 ++++
+ 17 files changed, 1112 insertions(+), 580 deletions(-)
+ create mode 100644 keystone-model/src/main/java/com/woorea/openstack/keystone/model/Extra.java
+ create mode 100644 openstack-examples/logging.properties
+ create mode 100644 openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/ContainersMessageBodyReader.java
+ create mode 100644 openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/ObjectDownloadMessageBodyReader.java
+ create mode 100644 openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/PseudoFileSystem.java
+ create mode 100644 openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/SwiftExample2.java
+ create mode 100644 swift-model/src/main/java/com/woorea/openstack/swift/deserializer/ContainersDeserializer.java
+ create mode 100644 swift-model/src/main/java/com/woorea/openstack/swift/deserializer/ObjectsDeserializer.java
+ create mode 100644 swift-model/src/main/java/com/woorea/openstack/swift/model/Containers.java
+ create mode 100644 swift-model/src/main/java/com/woorea/openstack/swift/model/Objects.java
+
+diff --git a/keystone-client/src/main/java/com/woorea/openstack/keystone/api/UsersResource.java b/keystone-client/src/main/java/com/woorea/openstack/keystone/api/UsersResource.java
+index dbb897c..af47a6a 100644
+--- a/keystone-client/src/main/java/com/woorea/openstack/keystone/api/UsersResource.java
++++ b/keystone-client/src/main/java/com/woorea/openstack/keystone/api/UsersResource.java
+@@ -1,85 +1,98 @@
+-package com.woorea.openstack.keystone.api;
+-
+-
+-import com.woorea.openstack.base.client.Entity;
+-import com.woorea.openstack.base.client.HttpMethod;
+-import com.woorea.openstack.base.client.OpenStackClient;
+-import com.woorea.openstack.base.client.OpenStackRequest;
+-import com.woorea.openstack.keystone.model.User;
+-import com.woorea.openstack.keystone.model.Users;
+-
+-public class UsersResource {
+-	
+-	private OpenStackClient client;
+-	
+-	public UsersResource(OpenStackClient client) {
+-		this.client = client;
+-	}
+-	
+-	public List list() {
+-		return new List();
+-	}
+-	
+-	public Create create(User user) {
+-		return new Create(user);
+-	}
+-	
+-	public Show show(String id) {
+-		return new Show(id);
+-	}
+-	
+-	public Update update(String id, User user) {
+-		return new Update(id, user);
+-	}
+-	
+-	public Delete delete(String id) {
+-		return new Delete(id);
+-	}
+-
+-	public class List extends OpenStackRequest<Users> {
+-		
+-		public List() {
+-			super(client, HttpMethod.GET, "/users", null, Users.class);
+-		}
+-
+-	}
+-	
+-	public class Create extends OpenStackRequest<User> {
+-
+-		private User user;
+-		
+-		public Create(User user) {
+-			super(client, HttpMethod.POST, "/users", Entity.json(user), User.class);
+-			this.user = user;
+-		}
+-		
+-	}
+-	
+-	public class Show extends OpenStackRequest<User> {
+-		
+-		public Show(String id) {
+-			super(client, HttpMethod.GET, new StringBuilder("/users/").append(id).toString(), null, User.class);
+-		}
+-
+-	}
+-	
+-	public class Update extends OpenStackRequest<User> {
+-		
+-		private User user;
+-		
+-		public Update(String id, User user) {
+-			super(client, HttpMethod.PUT, new StringBuilder("/users/").append(id).toString(), Entity.json(user), User.class);
+-			this.user = user;
+-		}
+-
+-	}
+-	
+-	public class Delete extends OpenStackRequest<Void> {
+-		
+-		public Delete(String id) {
+-			super(client, HttpMethod.DELETE, new StringBuilder("/users/").append(id).toString(), null, Void.class);
+-		}
+-		
+-	}
+-	
+-}
++package com.woorea.openstack.keystone.api;
++
++import com.woorea.openstack.base.client.Entity;
++import com.woorea.openstack.base.client.HttpMethod;
++import com.woorea.openstack.base.client.OpenStackClient;
++import com.woorea.openstack.base.client.OpenStackRequest;
++import com.woorea.openstack.keystone.model.User;
++import com.woorea.openstack.keystone.model.Users;
++
++import java.io.UnsupportedEncodingException;
++
++import java.net.URLEncoder;
++
++
++public class UsersResource {
++    private OpenStackClient client;
++
++    public UsersResource(OpenStackClient client) {
++        this.client = client;
++    }
++
++    public List list() {
++        return new List();
++    }
++
++    public Create create(User user) {
++        return new Create(user);
++    }
++
++    public Show show(String id) {
++        return new Show(id);
++    }
++
++    public Find find(String username) {
++        return new Find(username);
++    }
++
++    public Update update(String id, User user) {
++        return new Update(id, user);
++    }
++
++    public Delete delete(String id) {
++        return new Delete(id);
++    }
++
++    public class List extends OpenStackRequest<Users> {
++        public List() {
++            super(client, HttpMethod.GET, "/users", null, Users.class);
++        }
++    }
++
++    public class Create extends OpenStackRequest<User> {
++        public Create(User user) {
++            super(client, HttpMethod.POST, "/users/", Entity.json(user),
++                User.class);
++        }
++    }
++
++    public class Show extends OpenStackRequest<User> {
++        public Show(String id) {
++            super(client, HttpMethod.GET,
++                new StringBuilder("/users/").append(id).toString(), null,
++                User.class);
++        }
++    }
++
++    public class Find extends OpenStackRequest<User> {
++        public Find(String username) {
++            super(client, HttpMethod.GET, new StringBuilder("/users/"), null,
++                User.class);
++
++            try {
++                this.queryParam("name", URLEncoder.encode(username, "UTF-8"));
++            } catch (UnsupportedEncodingException e) {
++                //ignore
++            }
++        }
++    }
++
++    public class Update extends OpenStackRequest<User> {
++        private User user;
++
++        public Update(String id, User user) {
++            super(client, HttpMethod.PUT,
++                new StringBuilder("/users/").append(id).toString(),
++                Entity.json(user), User.class);
++            this.user = user;
++        }
++    }
++
++    public class Delete extends OpenStackRequest<Void> {
++        public Delete(String id) {
++            super(client, HttpMethod.DELETE,
++                new StringBuilder("/users/").append(id).toString(), null,
++                Void.class);
++        }
++    }
++}
+diff --git a/keystone-model/src/main/java/com/woorea/openstack/keystone/model/Extra.java b/keystone-model/src/main/java/com/woorea/openstack/keystone/model/Extra.java
+new file mode 100644
+index 0000000..925fcfe
+--- /dev/null
++++ b/keystone-model/src/main/java/com/woorea/openstack/keystone/model/Extra.java
+@@ -0,0 +1,27 @@
++package com.woorea.openstack.keystone.model;
++
++import java.io.Serializable;
++import java.util.HashMap;
++import java.util.Map;
++
++import org.codehaus.jackson.annotate.JsonAnyGetter;
++import org.codehaus.jackson.annotate.JsonAnySetter;
++
++public class Extra implements Serializable {
++
++	Map<String, String> map = new HashMap<String, String>();
++
++	@JsonAnyGetter
++	public Map<String, String> any() {
++		return map;
++	}
++
++	@JsonAnySetter
++	public void set(String name, String value) {
++		map.put(name, value);
++	}
++	
++	public String toString() {
++		return "extra=" + map.toString();
++	}
++}
+diff --git a/keystone-model/src/main/java/com/woorea/openstack/keystone/model/User.java b/keystone-model/src/main/java/com/woorea/openstack/keystone/model/User.java
+index 53271f4..c62dc01 100644
+--- a/keystone-model/src/main/java/com/woorea/openstack/keystone/model/User.java
++++ b/keystone-model/src/main/java/com/woorea/openstack/keystone/model/User.java
+@@ -1,134 +1,150 @@
+-package com.woorea.openstack.keystone.model;
+-
+-import java.io.Serializable;
+-
+-import org.codehaus.jackson.annotate.JsonProperty;
+-import org.codehaus.jackson.map.annotate.JsonRootName;
+-
+-@JsonRootName("user")
+-public class User implements Serializable {
+-
+-	private String id;
+-	
+-	private String username;
+-	
+-	@JsonProperty("OS_KSADM_password")
+-	private String password;
+-	
+-	private String tenantId;
+-	
+-	private String name;
+-	
+-	private String email;
+-	
+-	private Boolean enabled;
+-
+-	/**
+-	 * @return the id
+-	 */
+-	public String getId() {
+-		return id;
+-	}
+-
+-	/**
+-	 * @param id the id to set
+-	 */
+-	public void setId(String id) {
+-		this.id = id;
+-	}
+-
+-	/**
+-	 * @return the username
+-	 */
+-	public String getUsername() {
+-		return username;
+-	}
+-
+-	/**
+-	 * @param username the username to set
+-	 */
+-	public void setUsername(String username) {
+-		this.username = username;
+-	}
+-
+-	/**
+-	 * @return the password
+-	 */
+-	public String getPassword() {
+-		return password;
+-	}
+-
+-	/**
+-	 * @param password the password to set
+-	 */
+-	public void setPassword(String password) {
+-		this.password = password;
+-	}
+-
+-	/**
+-	 * @return the tenantId
+-	 */
+-	public String getTenantId() {
+-		return tenantId;
+-	}
+-
+-	/**
+-	 * @param tenantId the tenantId to set
+-	 */
+-	public void setTenantId(String tenantId) {
+-		this.tenantId = tenantId;
+-	}
+-
+-	/**
+-	 * @return the name
+-	 */
+-	public String getName() {
+-		return name;
+-	}
+-
+-	/**
+-	 * @param name the name to set
+-	 */
+-	public void setName(String name) {
+-		this.name = name;
+-	}
+-
+-	/**
+-	 * @return the email
+-	 */
+-	public String getEmail() {
+-		return email;
+-	}
+-
+-	/**
+-	 * @param email the email to set
+-	 */
+-	public void setEmail(String email) {
+-		this.email = email;
+-	}
+-
+-	/**
+-	 * @return the enabled
+-	 */
+-	public Boolean getEnabled() {
+-		return enabled;
+-	}
+-
+-	/**
+-	 * @param enabled the enabled to set
+-	 */
+-	public void setEnabled(Boolean enabled) {
+-		this.enabled = enabled;
+-	}
+-
+-	/* (non-Javadoc)
+-	 * @see java.lang.Object#toString()
+-	 */
+-	@Override
+-	public String toString() {
+-		return "User [id=" + id + ", username=" + username + ", password="
+-				+ password + ", tenantId=" + tenantId + ", name=" + name
+-				+ ", email=" + email + ", enabled=" + enabled + "]";
+-	}
+-	
+-}
++package com.woorea.openstack.keystone.model;
++
++import org.codehaus.jackson.annotate.JsonIgnoreProperties;
++import org.codehaus.jackson.annotate.JsonProperty;
++import org.codehaus.jackson.map.annotate.JsonRootName;
++
++import java.io.Serializable;
++
++import java.util.Map;
++
++
++@JsonRootName("user")
++public class User implements Serializable {
++    private String id;
++    private String username;
++    private String OS_KSADM_password;
++    private String password;
++    private String tenantId;
++    private String name;
++    private String email;
++
++    //@JsonProperty("extra")
++    private Extra extra;
++    private Boolean enabled;
++
++    /**
++     * @return the id
++     */
++    public String getId() {
++        return id;
++    }
++
++    /**
++     * @param id the id to set
++     */
++    public void setId(String id) {
++        this.id = id;
++    }
++
++    /**
++     * @return the username
++     */
++    public String getUsername() {
++        return username;
++    }
++
++    /**
++     * @param username the username to set
++     */
++    public void setUsername(String username) {
++        this.username = username;
++    }
++
++    /**
++     * @return the password
++     */
++    public String getPassword() {
++        return password;
++    }
++
++    /**
++     * @param password the password to set
++     */
++    public void setPassword(String password) {
++        this.password = password;
++    }
++
++    /**
++     * @return the tenantId
++     */
++    public String getTenantId() {
++        return tenantId;
++    }
++
++    /**
++     * @param tenantId the tenantId to set
++     */
++    public void setTenantId(String tenantId) {
++        this.tenantId = tenantId;
++    }
++
++    /**
++     * @return the name
++     */
++    public String getName() {
++        return name;
++    }
++
++    /**
++     * @param name the name to set
++     */
++    public void setName(String name) {
++        this.name = name;
++    }
++
++    /**
++     * @return the email
++     */
++    public String getEmail() {
++        return email;
++    }
++
++    /**
++     * @param email the email to set
++     */
++    public void setEmail(String email) {
++        this.email = email;
++    }
++
++    /**
++     * @return the enabled
++     */
++    public Boolean getEnabled() {
++        return enabled;
++    }
++
++    /**
++     * @param enabled the enabled to set
++     */
++    public void setEnabled(Boolean enabled) {
++        this.enabled = enabled;
++    }
++
++    /* (non-Javadoc)
++     * @see java.lang.Object#toString()
++     */
++    @Override
++    public String toString() {
++        return "User [id=" + id + ", username=" + username + ", password=" +
++        password + ", tenantId=" + tenantId + ", name=" + name + ", email=" +
++        email + ", enabled=" + enabled +
++        ((extra != null) ? (", " + extra.toString()) : "") + "]";
++    }
++
++    public String getOS_KSADM_password() {
++        return password;
++    }
++
++    public void setOS_KSADM_password(String oS_KSADM_password) {
++        password = oS_KSADM_password;
++    }
++
++    public Extra getExtra() {
++        return extra;
++    }
++
++    public void setExtra(Extra extra) {
++        this.extra = extra;
++    }
++}
+diff --git a/openstack-examples/logging.properties b/openstack-examples/logging.properties
+new file mode 100644
+index 0000000..77769e0
+--- /dev/null
++++ b/openstack-examples/logging.properties
+@@ -0,0 +1,8 @@
++.level = INFO
++
++handlers=java.util.logging.ConsoleHandler
++java.util.logging.ConsoleHandler.formatter = java.util.logging.SimpleFormatter
++java.util.logging.ConsoleHandler.level = ALL
++
++org.apache.http.level = FINEST
++org.apache.http.wire.level = FINEST
+\ No newline at end of file
+diff --git a/openstack-examples/src/main/java/com/woorea/openstack/examples/ExamplesConfiguration.java b/openstack-examples/src/main/java/com/woorea/openstack/examples/ExamplesConfiguration.java
+index 621c4aa..af725a9 100644
+--- a/openstack-examples/src/main/java/com/woorea/openstack/examples/ExamplesConfiguration.java
++++ b/openstack-examples/src/main/java/com/woorea/openstack/examples/ExamplesConfiguration.java
+@@ -1,34 +1,28 @@
+-package com.woorea.openstack.examples;
+-
+-
+-import com.woorea.openstack.base.client.OpenStackSimpleTokenProvider;
+-import com.woorea.openstack.keystone.Keystone;
+-import com.woorea.openstack.keystone.model.Tenant;
+-
+-public class ExamplesConfiguration {
+-
+-	public static final String KEYSTONE_AUTH_URL = "http://identity/v2.0";
+-	
+-	public static final String KEYSTONE_USERNAME = "";
+-	
+-	public static final String KEYSTONE_PASSWORD = "";
+-	
+-	public static final String KEYSTONE_ENDPOINT = "http://keystone/v2.0";
+-	
+-	public static final String TENANT_NAME = "admin";
+-
+-	public static final String NOVA_ENDPOINT = "http://compute/v2";
+-	
+-	public static final String CEILOMETER_ENDPOINT = "";
+-	
+-	public static void main(String[] args) {
+-		Keystone client = new Keystone(KEYSTONE_ENDPOINT);
+-		client.setTokenProvider(new OpenStackSimpleTokenProvider("secret0"));
+-		client.tenants().delete("36c481aec1d54fc49190c92c3ef6840a").execute();
+-		Tenant tenant = client.tenants().create(new Tenant("new_api")).execute();
+-		System.out.println(tenant);
+-		System.out.println(client.tenants().list().execute());
+-		client.tenants().delete(tenant.getId()).execute();
+-	}
+-	
+-}
++package com.woorea.openstack.examples;
++
++import com.woorea.openstack.base.client.OpenStackSimpleTokenProvider;
++import com.woorea.openstack.keystone.Keystone;
++import com.woorea.openstack.keystone.model.Tenant;
++
++
++public class ExamplesConfiguration {
++    public static final String KEYSTONE_AUTH_URL = "http://openstack.ne.local:5000/v2.0";
++    public static final String KEYSTONE_ADMIN_AUTH_URL = "http://openstack.ne.local:35357/v2.0";
++    public static final String KEYSTONE_USERNAME = "admin";
++    public static final String KEYSTONE_PASSWORD = "adminPassword";
++    public static final String KEYSTONE_ENDPOINT = "http://openstack.ne.local:8776/v2.0";
++    public static final String TENANT_NAME = "demo";
++    public static final String NOVA_ENDPOINT = "http://openstack.ne.local:8774/v2";
++    public static final String CEILOMETER_ENDPOINT = "";
++
++    public static void main(String[] args) {
++        Keystone client = new Keystone(KEYSTONE_ENDPOINT);
++        client.setTokenProvider(new OpenStackSimpleTokenProvider("secret0"));
++        client.tenants().delete("36c481aec1d54fc49190c92c3ef6840a").execute();
++
++        Tenant tenant = client.tenants().create(new Tenant("new_api")).execute();
++        System.out.println(tenant);
++        System.out.println(client.tenants().list().execute());
++        client.tenants().delete(tenant.getId()).execute();
++    }
++}
+diff --git a/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/ContainersMessageBodyReader.java b/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/ContainersMessageBodyReader.java
+new file mode 100644
+index 0000000..c42af8d
+--- /dev/null
++++ b/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/ContainersMessageBodyReader.java
+@@ -0,0 +1,62 @@
++package com.woorea.openstack.examples.objectstore;
++
++import javax.ws.rs.WebApplicationException;
++import javax.ws.rs.ext.MessageBodyReader;
++
++import java.io.BufferedInputStream;
++import java.io.ByteArrayInputStream;
++import java.io.ByteArrayOutputStream;
++import java.io.IOException;
++import java.io.InputStream;
++import java.lang.annotation.Annotation;
++import java.lang.reflect.Type;
++
++import javax.ws.rs.core.MediaType;
++import javax.ws.rs.core.MultivaluedMap;
++
++import org.codehaus.jackson.map.DeserializationConfig;
++import org.codehaus.jackson.map.ObjectMapper;
++import org.codehaus.jackson.map.SerializationConfig;
++import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
++
++import com.woorea.openstack.connector.OpenStack;
++import com.woorea.openstack.swift.model.Containers;
++import com.woorea.openstack.swift.model.Container;
++public class ContainersMessageBodyReader implements MessageBodyReader<Containers> {
++	 
++	@Override
++	public boolean isReadable(Class<?> type, Type genericType,
++	    Annotation[] annotations, MediaType mediaType) {
++	    return type == Containers.class;
++	}
++	 
++	@Override
++	public Containers readFrom(Class<Containers> type,
++	    Type genericType,
++	    Annotation[] annotations, MediaType mediaType,
++	    MultivaluedMap<String, String> httpHeaders,
++	    InputStream entityStream)
++	        throws IOException, WebApplicationException {
++			ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
++			DEFAULT_MAPPER.setSerializationInclusion(Inclusion.NON_NULL);
++			DEFAULT_MAPPER.enable(SerializationConfig.Feature.INDENT_OUTPUT);
++			DEFAULT_MAPPER.enable(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY);		
++			Container[] containersArray = DEFAULT_MAPPER.readValue(entityStream, Container[].class);
++			return new Containers(containersArray);
++
++	}
++	
++    private InputStream copyStream(InputStream stream) throws IOException {
++        if (!stream.markSupported()) {
++            stream = new BufferedInputStream(stream);
++        }
++        byte[] entity = new byte[4096];
++        int entitySize = 0;
++        ByteArrayOutputStream baos = new ByteArrayOutputStream();
++        while ((entitySize = stream.read(entity)) != -1) {
++        	baos.write(entity, 0, entitySize);
++        }
++        stream.reset();
++        return new ByteArrayInputStream(baos.toByteArray());
++    }	
++}
+diff --git a/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/ObjectDownloadMessageBodyReader.java b/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/ObjectDownloadMessageBodyReader.java
+new file mode 100644
+index 0000000..ba096a0
+--- /dev/null
++++ b/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/ObjectDownloadMessageBodyReader.java
+@@ -0,0 +1,49 @@
++package com.woorea.openstack.examples.objectstore;
++
++import javax.ws.rs.WebApplicationException;
++import javax.ws.rs.ext.MessageBodyReader;
++
++import java.io.BufferedInputStream;
++import java.io.ByteArrayInputStream;
++import java.io.ByteArrayOutputStream;
++import java.io.IOException;
++import java.io.InputStream;
++import java.lang.annotation.Annotation;
++import java.lang.reflect.Type;
++
++import javax.ws.rs.core.MediaType;
++import javax.ws.rs.core.MultivaluedMap;
++
++import com.woorea.openstack.swift.model.ObjectDownload;
++
++public class ObjectDownloadMessageBodyReader implements MessageBodyReader<ObjectDownload> {
++	 
++	@Override
++	public boolean isReadable(Class<?> type, Type genericType,
++	    Annotation[] annotations, MediaType mediaType) {
++	    return type == ObjectDownload.class;
++	}
++	 
++	@Override
++	public ObjectDownload readFrom(Class<ObjectDownload> type,
++	    Type genericType,
++	    Annotation[] annotations, MediaType mediaType,
++	    MultivaluedMap<String, String> httpHeaders,
++	    InputStream entityStream)
++	        throws IOException, WebApplicationException {
++			ObjectDownload objectDownload = new ObjectDownload();
++			objectDownload.setInputStream(copyStream(entityStream));
++			return objectDownload;
++
++	}
++	
++    private InputStream copyStream(InputStream stream) throws IOException {
++        byte[] entity = new byte[4096];
++        int entitySize = 0;
++        ByteArrayOutputStream baos = new ByteArrayOutputStream();
++        while ((entitySize = stream.read(entity)) != -1) {
++        	baos.write(entity, 0, entitySize);
++        }
++        return new ByteArrayInputStream(baos.toByteArray());
++    }	
++}
+diff --git a/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/PseudoFileSystem.java b/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/PseudoFileSystem.java
+new file mode 100644
+index 0000000..b49bc0d
+--- /dev/null
++++ b/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/PseudoFileSystem.java
+@@ -0,0 +1,120 @@
++package com.woorea.openstack.examples.objectstore;
++
++import java.util.*;
++
++import com.woorea.openstack.swift.model.Objects;
++
++public class PseudoFileSystem {
++
++	private Map<String, PseudoFileSystem> directories = new LinkedHashMap<String, PseudoFileSystem>();
++	private Map<String, com.woorea.openstack.swift.model.Object> files = new LinkedHashMap<String, com.woorea.openstack.swift.model.Object>();
++	private com.woorea.openstack.swift.model.Object metaData;
++	private PseudoFileSystem parent;
++
++	public PseudoFileSystem(PseudoFileSystem parent, String childPath) {
++		this.parent = parent;
++		com.woorea.openstack.swift.model.Object object = new com.woorea.openstack.swift.model.Object();
++		object.setName(childPath);
++		this.setMetaData(object);
++	}
++
++	public Map<String, PseudoFileSystem> getDirectories() {
++		return directories;
++	}
++
++	public Map<String, com.woorea.openstack.swift.model.Object> getFiles() {
++		return files;
++	}
++
++	public static PseudoFileSystem readFromObjects(Objects objects) {
++		PseudoFileSystem fs = new PseudoFileSystem(null, "");
++		for (com.woorea.openstack.swift.model.Object object : objects) {
++			String name = object.getName();
++			if (!name.contains("/")) {
++				fs.getFiles().put(name, object);
++			} else {
++				if (name.endsWith("/")) {
++					PseudoFileSystem targetDirectory = findOrCreateChild(fs,
++							name);
++					targetDirectory.setMetaData(object);
++				} else {
++					String[] path = name.split("/");
++					String directory = "";
++					for (int i = 0; i < path.length - 1; i++) {
++						directory += path[i] + "/";
++					}
++					PseudoFileSystem targetDirectory = findChild(fs, directory);
++					targetDirectory.files.put(path[path.length - 1], object);
++				}
++			}
++		}
++		return fs;
++	}
++
++	public static PseudoFileSystem findOrCreateChild(PseudoFileSystem root,
++			String childPath) {
++		PseudoFileSystem currentLevel = root;
++		String[] path = childPath.split("/");
++		for (int i = 0; i < path.length; i++) {
++			if (!currentLevel.directories.containsKey(path[i])) {
++				currentLevel.directories.put(path[i], new PseudoFileSystem(
++						currentLevel, childPath));
++			}
++			currentLevel = currentLevel.directories.get(path[i]);
++		}
++		return currentLevel;
++	}
++
++	public static PseudoFileSystem findChild(PseudoFileSystem root,
++			String childPath) {
++		PseudoFileSystem currentLevel = root;
++		String[] path = childPath.split("/");
++		for (int i = 0; i < path.length; i++) {
++			if (!currentLevel.directories.containsKey(path[i])) {
++				return null;
++			}
++			currentLevel = currentLevel.directories.get(path[i]);
++		}
++		return currentLevel;
++	}
++
++	public com.woorea.openstack.swift.model.Object getMetaData() {
++		return metaData;
++	}
++
++	public void setMetaData(com.woorea.openstack.swift.model.Object metaData) {
++		this.metaData = metaData;
++	}
++
++	public String toString() {
++		return toString("  ");
++	}
++
++	public String toString(String ident) {
++		StringBuilder builder = new StringBuilder();
++		builder.append(getMetaData()).append("\n");
++		for (Map.Entry<String, com.woorea.openstack.swift.model.Object> entry : getFiles()
++				.entrySet()) {
++			builder.append(ident).append("file ").append(entry.getValue())
++					.append("\n");
++		}
++		for (Map.Entry<String, PseudoFileSystem> children : getDirectories()
++				.entrySet()) {
++			builder.append(ident).append("dir ")
++					.append(children.getValue().toString(ident + "   "));
++		}
++		return builder.toString();
++	}
++
++	public PseudoFileSystem getParent() {
++		return parent;
++	}
++
++	public PseudoFileSystem getRoot() {
++		PseudoFileSystem p = this;
++		while (p.getParent() != null) {
++			p = p.getParent();
++		}
++		return p;
++	}
++}
+\ No newline at end of file
+diff --git a/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/SwiftExample2.java b/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/SwiftExample2.java
+new file mode 100644
+index 0000000..ea3167b
+--- /dev/null
++++ b/openstack-examples/src/main/java/com/woorea/openstack/examples/objectstore/SwiftExample2.java
+@@ -0,0 +1,97 @@
++package com.woorea.openstack.examples.objectstore;
++
++import java.util.HashMap;
++import java.util.Map;
++import java.util.logging.Logger;
++
++import com.woorea.openstack.base.client.OpenStackSimpleTokenProvider;
++import com.woorea.openstack.examples.ExamplesConfiguration;
++import com.woorea.openstack.keystone.Keystone;
++import com.woorea.openstack.keystone.model.Access;
++import com.woorea.openstack.keystone.model.Role;
++import com.woorea.openstack.keystone.model.Roles;
++import com.woorea.openstack.keystone.model.Tenant;
++import com.woorea.openstack.keystone.model.User;
++import com.woorea.openstack.keystone.model.authentication.TokenAuthentication;
++import com.woorea.openstack.keystone.model.authentication.UsernamePassword;
++
++public class SwiftExample2 {
++
++	private static Logger logger = Logger.getLogger(SwiftExample2.class
++			.getName());
++
++	public static void main(String[] args) throws Exception {
++		Map<String, Role> roles = new HashMap<String, Role>();
++		Keystone keystone = new Keystone(
++				ExamplesConfiguration.KEYSTONE_AUTH_URL);
++		Keystone adminKeystone = new Keystone(
++				ExamplesConfiguration.KEYSTONE_ADMIN_AUTH_URL);
++		// access with unscoped token
++		Access access = keystone.tokens()
++				.authenticate(new UsernamePassword("admin", "adminPassword"))
++				.execute();
++
++		Access adminAccess = keystone
++				.tokens()
++				.authenticate(
++						new TokenAuthentication(access.getToken().getId()))
++				.withTenantName("admin").execute();
++
++		// use the token in the following requests
++		keystone.setTokenProvider(new OpenStackSimpleTokenProvider(access
++				.getToken().getId()));
++		adminKeystone.token(adminAccess.getToken().getId());
++
++		
++		logger.info(adminKeystone.users().show("d07fca2858ba4774ab5076614100d353").execute().toString());
++		
++		Roles rolesList = adminKeystone.roles().list().execute();
++		for (Role role : rolesList) {
++			roles.put(role.getName(), role);
++		}
++
++		User user = new User();
++		user.setUsername("daniele2");
++		user.setName("daniele2");
++		user.setPassword("clown123");
++		user.setEmail("daniele.ulrich@niceneasy.ch");
++		user.setEnabled(true);
++		user = adminKeystone.users().create(user).execute();
++		Tenant tenant = new Tenant();
++		tenant.setName(user.getUsername());
++		tenant.setEnabled(true);
++		tenant.setDescription("tenant for user " + user.getName());
++		tenant = adminKeystone.tenants().create(tenant).execute();
++		user.setTenantId(tenant.getId());
++		try {
++		adminKeystone
++				.tenants()
++				.addUser(tenant.getId(), user.getId(),
++						roles.get("admin").getId()).execute();
++		adminKeystone
++				.tenants()
++				.addUser(tenant.getId(), user.getId(),
++						roles.get("Member").getId()).execute();
++
++		logger.info(user.toString());
++
++			user = adminKeystone.users().update(user.getId(), user).execute();
++			user = adminKeystone.users().update(user.getId(), user).execute();
++			logger.info(user.toString());
++			Access adminAccess2 = keystone
++					.tokens()
++					.authenticate(
++							new UsernamePassword(user.getName(), user
++									.getPassword()))
++					.withTenantName(user.getName()).execute();
++		} catch (Exception e) {
++			// TODO Auto-generated catch block
++			e.printStackTrace();
++		}
++
++		adminKeystone.tenants().delete(tenant.getId()).execute();
++		adminKeystone.users().delete(user.getId()).execute();
++
++	}
++
++}
+diff --git a/pom.xml b/pom.xml
+index 01e9d50..0c337f0 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -8,7 +8,7 @@
+ 	<description>OpenStack Java SDK</description>
+ 
+ 	<properties>
+-		<skip.sign>false</skip.sign>
++		<skip.sign>true</skip.sign>
+ 	</properties>
+ 
+ 	<parent>
+diff --git a/swift-client/src/main/java/com/woorea/openstack/swift/api/ContainerResource.java b/swift-client/src/main/java/com/woorea/openstack/swift/api/ContainerResource.java
+index c55babe..3630fb5 100644
+--- a/swift-client/src/main/java/com/woorea/openstack/swift/api/ContainerResource.java
++++ b/swift-client/src/main/java/com/woorea/openstack/swift/api/ContainerResource.java
+@@ -1,143 +1,102 @@
+-package com.woorea.openstack.swift.api;
+-
+-import java.util.Map;
+-
+-
+-import com.woorea.openstack.base.client.OpenStackClient;
+-import com.woorea.openstack.base.client.OpenStackRequest;
+-import com.woorea.openstack.base.client.OpenStackResponse;
+-import com.woorea.openstack.swift.model.ObjectDownload;
+-import com.woorea.openstack.swift.model.ObjectForUpload;
+-
+-public class ContainerResource {
+-	
+-	private final OpenStackClient CLIENT;
+-	
+-	private String container;
+-	
+-	public ContainerResource(OpenStackClient client, String container) {
+-		CLIENT = client;
+-		this.container = container;
+-	}
+-	
+-	public List list() {
+-		return new List(container, null);
+-	}
+-	
+-	public CreateDirectory createDirectory(String path) {
+-		return new CreateDirectory(container, path);
+-	}
+-	
+-	public Show show(String path) {
+-		return new Show(container, path);
+-	}
+-	
+-	public Upload upload(ObjectForUpload objectForUpload) {
+-		return new Upload(objectForUpload);
+-	}
+-	
+-	public Download download(String path) {
+-		return new Download(container, path);
+-	}
+-	
+-	public Delete delete(String path) {
+-		return new Delete(container, path);
+-	}
+-	
+-	public class List extends OpenStackRequest<java.util.List<Object>> {
+-
+-		private String containerName;
+-		
+-		private Map<String, String> filters;
+-		
+-		public List(String containerName, Map<String, String> filters) {
+-			this.containerName = containerName;
+-			this.filters = filters;
+-			//returnType(new TypeToken<List<Object>>(){});
+-//			target = target.path(containerName);
+-//			for(String filter : new String[]{"prefix","delimiter","path","marker"}) {
+-//				if(filters.get(filter) != null) {
+-//					target = target.queryParam(filter, filters.get(filter));
+-//				}
+-//			}
+-//			return target.request(MediaType.APPLICATION_JSON).get(new GenericType<List<Object>>(){});
+-		}
+-		
+-	}
+-
+-	public class CreateDirectory extends OpenStackRequest<Void> {
+-
+-		private String container;
+-		
+-		private String path;
+-		
+-		public CreateDirectory(String container, String path) {
+-			this.container = container;
+-			this.path = path;
+-//			endpoint.path(container).path(path).request().put(Entity.entity(new byte[1],"application/directory"));
+-		}
+-		
+-	}
+-	
+-	public class Show extends OpenStackRequest<Object> {
+-
+-		private String containerName;
+-		
+-		private String objectName;
+-		
+-		public Show(String containerName, String objectName) {
+-			this.containerName = containerName;
+-			this.objectName = objectName;
+-//			return target.path(containerName).path(objectName).request(MediaType.APPLICATION_JSON).head();
+-		}
+-
+-	}
+-	
+-	public class Upload extends OpenStackRequest<OpenStackResponse> {
+-
+-		private ObjectForUpload objectForUpload;
+-		
+-		public Upload(ObjectForUpload objectForUpload) {
+-			this.objectForUpload = objectForUpload;
+-//			Invocation.Builder invocationBuilder = target.path(objectForUpload.getContainer()).path(objectForUpload.getName()).request(MediaType.APPLICATION_JSON);
+-//			for(String key : objectForUpload.getProperties().keySet()) {
+-//				invocationBuilder.header("x-object-meta-" + key, objectForUpload.getProperties().get(key));
+-//			}
+-//			return invocationBuilder.put(Entity.entity(objectForUpload.getInputStream(), MediaType.APPLICATION_OCTET_STREAM), Response.class);
+-		}
+-
+-	}
+-	
+-	public class Download extends OpenStackRequest<ObjectDownload> {
+-
+-		private String containerName;
+-		
+-		private String objectName;
+-		
+-		public Download(String containerName, String objectName) {
+-			this.containerName = containerName;
+-			this.objectName = objectName;
+-//			Response response = target.path(containerName).path(objectName).request(MediaType.APPLICATION_JSON).get();
+-//			ObjectDownload objectDownload = new ObjectDownload();
+-//			objectDownload.setInputStream((InputStream) response.getEntity());
+-//			return objectDownload;
+-		}
+-
+-	}
+-
+-	
+-	public class Delete extends OpenStackRequest<Void> {
+-
+-		private String containerName;
+-		
+-		private String objectName;
+-		
+-		public Delete(String containerName, String objectName) {
+-			this.containerName = containerName;
+-			this.objectName = objectName;
+-			//return target.path(containerName).path(objectName).request(MediaType.APPLICATION_JSON).delete();
+-		}
+-
+-	}
+-
+-}
++package com.woorea.openstack.swift.api;
++
++import com.woorea.openstack.base.client.Entity;
++import com.woorea.openstack.base.client.HttpMethod;
++import com.woorea.openstack.base.client.OpenStackClient;
++import com.woorea.openstack.base.client.OpenStackRequest;
++import com.woorea.openstack.base.client.OpenStackResponse;
++import com.woorea.openstack.swift.model.ObjectDownload;
++import com.woorea.openstack.swift.model.ObjectForUpload;
++import com.woorea.openstack.swift.model.Objects;
++
++import java.io.InputStream;
++
++import java.util.Map;
++
++
++public class ContainerResource {
++    private final OpenStackClient CLIENT;
++    private String container;
++
++    public ContainerResource(OpenStackClient client, String container) {
++        CLIENT = client;
++        this.container = container;
++    }
++
++    public List list() {
++        return new List(container, null);
++    }
++
++    public CreateDirectory createDirectory(String path) {
++        return new CreateDirectory(container, path);
++    }
++
++    public Show show(String path) {
++        return new Show(container, path);
++    }
++
++    public Upload upload(ObjectForUpload objectForUpload) {
++        return new Upload(objectForUpload);
++    }
++
++    public Download download(String path) {
++        return new Download(container, path);
++    }
++
++    public Delete delete(String path) {
++        return new Delete(container, path);
++    }
++
++    public class List extends OpenStackRequest<Objects> {
++        public List(String containerName, Map<String, String> filters) {
++            super(CLIENT, HttpMethod.GET, "/" + container + "/", null,
++                Objects.class);
++        }
++    }
++
++    public class CreateDirectory extends OpenStackRequest<Void> {
++        public CreateDirectory(String container, String path) {
++            super(CLIENT, HttpMethod.PUT, buildPath(container, "/", path),
++                Entity.json("*"), null);
++        }
++    }
++
++    public class Show extends OpenStackRequest<Object> {
++        public Show(String containerName, String objectName) {
++            super(CLIENT, HttpMethod.GET,
++                buildPath(containerName, "/", objectName), Entity.json("*"),
++                Object.class);
++        }
++    }
++
++    public class Upload extends OpenStackRequest<OpenStackResponse> {
++        public Upload(ObjectForUpload objectForUpload) {
++            super(CLIENT, HttpMethod.PUT,
++                buildPath(objectForUpload.getContainer(), "/",
++                    objectForUpload.getName()),
++                new Entity<InputStream>(objectForUpload.getInputStream(),
++                    objectForUpload.getProperties().get("Content-Type")
++                                   .toString()), null);
++
++            for (String key : objectForUpload.getProperties().keySet()) {
++                header("x-object-meta-" + key,
++                    objectForUpload.getProperties().get(key));
++            }
++        }
++    }
++
++    public class Download extends OpenStackRequest<ObjectDownload> {
++        public Download(String containerName, String objectName) {
++            super(CLIENT, HttpMethod.GET,
++                buildPath(containerName, "/", objectName), null,
++                ObjectDownload.class);
++        }
++    }
++
++    public class Delete extends OpenStackRequest<Void> {
++        public Delete(String containerName, String objectName) {
++            super(CLIENT, HttpMethod.DELETE,
++                buildPath(containerName, "/", objectName), null, null);
++        }
++    }
++}
+diff --git a/swift-client/src/main/java/com/woorea/openstack/swift/api/ContainersResource.java b/swift-client/src/main/java/com/woorea/openstack/swift/api/ContainersResource.java
+index aedcc3f..a100d93 100644
+--- a/swift-client/src/main/java/com/woorea/openstack/swift/api/ContainersResource.java
++++ b/swift-client/src/main/java/com/woorea/openstack/swift/api/ContainersResource.java
+@@ -1,74 +1,118 @@
+-package com.woorea.openstack.swift.api;
+-
+-
+-import com.woorea.openstack.base.client.OpenStackClient;
+-import com.woorea.openstack.base.client.OpenStackRequest;
+-import com.woorea.openstack.swift.model.Container;
+-
+-public class ContainersResource {
+-	
+-	private final OpenStackClient CLIENT;
+-	
+-	public ContainersResource(OpenStackClient client) {
+-		CLIENT = client;
+-	}
+-	
+-	public List list() {
+-		return new List();
+-	}
+-	
+-	public Create create(String name) {
+-		return new Create(name);
+-	}
+-	
+-	public Show show(String name) {
+-		return new Show(name);
+-	}
+-	
+-	public Delete delete(String name) {
+-		return new Delete(name);
+-	}
+-	
+-	public ContainerResource container(String name) {
+-		return new ContainerResource(CLIENT, name);
+-	}
+-	
+-	public class List extends OpenStackRequest<java.util.List<Container>> {
+-
+-		public List() {
+-			//return target.request(MediaType.APPLICATION_JSON).get(new GenericType<List<Container>>(){});
+-		}
+-
+-	}
+-
+-
+-	public class Create extends OpenStackRequest<Container> {
+-		
+-		public Create(String containerName) {
+-			//return target.path(containerName).request().method("PUT",Entity.text("*"));
+-		}
+-
+-	}
+-	
+-	public class Show extends OpenStackRequest<Container> {
+-
+-		private String containerName;
+-		
+-		public Show(String containerName) {
+-//			return target.path(containerName).request(MediaType.APPLICATION_JSON).head();
+-		}
+-
+-	}
+-	
+-	public class Delete extends OpenStackRequest<Void> {
+-
+-		private String containerName;
+-		
+-		public Delete(String containerName) {
+-			this.containerName = containerName;
+-			//return target.path(containerName).request(MediaType.APPLICATION_JSON).delete();
+-		}
+-
+-	}
+-	
+-}
++package com.woorea.openstack.swift.api;
++
++import com.woorea.openstack.base.client.Entity;
++import com.woorea.openstack.base.client.HttpMethod;
++import com.woorea.openstack.base.client.OpenStackClient;
++import com.woorea.openstack.base.client.OpenStackRequest;
++import com.woorea.openstack.swift.model.Container;
++import com.woorea.openstack.swift.model.Containers;
++
++import java.util.HashMap;
++import java.util.Map;
++
++
++public class ContainersResource {
++    private final OpenStackClient CLIENT;
++
++    public ContainersResource(OpenStackClient client) {
++        CLIENT = client;
++    }
++
++    public List list() {
++        return new List();
++    }
++
++    public Create create(String name) {
++        return new Create(name, null);
++    }
++
++    public Create create(String name, boolean isPublic) {
++        Map<String, String> props = new HashMap<String, String>();
++
++        if (isPublic) {
++            props.put("X-Container-Read", ".r:*,.rlistings");
++            props.put("X-Container-Write", "*");
++        }
++
++        return create(name, props);
++    }
++
++    public Create create(String name, Map<String, String> props) {
++        return new Create(name, props);
++    }
++
++    public Update update(String name, boolean isPublic) {
++        Map<String, String> props = new HashMap<String, String>();
++
++        if (isPublic) {
++            props.put("X-Container-Read", ".r:*,.rlistings");
++            props.put("X-Container-Write", "*");
++        }
++
++        return update(name, props);
++    }
++
++    public Update update(String name, Map<String, String> props) {
++        return new Update(name, props);
++    }
++
++    public Show show(String name) {
++        return new Show(name);
++    }
++
++    public Delete delete(String name) {
++        return new Delete(name);
++    }
++
++    public ContainerResource container(String name) {
++        return new ContainerResource(CLIENT, name);
++    }
++
++    public class List extends OpenStackRequest<Containers> {
++        public List() {
++            super(CLIENT, HttpMethod.GET, "/", null, Containers.class);
++
++            //return target.request(MediaType.APPLICATION_JSON).get(new GenericType<List<Container>>(){});
++        }
++    }
++
++    public class Create extends OpenStackRequest<Container> {
++        public Create(String containerName, Map<String, String> properties) {
++            super(CLIENT, HttpMethod.PUT, buildPath(containerName),
++                Entity.json("*"), null);
++
++            if (properties != null) {
++                for (String key : properties.keySet()) {
++                    header(key, properties.get(key));
++                }
++            }
++        }
++    }
++
++    public class Update extends OpenStackRequest<Container> {
++        public Update(String containerName, Map<String, String> properties) {
++            super(CLIENT, HttpMethod.POST, buildPath(containerName),
++                Entity.json("*"), null);
++
++            if (properties != null) {
++                for (String key : properties.keySet()) {
++                    header(key, properties.get(key));
++                }
++            }
++        }
++    }
++
++    public class Show extends OpenStackRequest<Container> {
++        public Show(String containerName) {
++            super(CLIENT, HttpMethod.GET, buildPath(containerName),
++                Entity.json("*"), Container.class);
++        }
++    }
++
++    public class Delete extends OpenStackRequest<Void> {
++        public Delete(String containerName) {
++            super(CLIENT, HttpMethod.DELETE, buildPath(containerName), null,
++                null);
++        }
++    }
++}
+diff --git a/swift-model/src/main/java/com/woorea/openstack/swift/deserializer/ContainersDeserializer.java b/swift-model/src/main/java/com/woorea/openstack/swift/deserializer/ContainersDeserializer.java
+new file mode 100644
+index 0000000..c7c765d
+--- /dev/null
++++ b/swift-model/src/main/java/com/woorea/openstack/swift/deserializer/ContainersDeserializer.java
+@@ -0,0 +1,22 @@
++package com.woorea.openstack.swift.deserializer;
++
++import java.io.IOException;
++
++import org.codehaus.jackson.JsonParser;
++import org.codehaus.jackson.JsonProcessingException;
++import org.codehaus.jackson.map.DeserializationContext;
++import org.codehaus.jackson.map.JsonDeserializer;
++
++import com.woorea.openstack.swift.model.Container;
++import com.woorea.openstack.swift.model.Containers;
++
++public class ContainersDeserializer extends JsonDeserializer<Containers> {
++
++	@Override
++	public Containers deserialize(JsonParser jp, DeserializationContext ctxt)
++			throws IOException, JsonProcessingException {
++		Container[] containersArray = jp.readValueAs(Container[].class);
++		return new Containers(containersArray);
++	}
++
++}
+diff --git a/swift-model/src/main/java/com/woorea/openstack/swift/deserializer/ObjectsDeserializer.java b/swift-model/src/main/java/com/woorea/openstack/swift/deserializer/ObjectsDeserializer.java
+new file mode 100644
+index 0000000..5aaf316
+--- /dev/null
++++ b/swift-model/src/main/java/com/woorea/openstack/swift/deserializer/ObjectsDeserializer.java
+@@ -0,0 +1,21 @@
++package com.woorea.openstack.swift.deserializer;
++
++import java.io.IOException;
++
++import org.codehaus.jackson.JsonParser;
++import org.codehaus.jackson.JsonProcessingException;
++import org.codehaus.jackson.map.DeserializationContext;
++import org.codehaus.jackson.map.JsonDeserializer;
++
++import com.woorea.openstack.swift.model.Objects;
++
++public class ObjectsDeserializer extends JsonDeserializer<Objects> {
++
++	@Override
++	public Objects deserialize(JsonParser jp, DeserializationContext ctxt)
++			throws IOException, JsonProcessingException {
++		com.woorea.openstack.swift.model.Object[] containersArray = jp.readValueAs(com.woorea.openstack.swift.model.Object[].class);
++		return new Objects(containersArray);
++	}
++
++}
+diff --git a/swift-model/src/main/java/com/woorea/openstack/swift/model/Containers.java b/swift-model/src/main/java/com/woorea/openstack/swift/model/Containers.java
+new file mode 100644
+index 0000000..c985cdc
+--- /dev/null
++++ b/swift-model/src/main/java/com/woorea/openstack/swift/model/Containers.java
+@@ -0,0 +1,48 @@
++package com.woorea.openstack.swift.model;
++
++import java.io.Serializable;
++import java.util.Arrays;
++import java.util.Iterator;
++import java.util.List;
++
++import org.codehaus.jackson.annotate.JsonProperty;
++import org.codehaus.jackson.map.annotate.JsonDeserialize;
++import com.woorea.openstack.swift.deserializer.ContainersDeserializer;
++
++@JsonDeserialize(using = ContainersDeserializer.class)
++public class Containers implements Iterable<Container>, Serializable {
++
++	/**
++	 * 
++	 */
++	private static final long serialVersionUID = 1L;
++	@JsonProperty("containers")
++	private List<Container> list;
++
++	public Containers(Container[] containersArray) {
++		list = Arrays.asList(containersArray);
++	}
++
++	/**
++	 * @return the list
++	 */
++	public List<Container> getList() {
++		return list;
++	}
++
++	/*
++	 * (non-Javadoc)
++	 * 
++	 * @see java.lang.Object#toString()
++	 */
++	@Override
++	public String toString() {
++		return "Containers [list=" + list + "]";
++	}
++
++	@Override
++	public Iterator<Container> iterator() {
++		return list.iterator();
++	}
++
++}
+diff --git a/swift-model/src/main/java/com/woorea/openstack/swift/model/Object.java b/swift-model/src/main/java/com/woorea/openstack/swift/model/Object.java
+index d53ee65..b009199 100644
+--- a/swift-model/src/main/java/com/woorea/openstack/swift/model/Object.java
++++ b/swift-model/src/main/java/com/woorea/openstack/swift/model/Object.java
+@@ -1,109 +1,113 @@
+-package com.woorea.openstack.swift.model;
+-
+-import java.io.Serializable;
+-import java.util.Calendar;
+-
+-import org.codehaus.jackson.annotate.JsonProperty;
+-
+-
+-public class Object implements Serializable {
+-	
+-	private String subdir;
+-	
+-	private String name;
+-	
+-	private String hash;
+-	
+-	private int bytes;
+-	
+-	@JsonProperty("content_type")
+-	private String contentType;
+-	
+-	@JsonProperty("last_modified")
+-	private Calendar lastModified;
+-
+-	/**
+-	 * @return the subdir
+-	 */
+-	public String getSubdir() {
+-		return subdir;
+-	}
+-
+-	/**
+-	 * @param subdir the subdir to set
+-	 */
+-	public void setSubdir(String subdir) {
+-		this.subdir = subdir;
+-	}
+-
+-	/**
+-	 * @return the name
+-	 */
+-	public String getName() {
+-		return name;
+-	}
+-
+-	/**
+-	 * @param name the name to set
+-	 */
+-	public void setName(String name) {
+-		this.name = name;
+-	}
+-
+-	/**
+-	 * @return the hash
+-	 */
+-	public String getHash() {
+-		return hash;
+-	}
+-
+-	/**
+-	 * @param hash the hash to set
+-	 */
+-	public void setHash(String hash) {
+-		this.hash = hash;
+-	}
+-
+-	/**
+-	 * @return the bytes
+-	 */
+-	public int getBytes() {
+-		return bytes;
+-	}
+-
+-	/**
+-	 * @param bytes the bytes to set
+-	 */
+-	public void setBytes(int bytes) {
+-		this.bytes = bytes;
+-	}
+-
+-	/**
+-	 * @return the contentType
+-	 */
+-	public String getContentType() {
+-		return contentType;
+-	}
+-
+-	/**
+-	 * @param contentType the contentType to set
+-	 */
+-	public void setContentType(String contentType) {
+-		this.contentType = contentType;
+-	}
+-
+-	/**
+-	 * @return the lastModified
+-	 */
+-	public Calendar getLastModified() {
+-		return lastModified;
+-	}
+-
+-	/**
+-	 * @param lastModified the lastModified to set
+-	 */
+-	public void setLastModified(Calendar lastModified) {
+-		this.lastModified = lastModified;
+-	}
+-	
+-}
++package com.woorea.openstack.swift.model;
++
++import org.codehaus.jackson.annotate.JsonProperty;
++
++import java.io.Serializable;
++
++import java.util.Calendar;
++
++
++public class Object implements Serializable {
++    private String subdir;
++    private String name;
++    private String hash;
++    private int bytes;
++    @JsonProperty("content_type")
++    private String contentType;
++    @JsonProperty("last_modified")
++    private Calendar lastModified;
++
++    /**
++     * @return the subdir
++     */
++    public String getSubdir() {
++        return subdir;
++    }
++
++    /**
++     * @param subdir the subdir to set
++     */
++    public void setSubdir(String subdir) {
++        this.subdir = subdir;
++    }
++
++    /**
++     * @return the name
++     */
++    public String getName() {
++        return name;
++    }
++
++    /**
++     * @param name the name to set
++     */
++    public void setName(String name) {
++        this.name = name;
++    }
++
++    /**
++     * @return the hash
++     */
++    public String getHash() {
++        return hash;
++    }
++
++    /**
++     * @param hash the hash to set
++     */
++    public void setHash(String hash) {
++        this.hash = hash;
++    }
++
++    /**
++     * @return the bytes
++     */
++    public int getBytes() {
++        return bytes;
++    }
++
++    /**
++     * @param bytes the bytes to set
++     */
++    public void setBytes(int bytes) {
++        this.bytes = bytes;
++    }
++
++    /**
++     * @return the contentType
++     */
++    public String getContentType() {
++        return contentType;
++    }
++
++    /**
++     * @param contentType the contentType to set
++     */
++    public void setContentType(String contentType) {
++        this.contentType = contentType;
++    }
++
++    /**
++     * @return the lastModified
++     */
++    public Calendar getLastModified() {
++        return lastModified;
++    }
++
++    /**
++     * @param lastModified the lastModified to set
++     */
++    public void setLastModified(Calendar lastModified) {
++        this.lastModified = lastModified;
++    }
++
++    /* (non-Javadoc)
++     * @see java.lang.Object#toString()
++     */
++    @Override
++    public String toString() {
++        return "Object [name=" + name + ", bytes=" + bytes +
++        ", content_type=" + contentType + ", last_modified=" + lastModified +
++        ", hash=" + hash + "]";
++    }
++}
+diff --git a/swift-model/src/main/java/com/woorea/openstack/swift/model/Objects.java b/swift-model/src/main/java/com/woorea/openstack/swift/model/Objects.java
+new file mode 100644
+index 0000000..8679382
+--- /dev/null
++++ b/swift-model/src/main/java/com/woorea/openstack/swift/model/Objects.java
+@@ -0,0 +1,48 @@
++package com.woorea.openstack.swift.model;
++
++import java.io.Serializable;
++import java.util.Arrays;
++import java.util.Iterator;
++import java.util.List;
++
++import org.codehaus.jackson.annotate.JsonProperty;
++import org.codehaus.jackson.map.annotate.JsonDeserialize;
++import com.woorea.openstack.swift.deserializer.ObjectsDeserializer;
++
++@JsonDeserialize(using = ObjectsDeserializer.class)
++public class Objects implements Iterable<com.woorea.openstack.swift.model.Object>, Serializable {
++
++	/**
++	 * 
++	 */
++	private static final long serialVersionUID = 1L;
++	@JsonProperty("objects")
++	private List<com.woorea.openstack.swift.model.Object> list;
++
++	public Objects(com.woorea.openstack.swift.model.Object[] objectsArray) {
++		list = Arrays.asList(objectsArray);
++	}
++
++	/**
++	 * @return the list
++	 */
++	public List<com.woorea.openstack.swift.model.Object> getList() {
++		return list;
++	}
++
++	/*
++	 * (non-Javadoc)
++	 * 
++	 * @see java.lang.Object#toString()
++	 */
++	@Override
++	public String toString() {
++		return "Objects [list=" + list + "]";
++	}
++
++	@Override
++	public Iterator<com.woorea.openstack.swift.model.Object> iterator() {
++		return list.iterator();
++	}
++
++}
+-- 
+1.8.1.msysgit.1
+
