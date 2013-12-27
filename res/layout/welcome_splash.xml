@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background"
-    android:orientation="vertical" >
+    android:orientation="vertical" 
+    android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen">
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -40,7 +41,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:ems="5"
+            android:ems="10"
+            android:background="@drawable/button_frame"
             android:text="@string/login" />
     </LinearLayout>
 
@@ -48,6 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
+        android:paddingTop="5dp"
         android:orientation="horizontal" >
 
         <Button
@@ -55,7 +58,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:ems="5"
+            android:ems="10"
+            android:background="@drawable/button_frame"
             android:text="@string/register" />
     </LinearLayout>
 

@@ -23,6 +23,7 @@ import ch.niceneasy.openstack.android.sdk.service.OpenStackClientService;
 import ch.niceneasy.openstack.android.sdk.service.ServicePreferences;
 import ch.niceneasy.openstack.android.signup.SignupActivity;
 import ch.niceneasy.openstack.android.signup.SignupService;
+import ch.niceneasy.openstack.android.signup.SplashScreenActivity;
 
 import com.woorea.openstack.keystone.model.Tenant;
 
@@ -35,7 +36,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		if (SignupService.getInstance().getUser().getId() == null
 				|| SignupService.getInstance().getUser().getId().trim()
 						.length() == 0) {
-			startActivity(new Intent(this, SignupActivity.class));
+			startActivity(new Intent(this, SplashScreenActivity.class));
 		}
 		setListAdapter(new TenantListAdapter(this));
 		getListView().setOnItemClickListener(new OnItemClickListener() {
@@ -81,6 +82,12 @@ public class TenantListViewActivity extends OpenstackListActivity {
 								TenantListViewActivity.this, v);
 						menu.getMenuInflater().inflate(R.menu.homemenu,
 								menu.getMenu());
+						menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+							@Override
+							public boolean onMenuItemClick(MenuItem item) {
+								return onOptionsItemSelected(item);
+							}
+						});
 						menu.show();
 					}
 				});

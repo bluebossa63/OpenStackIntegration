@@ -24,10 +24,6 @@ public class SignupActivity extends Activity {
 
 	protected ProgressBar progressBar;
 
-	private enum SignupState {
-		starting, register, login, failed;
-	}
-
 	EditText txtName;
 	EditText txtUsername;
 	EditText txtEmail;
@@ -35,7 +31,7 @@ public class SignupActivity extends Activity {
 	TextView txtPleaseWait;
 
 	SignupService signupService;
-	SignupState signupState = SignupState.starting;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -71,22 +67,6 @@ public class SignupActivity extends Activity {
 				subscribeTask.execute();
 			}
 		});
-		Button btLogin = (Button) findViewById(R.id.btnLogin);
-		btLogin.setOnClickListener(new Button.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// signupService.getUser().setName(txtName.getText().toString());
-				signupService.getUser().setUsername(
-						txtUsername.getText().toString());
-				// signupService.getUser().setEmail(txtEmail.getText().toString());
-				signupService.getUser().setPassword(
-						txtPassword.getText().toString());
-				progressBar.setVisibility(View.VISIBLE);
-				LoginTask loginTask = new LoginTask();
-				loginTask.execute();
-			}
-		});
 		Button btCancel = (Button) findViewById(R.id.btnCancel);
 		btCancel.setOnClickListener(new Button.OnClickListener() {
 
@@ -116,53 +96,11 @@ public class SignupActivity extends Activity {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
-				signupState = SignupState.register;
-				txtPleaseWait.setText(R.string.please_wait);
-				
+				startActivity(new Intent(SignupActivity.this, LoginActivity.class));
 			} else {
 				showErrorDialog(R.string.error_dlg, result.getException(), null);
 			}
 		}
-	}
-
-	private class LoginTask extends
-			AsyncTask<String, Object, TaskResult<LoginConfirmation>> {
-
-		@Override
-		protected TaskResult<LoginConfirmation> doInBackground(String... params) {
-			try {
-				LoginConfirmation loginConfirmation = signupService
-						.login(SignupActivity.this);
-				return new TaskResult<LoginConfirmation>(loginConfirmation);
-			} catch (Exception e) {
-				return new TaskResult<LoginConfirmation>(e);
-			}
-		}
-
-		@Override
-		protected void onPostExecute(TaskResult<LoginConfirmation> result) {
-			super.onPostExecute(result);
-			progressBar.setVisibility(View.GONE);
-			if (result.isValid()) {
-				OpenStackClientService service = OpenStackClientService.getInstance();
-				service.setKeystoneAuthUrl(result.getResult().getKeystoneAuthUrl());
-				service.setKeystoneAdminAuthUrl(result.getResult().getKeystoneAdminAuthUrl());
-				service.setKeystoneEndpoint(result.getResult().getKeystoneEndpoint());
-				service.setTenantName(result.getResult().getTenantName());
-				service.setKeystonePassword(signupService.getUser().getPassword());
-				service.setKeystoneUsername(signupService.getUser().getUsername());
-				signupService.getUser().setId(result.getResult().getUser().getId());
-				signupService.getUser().setTenantId(result.getResult().getUser().getTenantId());
-				ServicePreferences.copyServiceValues(SignupActivity.this);
-				Intent intent = new Intent(SignupActivity.this,
-						TenantListViewActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-				startActivity(intent);
-			} else {
-				showErrorDialog(R.string.error_dlg, result.getException(), null);
-			}
-		}
-
 	}
 
 	protected void showErrorDialog(String title, Exception e, final Intent onOK) {

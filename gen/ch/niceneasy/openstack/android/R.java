@@ -32,20 +32,21 @@ public final class R {
         public static final int android_folder_icon=0x7f020001;
         public static final int background=0x7f020002;
         public static final int box_config_icon=0x7f020003;
-        public static final int camera_icon=0x7f020004;
-        public static final int close_icon=0x7f020005;
-        public static final int document_icon=0x7f020006;
-        public static final int document_music_icon=0x7f020007;
-        public static final int document_photo_icon=0x7f020008;
-        public static final int document_picture_png_icon=0x7f020009;
-        public static final int folder_media_icon=0x7f02000a;
-        public static final int ic_action_cancel=0x7f02000b;
-        public static final int ic_action_done=0x7f02000c;
-        public static final int ic_launcher=0x7f02000d;
-        public static final int logo_os=0x7f02000e;
-        public static final int logo_ost=0x7f02000f;
-        public static final int ok_icon=0x7f020010;
-        public static final int out_icon=0x7f020011;
+        public static final int button_frame=0x7f020004;
+        public static final int camera_icon=0x7f020005;
+        public static final int close_icon=0x7f020006;
+        public static final int document_icon=0x7f020007;
+        public static final int document_music_icon=0x7f020008;
+        public static final int document_photo_icon=0x7f020009;
+        public static final int document_picture_png_icon=0x7f02000a;
+        public static final int folder_media_icon=0x7f02000b;
+        public static final int ic_action_cancel=0x7f02000c;
+        public static final int ic_action_done=0x7f02000d;
+        public static final int ic_launcher=0x7f02000e;
+        public static final int logo_os=0x7f02000f;
+        public static final int logo_ost=0x7f020010;
+        public static final int ok_icon=0x7f020011;
+        public static final int out_icon=0x7f020012;
     }
     public static final class id {
         public static final int action_settings=0x7f0a0003;
@@ -53,28 +54,28 @@ public final class R {
         public static final int actionbar_done=0x7f0a0001;
         public static final int add=0x7f0a0019;
         public static final int back=0x7f0a0005;
-        public static final int btnCancel=0x7f0a0015;
-        public static final int btnLogin=0x7f0a0013;
-        public static final int btnRegister=0x7f0a0014;
+        public static final int btnCancel=0x7f0a000c;
+        public static final int btnLogin=0x7f0a000b;
+        public static final int btnRegister=0x7f0a0016;
         public static final int camera=0x7f0a001a;
-        public static final int container_name=0x7f0a000a;
-        public static final int folder_name=0x7f0a000c;
+        public static final int container_name=0x7f0a000f;
+        public static final int folder_name=0x7f0a0011;
         public static final int folders=0x7f0a0008;
         public static final int gallery=0x7f0a0018;
         public static final int image1=0x7f0a0006;
         public static final int imageView1=0x7f0a0017;
-        public static final int lbl_container_name=0x7f0a0009;
-        public static final int lbl_folder_name=0x7f0a000b;
+        public static final int lbl_container_name=0x7f0a000e;
+        public static final int lbl_folder_name=0x7f0a0010;
         public static final int menu=0x7f0a0002;
         public static final int servicesProgressBar=0x7f0a0004;
         public static final int text1=0x7f0a0007;
-        public static final int txtEmail=0x7f0a0011;
-        public static final int txtName=0x7f0a000f;
-        public static final int txtPassword=0x7f0a0012;
-        public static final int txtPleaseWait=0x7f0a0016;
-        public static final int txtUsername=0x7f0a0010;
-        public static final int type_selection=0x7f0a000e;
-        public static final int type_selection_label=0x7f0a000d;
+        public static final int txtEmail=0x7f0a0015;
+        public static final int txtName=0x7f0a0014;
+        public static final int txtPassword=0x7f0a000a;
+        public static final int txtPleaseWait=0x7f0a000d;
+        public static final int txtUsername=0x7f0a0009;
+        public static final int type_selection=0x7f0a0013;
+        public static final int type_selection_label=0x7f0a0012;
     }
     public static final class layout {
         public static final int actionbar_custom_view_done_cancel=0x7f030000;
@@ -90,11 +91,12 @@ public final class R {
         public static final int list_item_with_media_image=0x7f03000a;
         public static final int list_objects=0x7f03000b;
         public static final int list_tenants=0x7f03000c;
-        public static final int prompt_container_name=0x7f03000d;
-        public static final int prompt_folder_name=0x7f03000e;
-        public static final int select_type_dialog=0x7f03000f;
-        public static final int signup=0x7f030010;
-        public static final int welcome_splash=0x7f030011;
+        public static final int login=0x7f03000d;
+        public static final int prompt_container_name=0x7f03000e;
+        public static final int prompt_folder_name=0x7f03000f;
+        public static final int select_type_dialog=0x7f030010;
+        public static final int signup=0x7f030011;
+        public static final int welcome_splash=0x7f030012;
     }
     public static final class menu {
         public static final int homemenu=0x7f090000;
@@ -161,11 +163,13 @@ public final class R {
         /** 
         Base application theme, dependent on API level. This theme is replaced
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+
     
 
             Theme customizations available in newer API levels can go in
             res/values-vXX/styles.xml, while customizations related to
             backward-compatibility can go here.
+
         
 
         Base application theme for API 11+. This theme completely replaces
@@ -184,6 +188,10 @@ public final class R {
  All customizations that are NOT specific to a particular API-level can go here. 
          */
         public static final int AppTheme=0x7f080001;
+        public static final int Theme_Default=0x7f080006;
+        public static final int Theme_FullScreen=0x7f080008;
+        public static final int Theme_NoTitle=0x7f080007;
+        public static final int generalnotitle=0x7f080005;
         public static final int menuText=0x7f080002;
         public static final int normalText=0x7f080004;
         public static final int selectText=0x7f080003;
