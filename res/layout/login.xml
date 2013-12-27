@@ -13,7 +13,7 @@
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
+        android:layout_gravity="center" />
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -31,7 +31,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.75"
-            android:ems="10" />
+            android:ems="10"
+            android:inputType="textNoSuggestions"
+            />
     </LinearLayout>
 
     <LinearLayout
@@ -47,6 +49,7 @@
 
         <EditText
             android:id="@+id/txtPassword"
+            android:inputType="textVisiblePassword"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="0.75"
@@ -54,12 +57,14 @@
     </LinearLayout>
 
     <LinearLayout
+        style="?android:attr/buttonBarButtonStyle"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:paddingTop="25dp" >
 
         <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btnLogin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -68,6 +73,7 @@
             android:text="@string/login" />
 
         <Button
+            style="?android:attr/buttonBarButtonStyle"
             android:id="@+id/btnCancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

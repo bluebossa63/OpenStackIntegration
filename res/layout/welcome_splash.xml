@@ -23,6 +23,7 @@
         android:orientation="horizontal" >
 
         <ImageView
+            android:contentDescription="@string/app_name"
             android:id="@+id/imageView1"
             android:layout_width="fill_parent"
             android:layout_height="100dp"
