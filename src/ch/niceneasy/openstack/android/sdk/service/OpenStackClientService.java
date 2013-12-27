@@ -14,12 +14,6 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonRootName;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import ch.niceneasy.openstack.android.R;
 import ch.niceneasy.openstack.android.base.OpenstackApplicationState;
 import ch.niceneasy.openstack.android.sdk.connector.AndroidOpenStackClientConnector;
 
@@ -244,6 +238,5 @@ public class OpenStackClientService {
 		this.swiftMap.clear();
 		OpenstackApplicationState.getInstance().clear();
 	}
-
 
 }

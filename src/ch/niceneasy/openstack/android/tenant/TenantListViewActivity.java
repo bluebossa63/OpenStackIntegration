@@ -21,7 +21,6 @@ import ch.niceneasy.openstack.android.base.TaskResult;
 import ch.niceneasy.openstack.android.container.ContainerListViewActivity;
 import ch.niceneasy.openstack.android.sdk.service.OpenStackClientService;
 import ch.niceneasy.openstack.android.sdk.service.ServicePreferences;
-import ch.niceneasy.openstack.android.signup.SignupActivity;
 import ch.niceneasy.openstack.android.signup.SignupService;
 import ch.niceneasy.openstack.android.signup.SplashScreenActivity;
 
@@ -36,7 +35,9 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		if (SignupService.getInstance().getUser().getId() == null
 				|| SignupService.getInstance().getUser().getId().trim()
 						.length() == 0) {
-			startActivity(new Intent(this, SplashScreenActivity.class));
+			Intent intent = new Intent(this, SplashScreenActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+			startActivity(intent);
 		}
 		setListAdapter(new TenantListAdapter(this));
 		getListView().setOnItemClickListener(new OnItemClickListener() {

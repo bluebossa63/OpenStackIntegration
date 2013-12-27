@@ -59,8 +59,7 @@ public class GraphicsUtil {
 		if (imageUri.getScheme().equals("file")) {
 			return imageUri.getPath();
 		}
-		String[] filePathColumn = { MediaColumns.DATA,
-				MediaColumns.DATA };
+		String[] filePathColumn = { MediaColumns.DATA, MediaColumns.DATA };
 		Cursor cursor = context.getContentResolver().query(imageUri,
 				filePathColumn, null, null, null);
 		cursor.moveToFirst();

@@ -18,7 +18,8 @@ public class SplashScreenActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(SplashScreenActivity.this, SignupActivity.class));
+				startActivity(new Intent(SplashScreenActivity.this,
+						SignupActivity.class));
 			}
 		});
 		Button btLogin = (Button) findViewById(R.id.btnLogin);
@@ -26,7 +27,8 @@ public class SplashScreenActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				startActivity(new Intent(SplashScreenActivity.this, LoginActivity.class));
+				startActivity(new Intent(SplashScreenActivity.this,
+						LoginActivity.class));
 			}
 		});
 

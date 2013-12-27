@@ -40,14 +40,15 @@ public class ServicePreferences extends PreferenceActivity {
 		edit.putString(context.getString(R.string.USERNAME), user.getUsername());
 		edit.putString(context.getString(R.string.EMAIL), user.getEmail());
 		edit.putString(context.getString(R.string.PASSWORD), user.getPassword());
-		edit.putString(context.getString(R.string.TENANT_ID), user.getTenantId());		
-		edit.putString(context.getString(R.string.USERID), user.getId());		
+		edit.putString(context.getString(R.string.TENANT_ID),
+				user.getTenantId());
+		edit.putString(context.getString(R.string.USERID), user.getId());
 		service.setKeystoneUsername(user.getUsername());
 		service.setKeystonePassword(user.getPassword());
-//		edit.putString(context.getString(R.string.USERNAME),
-//				service.getKeystoneUsername());
-//		edit.putString(context.getString(R.string.PASSWORD),
-//				service.getKeystonePassword());
+		// edit.putString(context.getString(R.string.USERNAME),
+		// service.getKeystoneUsername());
+		// edit.putString(context.getString(R.string.PASSWORD),
+		// service.getKeystonePassword());
 		edit.putString(context.getString(R.string.TENANT_NAME),
 				service.getTenantName());
 		edit.putString(context.getString(R.string.KEYSTONE_AUTH_URL),
@@ -69,10 +70,10 @@ public class ServicePreferences extends PreferenceActivity {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
 		OpenStackClientService service = OpenStackClientService.getInstance();
-//		service.setKeystoneUsername(prefs.getString(
-//				context.getString(R.string.USERNAME), "admin"));
-//		service.setKeystonePassword(prefs.getString(
-//				context.getString(R.string.PASSWORD), "adminPassword"));
+		// service.setKeystoneUsername(prefs.getString(
+		// context.getString(R.string.USERNAME), "admin"));
+		// service.setKeystonePassword(prefs.getString(
+		// context.getString(R.string.PASSWORD), "adminPassword"));
 		service.setTenantName(prefs.getString(
 				context.getString(R.string.TENANT_NAME), "demo"));
 		service.setKeystoneAuthUrl(prefs.getString(
@@ -91,7 +92,8 @@ public class ServicePreferences extends PreferenceActivity {
 				context.getString(R.string.CEILOMETER_ENDPOINT), ""));
 		SignupService signupService = SignupService.getInstance();
 		signupService.setSignupURL(prefs.getString(
-				context.getString(R.string.SIGNUP_ENDPOINT), SignupService.DEFAULT_SIGNUP_URL));
+				context.getString(R.string.SIGNUP_ENDPOINT),
+				SignupService.DEFAULT_SIGNUP_URL));
 		User user = signupService.getUser();
 		user.setName(prefs.getString(context.getString(R.string.FULLNAME), ""));
 		user.setUsername(prefs.getString(context.getString(R.string.USERNAME),
@@ -99,10 +101,11 @@ public class ServicePreferences extends PreferenceActivity {
 		user.setEmail(prefs.getString(context.getString(R.string.EMAIL), ""));
 		user.setPassword(prefs.getString(context.getString(R.string.PASSWORD),
 				""));
-		user.setTenantId(prefs.getString(context.getString(R.string.TENANT_ID), ""));
+		user.setTenantId(prefs.getString(context.getString(R.string.TENANT_ID),
+				""));
 		user.setId(prefs.getString(context.getString(R.string.USERID), ""));
 		service.setKeystoneUsername(user.getUsername());
-		service.setKeystonePassword(user.getPassword());		
+		service.setKeystonePassword(user.getPassword());
 		dump(context);
 	}
 

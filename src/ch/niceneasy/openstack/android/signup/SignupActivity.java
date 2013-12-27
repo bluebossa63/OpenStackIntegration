@@ -1,8 +1,6 @@
 package ch.niceneasy.openstack.android.signup;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,12 +9,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import ch.niceneasy.openstack.android.R;
+import ch.niceneasy.openstack.android.base.PromptDialogUtil;
 import ch.niceneasy.openstack.android.base.TaskResult;
-import ch.niceneasy.openstack.android.sdk.service.OpenStackClientService;
-import ch.niceneasy.openstack.android.sdk.service.ServicePreferences;
-import ch.niceneasy.openstack.android.tenant.TenantListViewActivity;
 
 import com.woorea.openstack.keystone.model.User;
 
@@ -31,7 +26,6 @@ public class SignupActivity extends Activity {
 	TextView txtPleaseWait;
 
 	SignupService signupService;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +50,8 @@ public class SignupActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
-				signupService.getUser().setName(txtUsername.getText().toString());
+				signupService.getUser().setName(
+						txtUsername.getText().toString());
 				signupService.getUser().setUsername(
 						txtUsername.getText().toString());
 				signupService.getUser().setEmail(txtEmail.getText().toString());
@@ -96,41 +91,15 @@ public class SignupActivity extends Activity {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
-				startActivity(new Intent(SignupActivity.this, LoginActivity.class));
+				Intent intent = new Intent(SignupActivity.this,
+						LoginActivity.class);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				intent.putExtra("registered", true);
+				startActivity(intent);
 			} else {
-				showErrorDialog(R.string.error_dlg, result.getException(), null);
+				PromptDialogUtil.showErrorDialog(SignupActivity.this,
+						R.string.error_dlg, result.getException(), null);
 			}
 		}
 	}
-
-	protected void showErrorDialog(String title, Exception e, final Intent onOK) {
-		showDialog(title, e.getMessage() != null ? e.getMessage() : e
-				.getClass().getName(), onOK);
-	}
-
-	public void showErrorDialog(int ressource, Exception e, final Intent onOK) {
-		// showErrorDialog("Fehlermeldung", e, onOK);
-		Toast.makeText(SignupActivity.this,
-				"Fehlermeldung: " + e.getLocalizedMessage(), Toast.LENGTH_LONG)
-				.show();
-	}
-
-	protected void showDialog(String title, String message, final Intent onOK) {
-		AlertDialog alertDialog = new AlertDialog.Builder(SignupActivity.this)
-				.create();
-		alertDialog.setTitle(title);
-		alertDialog.setMessage(message);
-		if (onOK != null) {
-			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							startActivity(onOK);
-							return;
-						}
-					});
-		}
-		alertDialog.show();
-	}
-
 }

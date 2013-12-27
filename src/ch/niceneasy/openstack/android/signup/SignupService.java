@@ -20,7 +20,7 @@ import com.woorea.openstack.keystone.model.User;
 public class SignupService {
 
 	public static String TAG = "SignupService";
-	
+
 	public static String DEFAULT_SIGNUP_URL = "http://cassiopeia.ne.local:8081/account-management/rest/users/";
 
 	static ObjectMapper DEFAULT_MAPPER = new ObjectMapper();

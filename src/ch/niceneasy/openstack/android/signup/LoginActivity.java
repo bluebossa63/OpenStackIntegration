@@ -1,8 +1,6 @@
 package ch.niceneasy.openstack.android.signup;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -11,8 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import ch.niceneasy.openstack.android.R;
+import ch.niceneasy.openstack.android.base.PromptDialogUtil;
 import ch.niceneasy.openstack.android.base.TaskResult;
 import ch.niceneasy.openstack.android.sdk.service.OpenStackClientService;
 import ch.niceneasy.openstack.android.sdk.service.ServicePreferences;
@@ -86,54 +84,34 @@ public class LoginActivity extends Activity {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
-				OpenStackClientService service = OpenStackClientService.getInstance();
-				service.setKeystoneAuthUrl(result.getResult().getKeystoneAuthUrl());
-				service.setKeystoneAdminAuthUrl(result.getResult().getKeystoneAdminAuthUrl());
-				service.setKeystoneEndpoint(result.getResult().getKeystoneEndpoint());
+				OpenStackClientService service = OpenStackClientService
+						.getInstance();
+				service.setKeystoneAuthUrl(result.getResult()
+						.getKeystoneAuthUrl());
+				service.setKeystoneAdminAuthUrl(result.getResult()
+						.getKeystoneAdminAuthUrl());
+				service.setKeystoneEndpoint(result.getResult()
+						.getKeystoneEndpoint());
 				service.setTenantName(result.getResult().getTenantName());
-				service.setKeystonePassword(signupService.getUser().getPassword());
-				service.setKeystoneUsername(signupService.getUser().getUsername());
-				signupService.getUser().setId(result.getResult().getUser().getId());
-				signupService.getUser().setTenantId(result.getResult().getUser().getTenantId());
+				service.setKeystonePassword(signupService.getUser()
+						.getPassword());
+				service.setKeystoneUsername(signupService.getUser()
+						.getUsername());
+				signupService.getUser().setId(
+						result.getResult().getUser().getId());
+				signupService.getUser().setTenantId(
+						result.getResult().getUser().getTenantId());
 				ServicePreferences.copyServiceValues(LoginActivity.this);
 				Intent intent = new Intent(LoginActivity.this,
 						TenantListViewActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+				intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 				startActivity(intent);
 			} else {
-				showErrorDialog(R.string.error_dlg, result.getException(), null);
+				PromptDialogUtil.showErrorDialog(LoginActivity.this,
+						R.string.error_dlg, result.getException(), null);
 			}
 		}
 
 	}
 
-	protected void showErrorDialog(String title, Exception e, final Intent onOK) {
-		showDialog(title, e.getMessage() != null ? e.getMessage() : e
-				.getClass().getName(), onOK);
-	}
-
-	public void showErrorDialog(int ressource, Exception e, final Intent onOK) {
-		// showErrorDialog("Fehlermeldung", e, onOK);
-		Toast.makeText(LoginActivity.this,
-				"Fehlermeldung: " + e.getLocalizedMessage(), Toast.LENGTH_LONG)
-				.show();
-	}
-
-	protected void showDialog(String title, String message, final Intent onOK) {
-		AlertDialog alertDialog = new AlertDialog.Builder(LoginActivity.this)
-				.create();
-		alertDialog.setTitle(title);
-		alertDialog.setMessage(message);
-		if (onOK != null) {
-			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
-					new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							startActivity(onOK);
-							return;
-						}
-					});
-		}
-		alertDialog.show();
-	}
 }

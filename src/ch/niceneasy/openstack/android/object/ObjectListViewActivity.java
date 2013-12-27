@@ -687,8 +687,8 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			progressBar.setVisibility(View.GONE);
 			if (result.isValid()) {
 				directoryListAdapter
-						.setDirectories(new ArrayList<PseudoFileSystem>(
-								result.getResult().getDirectories().values()));
+						.setDirectories(new ArrayList<PseudoFileSystem>(result
+								.getResult().getDirectories().values()));
 				ListView directoryListView = (ListView) findViewById(R.id.folders);
 				directoryListView.setAdapter(directoryListAdapter);
 			} else {
