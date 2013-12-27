@@ -11,7 +11,7 @@ swift-client
 swift-model
 
 were added as eclipse projects by eclipse build path (with export) for the first version
-the swift components had to be patched, see patches.zip in the root of the project
+the swift components had to be patched, see patch file in the doc directory
 
 
 h2. Maven
@@ -24,10 +24,15 @@ none
 
 h1. Available artifacts
 
-h2. Crude Android Test Client
+h2. Android Client Implementation
 
-intended as a proof of concept
+intended as a first version
 
+|TODO| 
+|adding users|
+|applying security on container objects|
+|sending invitation to other users|
+|preview (thumbnail) of files|
 
 h1. License
 
