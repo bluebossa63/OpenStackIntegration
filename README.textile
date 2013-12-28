@@ -37,6 +37,10 @@ features to come soon:
 
 h1. License
 
+The graphical assets are created by
+
+http://www.iconarchive.com/show/junior-icons-by-treetog.1.html
+
 <pre>
 This software is licensed under the Apache 2 license, quoted below.
 
