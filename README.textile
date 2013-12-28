@@ -28,7 +28,7 @@ h2. Android Client Implementation
 
 intended as a first version
 
-|TODO| 
+|to do list| 
 |adding users|
 |applying security on container objects|
 |sending invitation to other users|
