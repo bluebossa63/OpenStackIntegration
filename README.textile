@@ -28,6 +28,8 @@ h2. Android Client Implementation
 
 intended as a first version
 
+features to come soon:
+
 |adding users|
 |applying security on container objects|
 |sending invitation to other users|
