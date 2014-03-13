@@ -38,6 +38,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 			Intent intent = new Intent(this, SplashScreenActivity.class);
 			intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 			startActivity(intent);
+			return;
 		}
 		setListAdapter(new TenantListAdapter(this));
 		getListView().setOnItemClickListener(new OnItemClickListener() {
@@ -150,7 +151,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.sharemenu, menu);
+		//getMenuInflater().inflate(R.menu.addcontainer, menu);
 		return true;
 	}
 

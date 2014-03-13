@@ -21,7 +21,7 @@ public class SignupService {
 
 	public static String TAG = "SignupService";
 
-	public static String DEFAULT_SIGNUP_URL = "http://cassiopeia.ne.local:8081/account-management/rest/users/";
+	public static String DEFAULT_SIGNUP_URL = "http://openstack.ne.local:9080/account-management/rest/users/";
 
 	static ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
 
@@ -100,20 +100,8 @@ public class SignupService {
 
 			LoginConfirmation loginConfirmation = DEFAULT_MAPPER.readValue(br,
 					LoginConfirmation.class);
+			loginConfirmation.getUser().setPassword(getUser().getPassword());
 			user = loginConfirmation.getUser();
-			OpenStackClientService openStackClientService = OpenStackClientService
-					.getInstance();
-			openStackClientService.setKeystoneAuthUrl(loginConfirmation
-					.getKeystoneAuthUrl());
-			openStackClientService.setKeystoneAdminAuthUrl(loginConfirmation
-					.getKeystoneAdminAuthUrl());
-			openStackClientService.setKeystoneEndpoint(loginConfirmation
-					.getKeystoneEndpoint());
-			openStackClientService.setKeystoneUsername(getUser().getUsername());
-			openStackClientService.setKeystonePassword(user.getPassword());
-			openStackClientService.setTenantName(loginConfirmation
-					.getTenantName());
-			ServicePreferences.copyServiceValues(context);
 			return loginConfirmation;
 		} catch (Exception e) {
 			throw new RuntimeException(e);

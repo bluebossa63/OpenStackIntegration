@@ -14,6 +14,7 @@ public class LoginConfirmation {
 	private String tenantName;
 	private String novaEndpoint;
 	private String ceilometerEndpoint;
+	private String swiftUrl;
 
 	public User getUser() {
 		return user;
@@ -69,6 +70,14 @@ public class LoginConfirmation {
 
 	public void setCeilometerEndpoint(String ceilometerEndpoint) {
 		this.ceilometerEndpoint = ceilometerEndpoint;
+	}
+
+	public String getSwiftUrl() {
+		return swiftUrl;
+	}
+
+	public void setSwiftUrl(String swiftUrl) {
+		this.swiftUrl = swiftUrl;
 	}
 
 }
