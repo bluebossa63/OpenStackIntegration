@@ -6,8 +6,7 @@
     <color name="blue">#000080</color>
     <color name="yellow">#FFA500</color>
     <color name="white">#FFFFFF</color>
-    
-    
+
     <string name="app_name">openstack for android</string>
     <string name="back">back</string>
     <string name="action_settings">Settings</string>
@@ -27,6 +26,7 @@
 	<string name="CEILOMETER_ENDPOINT">ceilometerEndpoint</string>
 	<string name="SIGNUP_ENDPOINT">signupEndpoint</string>
 	<string name="LOCAL_STORAGE">localStoraget</string>
+
 	<string name="done">Done</string>
     <string name="cancel">Cancel</string>
     <string name="add">Add</string>
@@ -46,7 +46,12 @@
     <string name="submit">Submit</string>
     <string name="register">Register</string>
     <string name="login">Login</string>
-    <string name="please_wait">Please check your mail account and confirm on clicking the link before pressing login</string>   
-    
-
+    <string name="please_wait">Please check your mail account and confirm on clicking the link before pressing login</string>
+    <string name="edit_permissions">edit permissions</string>  
+    <string name="delete_container">delete container</string>       
+    <string name="make_public">make public</string>      
+    <string name="add_user">add user</string>  
+    <string name="remove_user">remove user</string> 
+    <string name="search_user">search user</string>     
+        
 </resources>

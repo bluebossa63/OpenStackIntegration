@@ -1,7 +1,7 @@
 package ch.niceneasy.openstack.android.signup;
 
-import org.codehaus.jackson.map.annotate.JsonRootName;
 
+import com.fasterxml.jackson.annotation.JsonRootName;
 import com.woorea.openstack.keystone.model.User;
 
 @JsonRootName("loginConfirmation")

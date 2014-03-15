@@ -12,7 +12,7 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
-import org.codehaus.jackson.map.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import android.util.Log;
 
@@ -29,17 +29,16 @@ public class AndroidOpenStackClientConnector implements
 	@Override
 	public <T> OpenStackResponse request(OpenStackRequest<T> request) {
 
-		String queryParameters = "";
+		StringBuilder queryParameters = new StringBuilder();
 		for (Map.Entry<String, List<Object>> entry : request.queryParams()
 				.entrySet()) {
 			for (Object o : entry.getValue()) {
 				if (queryParameters.length() == 0) {
-					queryParameters += "?";
+					queryParameters.append("?");
 				} else {
-					queryParameters += "&";
+					queryParameters.append("&");
 				}
-				queryParameters += encode(entry.getKey()) + "="
-						+ encode(o.toString());
+				queryParameters.append(encode(entry.getKey())).append("=").append(encode(o.toString()));
 			}
 		}
 
@@ -60,7 +59,7 @@ public class AndroidOpenStackClientConnector implements
 
 		try {
 
-			Log.i(TAG, request.method().name() + " " + sUrl);
+			//Log.i(TAG, request.method().name() + " " + sUrl);
 			HttpURLConnection urlConnection = (HttpURLConnection) new URL(sUrl)
 					.openConnection();
 			for (Map.Entry<String, List<Object>> h : request.headers()
@@ -70,22 +69,22 @@ public class AndroidOpenStackClientConnector implements
 					sb.append(String.valueOf(v));
 				}
 				urlConnection.addRequestProperty(h.getKey(), sb.toString());
-				Log.i(TAG, "add header " + h.getKey() + ": " + sb.toString());
+				//Log.i(TAG, "add header " + h.getKey() + ": " + sb.toString());
 			}
 			urlConnection.setRequestMethod(request.method().name());
 			if (request.entity() != null) {
 				urlConnection.setDoOutput(true);
 				urlConnection.setRequestProperty("Content-Type", request
 						.entity().getContentType());
-				Log.i(TAG, "add header " + "Content-Type" + ": "
-						+ request.entity().getContentType());
+//				Log.i(TAG, "add header " + "Content-Type" + ": "
+//						+ request.entity().getContentType());
 				if (request.entity().getContentType()
 						.equals("application/json")) {
 					ObjectMapper mapper = mapper(request.entity().getEntity()
 							.getClass());
 					StringWriter writer = new StringWriter();
 					mapper.writeValue(writer, request.entity().getEntity());
-					Log.i("ClientConnector", writer.toString());
+//					Log.i("ClientConnector", writer.toString());
 					urlConnection.getOutputStream().write(
 							writer.toString().getBytes());
 				} else {

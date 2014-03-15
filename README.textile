@@ -2,7 +2,7 @@ h1. Android Client with OpenStack Java SDK v2.0
 
 h1. Important
 
-You will need the sources from https://github.com/woorea/openstack-java-sdk
+You will need the sources from https://github.com/bluebossa63/openstack-java-sdk
 
 openstack-client
 keystone-client
@@ -11,7 +11,6 @@ swift-client
 swift-model
 
 were added as eclipse projects by eclipse build path (with export) for the first version
-the swift components had to be patched, see patch file in the doc directory
 
 
 h2. Maven

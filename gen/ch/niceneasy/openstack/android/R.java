@@ -52,7 +52,7 @@ public final class R {
         public static final int action_settings=0x7f0a0003;
         public static final int actionbar_cancel=0x7f0a0000;
         public static final int actionbar_done=0x7f0a0001;
-        public static final int add=0x7f0a0019;
+        public static final int add=0x7f0a0018;
         public static final int back=0x7f0a0005;
         public static final int btnCancel=0x7f0a000c;
         public static final int btnLogin=0x7f0a000b;
@@ -61,7 +61,7 @@ public final class R {
         public static final int container_name=0x7f0a000f;
         public static final int folder_name=0x7f0a0011;
         public static final int folders=0x7f0a0008;
-        public static final int gallery=0x7f0a0018;
+        public static final int gallery=0x7f0a0019;
         public static final int image1=0x7f0a0006;
         public static final int imageView1=0x7f0a0017;
         public static final int lbl_container_name=0x7f0a000e;
@@ -99,8 +99,10 @@ public final class R {
         public static final int welcome_splash=0x7f030012;
     }
     public static final class menu {
-        public static final int homemenu=0x7f090000;
-        public static final int sharemenu=0x7f090001;
+        public static final int addcontainer=0x7f090000;
+        public static final int containermenu=0x7f090001;
+        public static final int homemenu=0x7f090002;
+        public static final int sharemenu=0x7f090003;
     }
     public static final class string {
         public static final int CEILOMETER_ENDPOINT=0x7f07000f;
@@ -119,11 +121,14 @@ public final class R {
         public static final int USERNAME=0x7f070007;
         public static final int action_settings=0x7f070002;
         public static final int add=0x7f070014;
+        public static final int add_user=0x7f070029;
         public static final int app_name=0x7f070000;
         public static final int back=0x7f070001;
         public static final int camera=0x7f07001d;
         public static final int cancel=0x7f070013;
+        public static final int delete_container=0x7f070027;
         public static final int done=0x7f070012;
+        public static final int edit_permissions=0x7f070026;
         public static final int email=0x7f07001f;
         public static final int error_dlg=0x7f070003;
         public static final int file=0x7f07001a;
@@ -132,11 +137,14 @@ public final class R {
         public static final int lbl_container_name=0x7f070017;
         public static final int lbl_folder_name=0x7f070018;
         public static final int login=0x7f070024;
+        public static final int make_public=0x7f070028;
         public static final int menu=0x7f070016;
         public static final int name=0x7f070021;
         public static final int password=0x7f070020;
         public static final int please_wait=0x7f070025;
         public static final int register=0x7f070023;
+        public static final int remove_user=0x7f07002a;
+        public static final int search_user=0x7f07002b;
         public static final int settings=0x7f070015;
         public static final int submit=0x7f070022;
         public static final int type_selection_label=0x7f070019;

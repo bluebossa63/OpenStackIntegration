@@ -11,10 +11,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.woorea.openstack.base.client.OpenStackResponse;
 import com.woorea.openstack.base.client.OpenStackResponseException;
 import com.woorea.openstack.swift.model.ObjectDownload;
@@ -48,14 +47,14 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 		}
 		try {
 			this.statusPhrase = urlConnection.getResponseMessage();
-			Log.i(TAG, this.statusPhrase);
+			//Log.i(TAG, this.statusPhrase);
 			headers = new HashMap<String, String>();
 			for (Entry<String, List<String>> iterable_element : urlConnection
 					.getHeaderFields().entrySet()) {
 				for (String value : iterable_element.getValue()) {
 					headers.put(iterable_element.getKey(), value);
-					Log.i(TAG, "response header " + iterable_element.getKey()
-							+ ": " + value);
+					//Log.i(TAG, "response header " + iterable_element.getKey()
+					//		+ ": " + value);
 				}
 			}
 			is = copyStream(urlConnection.getInputStream());
@@ -85,7 +84,7 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 		} else {
 			ObjectMapper mapper = mapper(returnType);
 			try {
-				return mapper.readValue(is, returnType);
+				return mapper.readValue(getInputStream(), returnType);
 			} catch (Exception e) {
 				throw new RuntimeException(e);
 			}

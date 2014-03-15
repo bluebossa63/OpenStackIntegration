@@ -8,11 +8,14 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonRootName;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+import com.fasterxml.jackson.core.util.ByteArrayBuilder;
+import com.fasterxml.jackson.databind.DeserializationConfig;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationConfig;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 import ch.niceneasy.openstack.android.base.OpenstackApplicationState;
 import ch.niceneasy.openstack.android.sdk.connector.AndroidOpenStackClientConnector;
@@ -54,20 +57,20 @@ public class OpenStackClientService {
 	private String ceilometerEndpoint = "";
 
 	private OpenStackClientService() {
-		defaultMapper.setSerializationInclusion(Inclusion.NON_NULL);
-		defaultMapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
+		defaultMapper.setSerializationInclusion(Include.NON_NULL);
+		defaultMapper.enable(SerializationFeature.INDENT_OUTPUT);
 		defaultMapper
-				.enable(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+				.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 		defaultMapper
-				.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
-		wrappedMapper.setSerializationInclusion(Inclusion.NON_NULL);
-		wrappedMapper.enable(SerializationConfig.Feature.INDENT_OUTPUT);
-		wrappedMapper.enable(SerializationConfig.Feature.WRAP_ROOT_VALUE);
-		wrappedMapper.enable(DeserializationConfig.Feature.UNWRAP_ROOT_VALUE);
+				.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+		wrappedMapper.setSerializationInclusion(Include.NON_NULL);
+		wrappedMapper.enable(SerializationFeature.INDENT_OUTPUT);
+		wrappedMapper.enable(SerializationFeature.WRAP_ROOT_VALUE);
+		wrappedMapper.enable(DeserializationFeature.UNWRAP_ROOT_VALUE);
 		wrappedMapper
-				.enable(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+				.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 		wrappedMapper
-				.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+				.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 	}
 
 	public ObjectMapper getContext(Class<?> type) {
@@ -210,11 +213,13 @@ public class OpenStackClientService {
 	public static InputStream copyStream(InputStream stream) throws IOException {
 		byte[] entity = new byte[4096];
 		int entitySize = 0;
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ByteArrayBuilder baos = new ByteArrayBuilder();
 		while ((entitySize = stream.read(entity)) != -1) {
 			baos.write(entity, 0, entitySize);
 		}
-		return new ByteArrayInputStream(baos.toByteArray());
+		InputStream is = new ByteArrayInputStream(baos.toByteArray());
+		baos.close();
+		return is;
 	}
 
 	public static void copy(InputStream stream, OutputStream os)

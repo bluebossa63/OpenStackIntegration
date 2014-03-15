@@ -291,7 +291,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.sharemenu, menu);
+		getMenuInflater().inflate(R.menu.addcontainer, menu);
 		return true;
 	}
 

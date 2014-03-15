@@ -6,15 +6,19 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
+
+
+
+
 
 import android.content.Context;
 import ch.niceneasy.openstack.android.sdk.service.OpenStackClientService;
 import ch.niceneasy.openstack.android.sdk.service.ServicePreferences;
 
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.woorea.openstack.keystone.model.User;
 
 public class SignupService {
@@ -26,12 +30,12 @@ public class SignupService {
 	static ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
 
 	static {
-		DEFAULT_MAPPER.setSerializationInclusion(Inclusion.NON_NULL);
-		DEFAULT_MAPPER.enable(SerializationConfig.Feature.INDENT_OUTPUT);
+		DEFAULT_MAPPER.setSerializationInclusion(Include.NON_NULL);
+		DEFAULT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
 		DEFAULT_MAPPER
-				.enable(DeserializationConfig.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
+				.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 		DEFAULT_MAPPER
-				.disable(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES);
+				.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 	}
 
 	private static SignupService INSTANCE = new SignupService();
