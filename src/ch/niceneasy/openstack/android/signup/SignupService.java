@@ -27,17 +27,6 @@ public class SignupService {
 
 	public static String DEFAULT_SIGNUP_URL = "http://openstack.ne.local:9080/account-management/rest/users/";
 
-	static ObjectMapper DEFAULT_MAPPER = new ObjectMapper();
-
-	static {
-		DEFAULT_MAPPER.setSerializationInclusion(Include.NON_NULL);
-		DEFAULT_MAPPER.enable(SerializationFeature.INDENT_OUTPUT);
-		DEFAULT_MAPPER
-				.enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
-		DEFAULT_MAPPER
-				.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
-	}
-
 	private static SignupService INSTANCE = new SignupService();
 
 	public static SignupService getInstance() {
@@ -58,7 +47,7 @@ public class SignupService {
 			urlConnection.getDoOutput();
 			urlConnection.setRequestMethod("PUT");
 			StringWriter writer = new StringWriter();
-			DEFAULT_MAPPER.writeValue(writer, user);
+			OpenStackClientService.getInstance().getContext(user.getClass()).writeValue(writer, user);
 
 			urlConnection.getOutputStream().write(writer.toString().getBytes());
 
@@ -71,7 +60,7 @@ public class SignupService {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					urlConnection.getInputStream()));
 
-			user = DEFAULT_MAPPER.readValue(br, User.class);
+			user = OpenStackClientService.getInstance().getContext(user.getClass()).readValue(br, User.class);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -89,7 +78,7 @@ public class SignupService {
 			urlConnection.getDoOutput();
 			urlConnection.setRequestMethod("POST");
 			StringWriter writer = new StringWriter();
-			DEFAULT_MAPPER.writeValue(writer, user);
+			OpenStackClientService.getInstance().getContext(user.getClass()).writeValue(writer, user);
 
 			urlConnection.getOutputStream().write(writer.toString().getBytes());
 
@@ -102,7 +91,7 @@ public class SignupService {
 			BufferedReader br = new BufferedReader(new InputStreamReader(
 					urlConnection.getInputStream()));
 
-			LoginConfirmation loginConfirmation = DEFAULT_MAPPER.readValue(br,
+			LoginConfirmation loginConfirmation = OpenStackClientService.getInstance().getContext(user.getClass()).readValue(br,
 					LoginConfirmation.class);
 			loginConfirmation.getUser().setPassword(getUser().getPassword());
 			user = loginConfirmation.getUser();
