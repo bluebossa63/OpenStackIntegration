@@ -9,9 +9,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLConnection;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 
 import android.annotation.SuppressLint;
@@ -21,9 +23,11 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -61,6 +65,10 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 
 	final int CAMERA_PIC_REQUEST = 2;
 	final int GALLERY_PIC_REQUEST = 3;
+
+	File dir = null;
+	Uri mImageUri = null;
+	String mCurrentPhotoPath;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -230,11 +238,44 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		getObjectsTask.execute();
 	}
 
+	public File createTempFiles() throws IOException {
+		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
+				.format(new Date());
+		String imageFileName = "JPEG_" + timeStamp + "_";
+		File storageDir = Environment
+				.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+		File image = File.createTempFile(imageFileName, /* prefix */
+				".jpg", /* suffix */
+				storageDir /* directory */
+		);
+
+		// Save a file: path for use with ACTION_VIEW intents
+		mCurrentPhotoPath = "file:" + image.getAbsolutePath();
+		return image;
+	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.sharemenu, menu);
 		return true;
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		if (mImageUri != null) {
+			outState.putString("cameraImageUri", mImageUri.toString());
+		}
+	}
+
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		if (savedInstanceState.containsKey("cameraImageUri")) {
+			mImageUri = Uri.parse(savedInstanceState
+					.getString("cameraImageUri"));
+		}
 	}
 
 	@Override
@@ -245,9 +286,24 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			dlg.show(getFragmentManager(), "Container Name Prompter");
 			return true;
 		case R.id.camera:
-			Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+			/*
+			 * Intent cameraIntent = new
+			 * Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			 * startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST); return
+			 * true;
+			 */
+
+			try {
+				Intent cameraIntent = new Intent(
+						MediaStore.ACTION_IMAGE_CAPTURE);
+				mImageUri = Uri.fromFile(createTempFiles());
+				cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+				startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			return true;
+
 		case R.id.gallery:
 			Intent photoPickerIntent = new Intent(
 					Intent.ACTION_PICK,
@@ -268,13 +324,26 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		case CAMERA_PIC_REQUEST:
 			if (resultCode == RESULT_OK) {
 				getApplicationState().setShareIntent(null);
-				Uri uri = intentData.getData();
-				String imagePath = GraphicsUtil.getOriginalFilePath(
-						ObjectListViewActivity.this, uri);
+				String imagePath = null;
+				if (mCurrentPhotoPath != null) {
+					imagePath = mCurrentPhotoPath;
+					mCurrentPhotoPath = null;
+				} else {
+					Uri uri = intentData.getData();
+					if (uri == null) {
+						if (intentData
+								.getParcelableExtra("android.intent.extra.STREAM") != null) {
+							uri = intentData
+									.getParcelableExtra("android.intent.extra.STREAM");
+						} 
+					}
+					imagePath = GraphicsUtil.getOriginalFilePath(
+							ObjectListViewActivity.this, uri);
+				}
 				MimeTypeMap map = MimeTypeMap.getSingleton();
 				if (map.hasExtension(MimeTypeMap
 						.getFileExtensionFromUrl(imagePath))) {
-					intentData.setDataAndType(uri, map
+					intentData.setDataAndType(Uri.fromFile(new File(imagePath)), map
 							.getMimeTypeFromExtension(MimeTypeMap
 									.getFileExtensionFromUrl(imagePath)));
 				}
@@ -452,8 +521,11 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			try {
 				Uri imageUri = intentData.getData();
 				if (getApplicationState().isInSharingMode()) {
-					imageUri = intentData
-							.getParcelableExtra("android.intent.extra.STREAM");
+					if (intentData
+							.getParcelableExtra("android.intent.extra.STREAM") != null) {
+						imageUri = intentData
+								.getParcelableExtra("android.intent.extra.STREAM");
+					}
 				}
 				String imagePath = GraphicsUtil.getOriginalFilePath(
 						ObjectListViewActivity.this, imageUri);

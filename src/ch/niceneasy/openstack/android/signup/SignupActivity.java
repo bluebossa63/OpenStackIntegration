@@ -93,7 +93,7 @@ public class SignupActivity extends Activity {
 			if (result.isValid()) {
 				Intent intent = new Intent(SignupActivity.this,
 						LoginActivity.class);
-				intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				//intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 				intent.putExtra("registered", true);
 				startActivity(intent);
 			} else {
@@ -101,5 +101,11 @@ public class SignupActivity extends Activity {
 						R.string.error_dlg, result.getException(), null);
 			}
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// The activity has become visible (it is now "resumed").
 	}
 }

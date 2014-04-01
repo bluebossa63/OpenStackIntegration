@@ -33,4 +33,10 @@ public class SplashScreenActivity extends Activity {
 		});
 
 	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// The activity has become visible (it is now "resumed").
+	}
 }

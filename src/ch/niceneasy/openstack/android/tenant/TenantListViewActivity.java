@@ -151,7 +151,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		//getMenuInflater().inflate(R.menu.addcontainer, menu);
+		// getMenuInflater().inflate(R.menu.addcontainer, menu);
 		return true;
 	}
 
@@ -173,6 +173,12 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		if (!OpenStackClientService.getInstance().isLoggedIn()) {
 			loadData();
 		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		// The activity has become visible (it is now "resumed").
 	}
 
 	private void loadData() {
