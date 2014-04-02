@@ -1,7 +1,9 @@
 h1. Android Client with OpenStack Java SDK v2.0
 
 
-!>http://youtu.be/JdEnfvMwAkk!
+!>!http://youtu.be/JdEnfvMwAkk
+
+[![IMAGE ALT TEXT HERE](https://github.com/bluebossa63/OpenStackIntegration/blob/master/video.png?raw=true)](http://www.youtube.com/watch?v=JdEnfvMwAkk)
 
 h1. Important
 
