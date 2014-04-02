@@ -58,21 +58,21 @@
     <PreferenceCategory android:title="Service URLs" >
         <EditTextPreference
             android:name="keystoneAuthUrl"
-            android:defaultValue="http://openstack.ne.local:5000/v2.0/"
+            android:defaultValue="https://openstack.niceneasy.ch:7443/keystoneAuth"
             android:inputType="text"
             android:key="@string/KEYSTONE_AUTH_URL"
             android:summary=""
             android:title="authorization url" />
         <EditTextPreference
             android:name="keystoneAdminAuthUrl"
-            android:defaultValue="http://openstack.ne.local:35357/v2.0/"
+            android:defaultValue="https://openstack.niceneasy.ch:7443/keystoneAdminAuth"
             android:inputType="text"
             android:key="@string/KEYSTONE_ADMIN_AUTH_URL"
             android:summary=""
             android:title="authorization admin url" />
         <EditTextPreference
             android:name="keystoneEndpoint"
-            android:defaultValue="http://openstack.ne.local:8776/v2.0/"
+            android:defaultValue="https://openstack.niceneasy.ch:7443/keystone"
             android:inputType="text"
             android:key="@string/KEYSTONE_ENDPOINT"
             android:summary=""
@@ -93,7 +93,7 @@
             android:title="ceilometer endpoint url" />
         <EditTextPreference
             android:name="signupEndpoint"
-            android:defaultValue="http://openstack.ne.local:9080/account-management/rest/users/"
+            android:defaultValue="https://openstack.niceneasy.ch:7443/account-management/rest/users/"
             android:inputType="text"
             android:key="@string/SIGNUP_ENDPOINT"
             android:summary=""

@@ -6,26 +6,27 @@ import java.io.StringWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-
-
-
-
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.security.cert.CertificateException;
+import javax.security.cert.X509Certificate;
 
 import android.content.Context;
 import ch.niceneasy.openstack.android.sdk.service.OpenStackClientService;
-import ch.niceneasy.openstack.android.sdk.service.ServicePreferences;
 
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.woorea.openstack.keystone.model.User;
 
 public class SignupService {
 
+	static TrustManager[] trustAllCerts;
+	
 	public static String TAG = "SignupService";
 
-	public static String DEFAULT_SIGNUP_URL = "http://openstack.ne.local:9080/account-management/rest/users/";
+	public static String DEFAULT_SIGNUP_URL = "https://openstack.niceneasy.ch:7443/account-management/rest/users/";
 
 	private static SignupService INSTANCE = new SignupService();
 
@@ -35,12 +36,58 @@ public class SignupService {
 
 	private String signupURL;
 	private User user = new User();
+	final static HostnameVerifier DO_NOT_VERIFY;
+	
+	static {
+		
+		DO_NOT_VERIFY = new HostnameVerifier() {
+			@Override
+			public boolean verify(String hostname, SSLSession session) {
+				return true;
+			}
+		};
+	
+		trustAllCerts = new TrustManager[] { new X509TrustManager() {
+		public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+			return new java.security.cert.X509Certificate[] {};
+		}
+
+
+		@Override
+		public void checkClientTrusted(
+				java.security.cert.X509Certificate[] arg0, String arg1)
+				throws java.security.cert.CertificateException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void checkServerTrusted(
+				java.security.cert.X509Certificate[] chain, String authType)
+				throws java.security.cert.CertificateException {
+			// TODO Auto-generated method stub
+			
+		}
+	} };
+		
+		// Install the all-trusting trust manager
+		try {
+			SSLContext sc = SSLContext.getInstance("TLS");
+			sc.init(null, trustAllCerts, new java.security.SecureRandom());
+			HttpsURLConnection
+					.setDefaultSSLSocketFactory(sc.getSocketFactory());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	
+	}
 
 	public void register() {
 
 		try {
-			HttpURLConnection urlConnection = (HttpURLConnection) new URL(
+			HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(
 					signupURL).openConnection();
+			urlConnection.setHostnameVerifier(DO_NOT_VERIFY);
 			urlConnection.addRequestProperty("Accept", "application/json");
 			urlConnection
 					.addRequestProperty("Content-Type", "application/json");
@@ -70,8 +117,9 @@ public class SignupService {
 	public LoginConfirmation login(Context context) {
 
 		try {
-			HttpURLConnection urlConnection = (HttpURLConnection) new URL(
+			HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(
 					signupURL + "login").openConnection();
+			urlConnection.setHostnameVerifier(DO_NOT_VERIFY);
 			urlConnection.addRequestProperty("Accept", "application/json");
 			urlConnection
 					.addRequestProperty("Content-Type", "application/json");

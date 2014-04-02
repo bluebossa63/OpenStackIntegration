@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+
 import com.fasterxml.jackson.core.util.ByteArrayBuilder;
 import com.fasterxml.jackson.databind.DeserializationConfig;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -196,9 +199,15 @@ public class OpenStackClientService {
 					.authenticate(
 							new TokenAuthentication(getAccess().getToken()
 									.getId())).withTenantId(tenantId).execute();
+//			swift = new Swift(
+//					KeystoneUtils.findEndpointURL(access.getServiceCatalog(),
+//							"object-store", null, "public"), connector);
+			String url = KeystoneUtils.findEndpointURL(access.getServiceCatalog(),
+					"object-store", null, "public");
+			//TODO: replace with configuration on server!
+			url = url.replace("http://192.168.0.7:8080", "https://openstack.niceneasy.ch:7443/swift");
 			swift = new Swift(
-					KeystoneUtils.findEndpointURL(access.getServiceCatalog(),
-							"object-store", null, "public"), connector);
+					url, connector);
 			swift.setTokenProvider(new OpenStackSimpleTokenProvider(access
 					.getToken().getId()));
 			swiftMap.put(tenantId, swift);

@@ -12,6 +12,10 @@ import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import android.util.Log;
@@ -25,6 +29,18 @@ public class AndroidOpenStackClientConnector implements
 		OpenStackClientConnector {
 
 	public static String TAG = "AndroidOpenStackClientConnector";
+	
+	final static HostnameVerifier DO_NOT_VERIFY;
+	
+	static {
+		
+		DO_NOT_VERIFY = new HostnameVerifier() {
+			@Override
+			public boolean verify(String hostname, SSLSession session) {
+				return true;
+			}
+		};
+	}	
 
 	@Override
 	public <T> OpenStackResponse request(OpenStackRequest<T> request) {
@@ -60,8 +76,9 @@ public class AndroidOpenStackClientConnector implements
 		try {
 
 			//Log.i(TAG, request.method().name() + " " + sUrl);
-			HttpURLConnection urlConnection = (HttpURLConnection) new URL(sUrl)
+			HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(sUrl)
 					.openConnection();
+			urlConnection.setHostnameVerifier(DO_NOT_VERIFY);
 			for (Map.Entry<String, List<Object>> h : request.headers()
 					.entrySet()) {
 				StringBuilder sb = new StringBuilder();
