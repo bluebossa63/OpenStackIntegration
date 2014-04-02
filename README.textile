@@ -1,6 +1,6 @@
 h1. Android Client with OpenStack Java SDK v2.0
 
-<video src="video.mp4" poster="video.png" width="576" height="1024" controls preload></video>
+[[yt JdEnfvMwAkk embed]] 
 
 h1. Important
 
