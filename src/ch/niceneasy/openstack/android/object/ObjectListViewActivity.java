@@ -261,22 +261,22 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		return true;
 	}
 
-	@Override
-	protected void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		if (mImageUri != null) {
-			outState.putString("cameraImageUri", mImageUri.toString());
-		}
-	}
-
-	@Override
-	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		super.onRestoreInstanceState(savedInstanceState);
-		if (savedInstanceState.containsKey("cameraImageUri")) {
-			mImageUri = Uri.parse(savedInstanceState
-					.getString("cameraImageUri"));
-		}
-	}
+//	@Override
+//	protected void onSaveInstanceState(Bundle outState) {
+//		super.onSaveInstanceState(outState);
+//		if (mImageUri != null) {
+//			outState.putString("cameraImageUri", mImageUri.toString());
+//		}
+//	}
+//
+//	@Override
+//	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+//		super.onRestoreInstanceState(savedInstanceState);
+//		if (savedInstanceState.containsKey("cameraImageUri")) {
+//			mImageUri = Uri.parse(savedInstanceState
+//					.getString("cameraImageUri"));
+//		}
+//	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -286,23 +286,23 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			dlg.show(getFragmentManager(), "Container Name Prompter");
 			return true;
 		case R.id.camera:
-			/*
-			 * Intent cameraIntent = new
-			 * Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			 * startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST); return
-			 * true;
-			 */
+			
+			Intent cameraIntent = new
+			Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST); return
+			true;
+			
 
-			try {
-				Intent cameraIntent = new Intent(
-						MediaStore.ACTION_IMAGE_CAPTURE);
-				mImageUri = Uri.fromFile(createTempFiles());
-				cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-				startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return true;
+//			try {
+//				Intent cameraIntent = new Intent(
+//						MediaStore.ACTION_IMAGE_CAPTURE);
+//				mImageUri = Uri.fromFile(createTempFiles());
+//				cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+//				startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//			return true;
 
 		case R.id.gallery:
 			Intent photoPickerIntent = new Intent(
