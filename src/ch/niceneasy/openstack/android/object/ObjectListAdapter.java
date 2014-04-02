@@ -66,6 +66,7 @@ public class ObjectListAdapter extends BaseAdapter {
 
 	public void setObjects(List<com.woorea.openstack.swift.model.Object> objects) {
 		this.objects = objects;
+		this.notifyDataSetChanged();
 	}
 
 	public static String cleanName(String objectName) {

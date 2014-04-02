@@ -57,6 +57,7 @@ public class ContainerListAdapter extends BaseAdapter {
 
 	public void setContainers(List<Container> containers) {
 		this.containers = containers;
+		this.notifyDataSetChanged();
 	}
 
 	public List<Container> getContainers() {

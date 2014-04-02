@@ -60,6 +60,7 @@ public class DirectoryListAdapter extends BaseAdapter {
 
 	public void setDirectories(List<PseudoFileSystem> directories) {
 		this.directories = directories;
+		this.notifyDataSetChanged();
 	}
 
 }

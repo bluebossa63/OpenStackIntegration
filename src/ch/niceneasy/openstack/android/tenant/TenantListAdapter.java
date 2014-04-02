@@ -61,6 +61,7 @@ public class TenantListAdapter extends BaseAdapter {
 
 	public void setTenants(List<Tenant> tenants) {
 		this.tenants = tenants;
+		this.notifyDataSetChanged();
 	}
 
 }
