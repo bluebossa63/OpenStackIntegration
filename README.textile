@@ -1,5 +1,7 @@
 h1. Android Client with OpenStack Java SDK v2.0
 
+<video src="video.mp4" poster="video.png" width="576" height="1024" controls preload></video>
+
 h1. Important
 
 You will need the sources from https://github.com/bluebossa63/openstack-java-sdk
