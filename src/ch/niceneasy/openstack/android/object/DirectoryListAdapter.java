@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.object;
 
 import java.util.ArrayList;
@@ -11,31 +14,65 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import ch.niceneasy.openstack.android.R;
 
+/**
+ * The Class DirectoryListAdapter.
+ * 
+ * @author Daniele
+ */
 public class DirectoryListAdapter extends BaseAdapter {
 
+	/** The directories. */
 	private List<PseudoFileSystem> directories = new ArrayList<PseudoFileSystem>();
 
+	/** The context. */
 	private Context context;
 
+	/**
+	 * Instantiates a new directory list adapter.
+	 * 
+	 * @param context
+	 *            the context
+	 */
 	public DirectoryListAdapter(Context context) {
 		this.context = context;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.Adapter#getCount()
+	 */
 	@Override
 	public int getCount() {
 		return directories.size();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.Adapter#getItem(int)
+	 */
 	@Override
 	public Object getItem(int position) {
 		return directories.get(position);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.Adapter#getItemId(int)
+	 */
 	@Override
 	public long getItemId(int position) {
 		return directories.get(position).hashCode();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.Adapter#getView(int, android.view.View,
+	 * android.view.ViewGroup)
+	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater mInflater = (LayoutInflater) context
@@ -54,10 +91,21 @@ public class DirectoryListAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+	/**
+	 * Gets the directories.
+	 * 
+	 * @return the directories
+	 */
 	public List<PseudoFileSystem> getDirectories() {
 		return directories;
 	}
 
+	/**
+	 * Sets the directories.
+	 * 
+	 * @param directories
+	 *            the new directories
+	 */
 	public void setDirectories(List<PseudoFileSystem> directories) {
 		this.directories = directories;
 		this.notifyDataSetChanged();

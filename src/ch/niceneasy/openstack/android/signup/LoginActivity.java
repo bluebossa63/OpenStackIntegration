@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.signup;
 
 import android.app.Activity;
@@ -16,16 +19,33 @@ import ch.niceneasy.openstack.android.sdk.service.OpenStackClientService;
 import ch.niceneasy.openstack.android.sdk.service.ServicePreferences;
 import ch.niceneasy.openstack.android.tenant.TenantListViewActivity;
 
+/**
+ * The Class LoginActivity.
+ * 
+ * @author Daniele
+ */
 public class LoginActivity extends Activity {
 
+	/** The progress bar. */
 	protected ProgressBar progressBar;
 
+	/** The txt username. */
 	EditText txtUsername;
+
+	/** The txt password. */
 	EditText txtPassword;
+
+	/** The txt please wait. */
 	TextView txtPleaseWait;
 
+	/** The signup service. */
 	SignupService signupService;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -65,9 +85,17 @@ public class LoginActivity extends Activity {
 
 	}
 
+	/**
+	 * The Class LoginTask.
+	 */
 	private class LoginTask extends
 			AsyncTask<String, Object, TaskResult<LoginConfirmation>> {
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<LoginConfirmation> doInBackground(String... params) {
 			try {
@@ -79,6 +107,11 @@ public class LoginActivity extends Activity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<LoginConfirmation> result) {
 			super.onPostExecute(result);
@@ -114,6 +147,11 @@ public class LoginActivity extends Activity {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onResume()
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();

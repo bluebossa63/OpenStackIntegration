@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.object;
 
 import static ch.niceneasy.openstack.android.object.ObjectListAdapter.cleanName;
@@ -23,7 +26,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -58,18 +60,41 @@ import com.woorea.openstack.swift.model.ObjectDownload;
 import com.woorea.openstack.swift.model.ObjectForUpload;
 import com.woorea.openstack.swift.model.Objects;
 
+/**
+ * The Class ObjectListViewActivity.
+ * 
+ * @author Daniele
+ */
 public class ObjectListViewActivity extends OpenstackListActivity {
 
+	/** The directory list view. */
 	ListView directoryListView;
+
+	/** The directory list adapter. */
 	DirectoryListAdapter directoryListAdapter;
 
+	/** The camera pic request. */
 	final int CAMERA_PIC_REQUEST = 2;
+
+	/** The gallery pic request. */
 	final int GALLERY_PIC_REQUEST = 3;
 
+	/** The dir. */
 	File dir = null;
+
+	/** The m image uri. */
 	Uri mImageUri = null;
+
+	/** The m current photo path. */
 	String mCurrentPhotoPath;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#onCreate(android
+	 * .os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -238,6 +263,13 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		getObjectsTask.execute();
 	}
 
+	/**
+	 * Creates the temp files.
+	 * 
+	 * @return the file
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public File createTempFiles() throws IOException {
 		String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss")
 				.format(new Date());
@@ -254,6 +286,11 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		return image;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
@@ -261,23 +298,28 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		return true;
 	}
 
-//	@Override
-//	protected void onSaveInstanceState(Bundle outState) {
-//		super.onSaveInstanceState(outState);
-//		if (mImageUri != null) {
-//			outState.putString("cameraImageUri", mImageUri.toString());
-//		}
-//	}
-//
-//	@Override
-//	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-//		super.onRestoreInstanceState(savedInstanceState);
-//		if (savedInstanceState.containsKey("cameraImageUri")) {
-//			mImageUri = Uri.parse(savedInstanceState
-//					.getString("cameraImageUri"));
-//		}
-//	}
+	// @Override
+	// protected void onSaveInstanceState(Bundle outState) {
+	// super.onSaveInstanceState(outState);
+	// if (mImageUri != null) {
+	// outState.putString("cameraImageUri", mImageUri.toString());
+	// }
+	// }
+	//
+	// @Override
+	// protected void onRestoreInstanceState(Bundle savedInstanceState) {
+	// super.onRestoreInstanceState(savedInstanceState);
+	// if (savedInstanceState.containsKey("cameraImageUri")) {
+	// mImageUri = Uri.parse(savedInstanceState
+	// .getString("cameraImageUri"));
+	// }
+	// }
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -286,23 +328,21 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			dlg.show(getFragmentManager(), "Container Name Prompter");
 			return true;
 		case R.id.camera:
-			
-			Intent cameraIntent = new
-			Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST); return
-			true;
-			
 
-//			try {
-//				Intent cameraIntent = new Intent(
-//						MediaStore.ACTION_IMAGE_CAPTURE);
-//				mImageUri = Uri.fromFile(createTempFiles());
-//				cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-//				startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
-//			} catch (IOException e) {
-//				e.printStackTrace();
-//			}
-//			return true;
+			Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+			startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+			return true;
+
+			// try {
+			// Intent cameraIntent = new Intent(
+			// MediaStore.ACTION_IMAGE_CAPTURE);
+			// mImageUri = Uri.fromFile(createTempFiles());
+			// cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+			// startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+			// } catch (IOException e) {
+			// e.printStackTrace();
+			// }
+			// return true;
 
 		case R.id.gallery:
 			Intent photoPickerIntent = new Intent(
@@ -315,6 +355,12 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onActivityResult(int, int,
+	 * android.content.Intent)
+	 */
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intentData) {
@@ -335,7 +381,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 								.getParcelableExtra("android.intent.extra.STREAM") != null) {
 							uri = intentData
 									.getParcelableExtra("android.intent.extra.STREAM");
-						} 
+						}
 					}
 					imagePath = GraphicsUtil.getOriginalFilePath(
 							ObjectListViewActivity.this, uri);
@@ -343,8 +389,9 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 				MimeTypeMap map = MimeTypeMap.getSingleton();
 				if (map.hasExtension(MimeTypeMap
 						.getFileExtensionFromUrl(imagePath))) {
-					intentData.setDataAndType(Uri.fromFile(new File(imagePath)), map
-							.getMimeTypeFromExtension(MimeTypeMap
+					intentData.setDataAndType(
+							Uri.fromFile(new File(imagePath)),
+							map.getMimeTypeFromExtension(MimeTypeMap
 									.getFileExtensionFromUrl(imagePath)));
 				}
 				UploadObjectTask uploadObjectTask = new UploadObjectTask(
@@ -358,9 +405,17 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 
 	}
 
+	/**
+	 * The Class LoadObjectTask.
+	 */
 	private class LoadObjectTask extends
 			AsyncTask<String, Object, TaskResult<File>> {
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@SuppressLint("SdCardPath")
 		@Override
 		protected TaskResult<File> doInBackground(String... params) {
@@ -379,11 +434,13 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 						.download(
 								getApplicationState().getSelectedObject()
 										.getName()).execute();
-				File outputDir = new File(Environment.getExternalStorageDirectory()
-                        .getAbsolutePath(), "openstack");    
-                if (!outputDir.exists()) {
-                    outputDir.mkdir();
-                }				if (!outputDir.exists()) {
+				File outputDir = new File(Environment
+						.getExternalStorageDirectory().getAbsolutePath(),
+						"openstack");
+				if (!outputDir.exists()) {
+					outputDir.mkdir();
+				}
+				if (!outputDir.exists()) {
 					outputDir.mkdir();
 				}
 				String cleanedName = cleanName(getApplicationState()
@@ -406,6 +463,11 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			return new TaskResult<File>(tempFile);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<File> result) {
 			super.onPostExecute(result);
@@ -447,9 +509,17 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/**
+	 * The Class GetObjectsTask.
+	 */
 	private class GetObjectsTask extends
 			AsyncTask<String, Object, TaskResult<Objects>> {
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<Objects> doInBackground(String... params) {
 			try {
@@ -466,6 +536,11 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<Objects> result) {
 			super.onPostExecute(result);
@@ -495,6 +570,9 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/**
+	 * Update lists.
+	 */
 	private void updateLists() {
 		((ObjectListAdapter) getListAdapter())
 				.setObjects(new ArrayList<Object>(getApplicationState()
@@ -506,15 +584,30 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		directoryListView.setAdapter(directoryListAdapter);
 	}
 
+	/**
+	 * The Class UploadObjectTask.
+	 */
 	private class UploadObjectTask extends
 			AsyncTask<String, Object, TaskResult<ObjectForUpload>> {
 
+		/** The intent data. */
 		Intent intentData;
 
+		/**
+		 * Instantiates a new upload object task.
+		 * 
+		 * @param intentData
+		 *            the intent data
+		 */
 		private UploadObjectTask(Intent intentData) {
 			this.intentData = intentData;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<ObjectForUpload> doInBackground(String... params) {
 			try {
@@ -558,6 +651,11 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<ObjectForUpload> result) {
 			super.onPostExecute(result);
@@ -581,15 +679,30 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/**
+	 * The Class DeleteObjectTask.
+	 */
 	private class DeleteObjectTask extends
 			AsyncTask<String, Object, TaskResult<List<Object>>> {
 
+		/** The object. */
 		private Object object;
 
+		/**
+		 * Instantiates a new delete object task.
+		 * 
+		 * @param object
+		 *            the object
+		 */
 		private DeleteObjectTask(Object object) {
 			this.object = object;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<List<Object>> doInBackground(String... params) {
 			try {
@@ -618,6 +731,11 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<List<Object>> result) {
 			super.onPostExecute(result);
@@ -634,18 +752,37 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/**
+	 * The Class DeleteDirectoryTask.
+	 */
 	private class DeleteDirectoryTask extends
 			AsyncTask<String, Object, TaskResult<PseudoFileSystem>> {
 
+		/** The object. */
 		private Object object;
+
+		/** The pseudo file system. */
 		private PseudoFileSystem pseudoFileSystem;
 
+		/**
+		 * Instantiates a new delete directory task.
+		 * 
+		 * @param object
+		 *            the object
+		 * @param pseudoFileSystem
+		 *            the pseudo file system
+		 */
 		private DeleteDirectoryTask(Object object,
 				PseudoFileSystem pseudoFileSystem) {
 			this.pseudoFileSystem = pseudoFileSystem;
 			this.object = object;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<PseudoFileSystem> doInBackground(String... params) {
 			try {
@@ -666,6 +803,11 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<PseudoFileSystem> result) {
 			super.onPostExecute(result);
@@ -680,6 +822,14 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/**
+	 * Write.
+	 * 
+	 * @param stream
+	 *            the stream
+	 * @param is
+	 *            the is
+	 */
 	private static void write(OutputStream stream, InputStream is) {
 		try {
 			int bufferSize = 1024;
@@ -695,26 +845,54 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#setContentView
+	 * ()
+	 */
 	@Override
 	protected void setContentView() {
 		setContentView(R.layout.list_objects);
 	}
 
+	/**
+	 * Gets the directory list adapter.
+	 * 
+	 * @return the directory list adapter
+	 */
 	public DirectoryListAdapter getDirectoryListAdapter() {
 		return directoryListAdapter;
 	}
 
+	/**
+	 * Creates the folder.
+	 * 
+	 * @param name
+	 *            the name
+	 */
 	public void createFolder(String name) {
 		progressBar.setVisibility(View.VISIBLE);
 		CreateDirectoryTask createDirectoryTask = new CreateDirectoryTask(name);
 		createDirectoryTask.execute();
 	}
 
+	/**
+	 * The Class CreateDirectoryTask.
+	 */
 	private class CreateDirectoryTask extends
 			AsyncTask<String, Object, TaskResult<PseudoFileSystem>> {
 
+		/** The folder name. */
 		private String folderName;
 
+		/**
+		 * Instantiates a new creates the directory task.
+		 * 
+		 * @param folderName
+		 *            the folder name
+		 */
 		private CreateDirectoryTask(String folderName) {
 			this.folderName = folderName;
 			if (!folderName.endsWith("/")) {
@@ -722,6 +900,11 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<PseudoFileSystem> doInBackground(String... params) {
 			try {
@@ -753,6 +936,11 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<PseudoFileSystem> result) {
 			super.onPostExecute(result);

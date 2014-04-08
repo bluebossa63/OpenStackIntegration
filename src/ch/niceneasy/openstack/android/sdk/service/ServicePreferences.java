@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.sdk.service;
 
 import android.content.Context;
@@ -12,8 +15,18 @@ import ch.niceneasy.openstack.android.signup.SignupService;
 
 import com.woorea.openstack.keystone.model.User;
 
+/**
+ * The Class ServicePreferences.
+ * 
+ * @author Daniele
+ */
 public class ServicePreferences extends PreferenceActivity {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.preference.PreferenceActivity#onCreate(android.os.Bundle)
+	 */
 	@SuppressWarnings("deprecation")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +34,11 @@ public class ServicePreferences extends PreferenceActivity {
 		addPreferencesFromResource(R.xml.preferences);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#finish()
+	 */
 	@Override
 	public void finish() {
 		super.finish();
@@ -28,6 +46,12 @@ public class ServicePreferences extends PreferenceActivity {
 		updateService(getBaseContext());
 	}
 
+	/**
+	 * Copy service values.
+	 * 
+	 * @param context
+	 *            the context
+	 */
 	public static void copyServiceValues(Context context) {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
@@ -66,6 +90,12 @@ public class ServicePreferences extends PreferenceActivity {
 		dump(context);
 	}
 
+	/**
+	 * Update service.
+	 * 
+	 * @param context
+	 *            the context
+	 */
 	public static void updateService(Context context) {
 		SharedPreferences prefs = PreferenceManager
 				.getDefaultSharedPreferences(context);
@@ -109,6 +139,12 @@ public class ServicePreferences extends PreferenceActivity {
 		dump(context);
 	}
 
+	/**
+	 * Dump.
+	 * 
+	 * @param context
+	 *            the context
+	 */
 	public static void dump(Context context) {
 		String TAG = "ServicePreferences";
 		OpenStackClientService service = OpenStackClientService.getInstance();

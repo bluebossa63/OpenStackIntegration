@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.base;
 
 import java.io.File;
@@ -9,8 +12,26 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore.MediaColumns;
 
+/**
+ * The Class GraphicsUtil.
+ * 
+ * @author Daniele
+ */
 public class GraphicsUtil {
 
+	/**
+	 * Gets the camera photo orientation.
+	 * 
+	 * @param context
+	 *            the context
+	 * @param imageUri
+	 *            the image uri
+	 * @param imagePath
+	 *            the image path
+	 * @return the camera photo orientation
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public static int getCameraPhotoOrientation(Context context, Uri imageUri,
 			String imagePath) throws IOException {
 		int rotate = 0;
@@ -36,7 +57,19 @@ public class GraphicsUtil {
 		return rotate;
 	}
 
-	public static int getOrientation(Context context, Uri imageUri) throws IOException {
+	/**
+	 * Gets the orientation.
+	 * 
+	 * @param context
+	 *            the context
+	 * @param imageUri
+	 *            the image uri
+	 * @return the orientation
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	public static int getOrientation(Context context, Uri imageUri)
+			throws IOException {
 		String[] filePathColumn = { MediaColumns.DATA };
 		Cursor cursor = context.getContentResolver().query(imageUri,
 				filePathColumn, null, null, null);
@@ -47,6 +80,15 @@ public class GraphicsUtil {
 		return getCameraPhotoOrientation(context, imageUri, filePath);
 	}
 
+	/**
+	 * Gets the original file path.
+	 * 
+	 * @param context
+	 *            the context
+	 * @param imageUri
+	 *            the image uri
+	 * @return the original file path
+	 */
 	public static String getOriginalFilePath(Context context, Uri imageUri) {
 		if (imageUri.getScheme().equals("file")) {
 			return imageUri.getPath();

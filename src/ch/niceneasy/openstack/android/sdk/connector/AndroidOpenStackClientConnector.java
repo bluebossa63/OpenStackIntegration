@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.sdk.connector;
 
 import static ch.niceneasy.openstack.android.sdk.service.OpenStackClientService.copy;
@@ -6,7 +9,6 @@ import static ch.niceneasy.openstack.android.sdk.service.OpenStackClientService.
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.List;
@@ -17,31 +19,42 @@ import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLSession;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import android.util.Log;
-
 import com.woorea.openstack.base.client.OpenStackClientConnector;
 import com.woorea.openstack.base.client.OpenStackRequest;
 import com.woorea.openstack.base.client.OpenStackResponse;
 import com.woorea.openstack.base.client.OpenStackResponseException;
 
+/**
+ * The Class AndroidOpenStackClientConnector.
+ * 
+ * @author Daniele
+ */
 public class AndroidOpenStackClientConnector implements
 		OpenStackClientConnector {
 
+	/** The tag. */
 	public static String TAG = "AndroidOpenStackClientConnector";
-	
+
+	/** The Constant DO_NOT_VERIFY. */
 	final static HostnameVerifier DO_NOT_VERIFY;
-	
+
 	static {
-		
+
 		DO_NOT_VERIFY = new HostnameVerifier() {
 			@Override
 			public boolean verify(String hostname, SSLSession session) {
 				return true;
 			}
 		};
-	}	
+	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.woorea.openstack.base.client.OpenStackClientConnector#request(com
+	 * .woorea.openstack.base.client.OpenStackRequest)
+	 */
 	@Override
 	public <T> OpenStackResponse request(OpenStackRequest<T> request) {
 
@@ -54,7 +67,8 @@ public class AndroidOpenStackClientConnector implements
 				} else {
 					queryParameters.append("&");
 				}
-				queryParameters.append(encode(entry.getKey())).append("=").append(encode(o.toString()));
+				queryParameters.append(encode(entry.getKey())).append("=")
+						.append(encode(o.toString()));
 			}
 		}
 
@@ -75,9 +89,9 @@ public class AndroidOpenStackClientConnector implements
 
 		try {
 
-			//Log.i(TAG, request.method().name() + " " + sUrl);
-			HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(sUrl)
-					.openConnection();
+			// Log.i(TAG, request.method().name() + " " + sUrl);
+			HttpsURLConnection urlConnection = (HttpsURLConnection) new URL(
+					sUrl).openConnection();
 			urlConnection.setHostnameVerifier(DO_NOT_VERIFY);
 			for (Map.Entry<String, List<Object>> h : request.headers()
 					.entrySet()) {
@@ -86,22 +100,23 @@ public class AndroidOpenStackClientConnector implements
 					sb.append(String.valueOf(v));
 				}
 				urlConnection.addRequestProperty(h.getKey(), sb.toString());
-				//Log.i(TAG, "add header " + h.getKey() + ": " + sb.toString());
+				// Log.i(TAG, "add header " + h.getKey() + ": " +
+				// sb.toString());
 			}
 			urlConnection.setRequestMethod(request.method().name());
 			if (request.entity() != null) {
 				urlConnection.setDoOutput(true);
 				urlConnection.setRequestProperty("Content-Type", request
 						.entity().getContentType());
-//				Log.i(TAG, "add header " + "Content-Type" + ": "
-//						+ request.entity().getContentType());
+				// Log.i(TAG, "add header " + "Content-Type" + ": "
+				// + request.entity().getContentType());
 				if (request.entity().getContentType()
 						.equals("application/json")) {
 					ObjectMapper mapper = mapper(request.entity().getEntity()
 							.getClass());
 					StringWriter writer = new StringWriter();
 					mapper.writeValue(writer, request.entity().getEntity());
-//					Log.i("ClientConnector", writer.toString());
+					// Log.i("ClientConnector", writer.toString());
 					urlConnection.getOutputStream().write(
 							writer.toString().getBytes());
 				} else {
@@ -119,6 +134,13 @@ public class AndroidOpenStackClientConnector implements
 		}
 	}
 
+	/**
+	 * Encode.
+	 * 
+	 * @param param
+	 *            the param
+	 * @return the string
+	 */
 	private String encode(String param) {
 		try {
 			return URLEncoder.encode(param, "UTF-8");

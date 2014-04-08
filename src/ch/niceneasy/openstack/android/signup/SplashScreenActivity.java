@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.signup;
 
 import android.app.Activity;
@@ -7,8 +10,18 @@ import android.view.View;
 import android.widget.Button;
 import ch.niceneasy.openstack.android.R;
 
+/**
+ * The Class SplashScreenActivity.
+ * 
+ * @author Daniele
+ */
 public class SplashScreenActivity extends Activity {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -34,6 +47,11 @@ public class SplashScreenActivity extends Activity {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onResume()
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();

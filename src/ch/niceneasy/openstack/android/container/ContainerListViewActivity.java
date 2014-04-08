@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.container;
 
 import java.util.ArrayList;
@@ -32,11 +35,26 @@ import ch.niceneasy.openstack.android.tenant.TenantListViewActivity;
 import com.woorea.openstack.swift.Swift;
 import com.woorea.openstack.swift.model.Container;
 
+/**
+ * The Class ContainerListViewActivity.
+ * 
+ * @author Daniele
+ */
 public class ContainerListViewActivity extends OpenstackListActivity {
 
+	/** The camera pic request. */
 	final int CAMERA_PIC_REQUEST = 2;
+
+	/** The gallery pic request. */
 	final int GALLERY_PIC_REQUEST = 3;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#onCreate(android
+	 * .os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -136,9 +154,17 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		getContainerTask.execute();
 	}
 
+	/**
+	 * The Class GetContainerTask.
+	 */
 	private class GetContainerTask extends
 			AsyncTask<String, Object, TaskResult<List<Container>>> {
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<List<Container>> doInBackground(String... params) {
 			try {
@@ -161,6 +187,11 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<List<Container>> result) {
 			super.onPostExecute(result);
@@ -176,21 +207,42 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/**
+	 * Creates the container.
+	 * 
+	 * @param name
+	 *            the name
+	 */
 	public void createContainer(String name) {
 		progressBar.setVisibility(View.VISIBLE);
 		CreateContainerTask createContainerTask = new CreateContainerTask(name);
 		createContainerTask.execute();
 	}
 
+	/**
+	 * The Class CreateContainerTask.
+	 */
 	private class CreateContainerTask extends
 			AsyncTask<String, Object, TaskResult<List<Container>>> {
 
+		/** The container name. */
 		private String containerName;
 
+		/**
+		 * Instantiates a new creates the container task.
+		 * 
+		 * @param containerName
+		 *            the container name
+		 */
 		private CreateContainerTask(String containerName) {
 			this.containerName = containerName;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<List<Container>> doInBackground(String... params) {
 			try {
@@ -218,6 +270,11 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<List<Container>> result) {
 			super.onPostExecute(result);
@@ -234,15 +291,30 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/**
+	 * The Class DeleteContainerTask.
+	 */
 	private class DeleteContainerTask extends
 			AsyncTask<String, Object, TaskResult<List<Container>>> {
 
+		/** The container. */
 		private Container container;
 
+		/**
+		 * Instantiates a new delete container task.
+		 * 
+		 * @param container
+		 *            the container
+		 */
 		private DeleteContainerTask(Container container) {
 			this.container = container;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<List<Container>> doInBackground(String... params) {
 			try {
@@ -268,6 +340,11 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<List<Container>> result) {
 			super.onPostExecute(result);
@@ -284,17 +361,34 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#setContentView
+	 * ()
+	 */
 	@Override
 	protected void setContentView() {
 		setContentView(R.layout.list_containers);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.addcontainer, menu);
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {

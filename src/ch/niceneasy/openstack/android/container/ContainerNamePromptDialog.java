@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.container;
 
 import android.app.AlertDialog;
@@ -9,8 +12,18 @@ import android.view.LayoutInflater;
 import android.widget.EditText;
 import ch.niceneasy.openstack.android.R;
 
+/**
+ * The Class ContainerNamePromptDialog.
+ * 
+ * @author Daniele
+ */
 public class ContainerNamePromptDialog extends DialogFragment {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.DialogFragment#onCreateDialog(android.os.Bundle)
+	 */
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Use the Builder class for convenient dialog construction

@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.sdk.connector;
 
 import static ch.niceneasy.openstack.android.sdk.service.OpenStackClientService.copyStream;
@@ -18,20 +21,39 @@ import com.woorea.openstack.base.client.OpenStackResponse;
 import com.woorea.openstack.base.client.OpenStackResponseException;
 import com.woorea.openstack.swift.model.ObjectDownload;
 
+/**
+ * The Class AndroidOpenStackResponse.
+ * 
+ * @author Daniele
+ */
 public class AndroidOpenStackResponse implements OpenStackResponse {
 
+	/** The tag. */
 	public static String TAG = "AndroidOpenStackResponse";
 
+	/** The url connection. */
 	private HttpURLConnection urlConnection;
 
+	/** The status phrase. */
 	private String statusPhrase;
 
+	/** The status code. */
 	private int statusCode;
 
+	/** The headers. */
 	private Map<String, String> headers;
 
+	/** The is. */
 	private InputStream is;
 
+	/**
+	 * Instantiates a new android open stack response.
+	 * 
+	 * @param urlConnection
+	 *            the url connection
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
 	public AndroidOpenStackResponse(HttpURLConnection urlConnection)
 			throws IOException {
 		this.urlConnection = urlConnection;
@@ -47,14 +69,14 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 		}
 		try {
 			this.statusPhrase = urlConnection.getResponseMessage();
-			//Log.i(TAG, this.statusPhrase);
+			// Log.i(TAG, this.statusPhrase);
 			headers = new HashMap<String, String>();
 			for (Entry<String, List<String>> iterable_element : urlConnection
 					.getHeaderFields().entrySet()) {
 				for (String value : iterable_element.getValue()) {
 					headers.put(iterable_element.getKey(), value);
-					//Log.i(TAG, "response header " + iterable_element.getKey()
-					//		+ ": " + value);
+					// Log.i(TAG, "response header " + iterable_element.getKey()
+					// + ": " + value);
 				}
 			}
 			is = copyStream(urlConnection.getInputStream());
@@ -70,6 +92,13 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.woorea.openstack.base.client.OpenStackResponse#getEntity(java.lang
+	 * .Class)
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getEntity(Class<T> returnType) {
@@ -91,37 +120,81 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.woorea.openstack.base.client.OpenStackResponse#getInputStream()
+	 */
 	@Override
 	public InputStream getInputStream() {
 		return is;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.woorea.openstack.base.client.OpenStackResponse#header(java.lang.String
+	 * )
+	 */
 	@Override
 	public String header(String name) {
 		return headers.get(name);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.woorea.openstack.base.client.OpenStackResponse#headers()
+	 */
 	@Override
 	public Map<String, String> headers() {
 		return headers;
 	}
 
+	/**
+	 * Gets the url connection.
+	 * 
+	 * @return the url connection
+	 */
 	public HttpURLConnection getUrlConnection() {
 		return urlConnection;
 	}
 
+	/**
+	 * Sets the url connection.
+	 * 
+	 * @param urlConnection
+	 *            the new url connection
+	 */
 	public void setUrlConnection(HttpURLConnection urlConnection) {
 		this.urlConnection = urlConnection;
 	}
 
+	/**
+	 * Gets the status code.
+	 * 
+	 * @return the status code
+	 */
 	public int getStatusCode() {
 		return statusCode;
 	}
 
+	/**
+	 * Sets the status code.
+	 * 
+	 * @param statusCode
+	 *            the new status code
+	 */
 	public void setStatusCode(int statusCode) {
 		this.statusCode = statusCode;
 	}
 
+	/**
+	 * Gets the status phrase.
+	 * 
+	 * @return the status phrase
+	 */
 	public String getStatusPhrase() {
 		return statusPhrase;
 	}

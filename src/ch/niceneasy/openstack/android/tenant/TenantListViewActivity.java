@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.tenant;
 
 import java.util.List;
@@ -26,8 +29,20 @@ import ch.niceneasy.openstack.android.signup.SplashScreenActivity;
 
 import com.woorea.openstack.keystone.model.Tenant;
 
+/**
+ * The Class TenantListViewActivity.
+ * 
+ * @author Daniele
+ */
 public class TenantListViewActivity extends OpenstackListActivity {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#onCreate(android
+	 * .os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -112,11 +127,20 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		// END_INCLUDE (inflate_set_custom_view)
 	}
 
+	/**
+	 * The Class GetTenantsTask.
+	 */
 	private class GetTenantsTask extends
 			AsyncTask<String, Object, TaskResult<List<Tenant>>> {
 
+		/** The edit settings. */
 		boolean editSettings = false;
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<List<Tenant>> doInBackground(String... params) {
 			try {
@@ -129,6 +153,11 @@ public class TenantListViewActivity extends OpenstackListActivity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<List<Tenant>> result) {
 			super.onPostExecute(result);
@@ -149,12 +178,22 @@ public class TenantListViewActivity extends OpenstackListActivity {
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+	 */
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// getMenuInflater().inflate(R.menu.addcontainer, menu);
 		return true;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
+	 */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
@@ -167,6 +206,11 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onRestart()
+	 */
 	@Override
 	protected void onRestart() {
 		super.onRestart();
@@ -175,23 +219,43 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onResume()
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
 		// The activity has become visible (it is now "resumed").
 	}
 
+	/**
+	 * Load data.
+	 */
 	private void loadData() {
 		progressBar.bringToFront();
 		GetTenantsTask getTenantsTask = new GetTenantsTask();
 		getTenantsTask.execute();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#setContentView
+	 * ()
+	 */
 	@Override
 	protected void setContentView() {
 		setContentView(R.layout.list_tenants);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#finish()
+	 */
 	@Override
 	public void finish() {
 		getApplicationState().setShouldReturnToCaller(false);

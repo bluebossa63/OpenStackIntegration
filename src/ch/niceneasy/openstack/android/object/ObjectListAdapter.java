@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.object;
 
 import java.util.ArrayList;
@@ -12,31 +15,65 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import ch.niceneasy.openstack.android.R;
 
+/**
+ * The Class ObjectListAdapter.
+ * 
+ * @author Daniele
+ */
 public class ObjectListAdapter extends BaseAdapter {
 
+	/** The objects. */
 	private List<com.woorea.openstack.swift.model.Object> objects = new ArrayList<com.woorea.openstack.swift.model.Object>();
 
+	/** The context. */
 	private Context context;
 
+	/**
+	 * Instantiates a new object list adapter.
+	 * 
+	 * @param context
+	 *            the context
+	 */
 	public ObjectListAdapter(Context context) {
 		this.context = context;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.Adapter#getCount()
+	 */
 	@Override
 	public int getCount() {
 		return objects.size();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.Adapter#getItem(int)
+	 */
 	@Override
 	public Object getItem(int location) {
 		return objects.get(location);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.Adapter#getItemId(int)
+	 */
 	@Override
 	public long getItemId(int location) {
 		return objects.get(location).hashCode();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.widget.Adapter#getView(int, android.view.View,
+	 * android.view.ViewGroup)
+	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater mInflater = (LayoutInflater) context
@@ -64,16 +101,34 @@ public class ObjectListAdapter extends BaseAdapter {
 		return convertView;
 	}
 
+	/**
+	 * Sets the objects.
+	 * 
+	 * @param objects
+	 *            the new objects
+	 */
 	public void setObjects(List<com.woorea.openstack.swift.model.Object> objects) {
 		this.objects = objects;
 		this.notifyDataSetChanged();
 	}
 
+	/**
+	 * Clean name.
+	 * 
+	 * @param objectName
+	 *            the object name
+	 * @return the string
+	 */
 	public static String cleanName(String objectName) {
 		String[] parts = objectName.split("/");
 		return parts[parts.length - 1];
 	}
 
+	/**
+	 * Gets the objects.
+	 * 
+	 * @return the objects
+	 */
 	public List<com.woorea.openstack.swift.model.Object> getObjects() {
 		return objects;
 	}

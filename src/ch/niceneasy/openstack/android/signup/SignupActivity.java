@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014, daniele.ulrich@gmail.com, http://www.niceneasy.ch. All rights reserved.
+ */
 package ch.niceneasy.openstack.android.signup;
 
 import android.app.Activity;
@@ -15,18 +18,39 @@ import ch.niceneasy.openstack.android.base.TaskResult;
 
 import com.woorea.openstack.keystone.model.User;
 
+/**
+ * The Class SignupActivity.
+ * 
+ * @author Daniele
+ */
 public class SignupActivity extends Activity {
 
+	/** The progress bar. */
 	protected ProgressBar progressBar;
 
+	/** The txt name. */
 	EditText txtName;
+
+	/** The txt username. */
 	EditText txtUsername;
+
+	/** The txt email. */
 	EditText txtEmail;
+
+	/** The txt password. */
 	EditText txtPassword;
+
+	/** The txt please wait. */
 	TextView txtPleaseWait;
 
+	/** The signup service. */
 	SignupService signupService;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onCreate(android.os.Bundle)
+	 */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -73,9 +97,17 @@ public class SignupActivity extends Activity {
 
 	}
 
+	/**
+	 * The Class SubscribeTask.
+	 */
 	private class SubscribeTask extends
 			AsyncTask<String, Object, TaskResult<User>> {
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
+		 */
 		@Override
 		protected TaskResult<User> doInBackground(String... params) {
 			try {
@@ -86,6 +118,11 @@ public class SignupActivity extends Activity {
 			}
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
+		 */
 		@Override
 		protected void onPostExecute(TaskResult<User> result) {
 			super.onPostExecute(result);
@@ -93,7 +130,7 @@ public class SignupActivity extends Activity {
 			if (result.isValid()) {
 				Intent intent = new Intent(SignupActivity.this,
 						LoginActivity.class);
-				//intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+				// intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 				intent.putExtra("registered", true);
 				startActivity(intent);
 			} else {
@@ -103,6 +140,11 @@ public class SignupActivity extends Activity {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see android.app.Activity#onResume()
+	 */
 	@Override
 	protected void onResume() {
 		super.onResume();
