@@ -368,10 +368,6 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			try {
 				SharedPreferences prefs = PreferenceManager
 						.getDefaultSharedPreferences(ObjectListViewActivity.this);
-				String localStorage = prefs.getString(
-						ObjectListViewActivity.this
-								.getString(R.string.LOCAL_STORAGE),
-						"/sdcard/Download/");
 				ObjectDownload download = getService()
 						.getSwift(
 								getApplicationState().getSelectedTenant()
@@ -383,8 +379,11 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 						.download(
 								getApplicationState().getSelectedObject()
 										.getName()).execute();
-				File outputDir = new File(localStorage, "openstack");
-				if (!outputDir.exists()) {
+				File outputDir = new File(Environment.getExternalStorageDirectory()
+                        .getAbsolutePath(), "openstack");    
+                if (!outputDir.exists()) {
+                    outputDir.mkdir();
+                }				if (!outputDir.exists()) {
 					outputDir.mkdir();
 				}
 				String cleanedName = cleanName(getApplicationState()
