@@ -24,7 +24,7 @@ As you can see, I have all the projects checked out in the workspace and you see
 
 You can try to close the project and use the to files as .project and .classpath or you set it up manually:
 
-![Alt text](/docs/eclipse2.png?raw=true "Optional title")
+!/docs/eclipse2.png?raw=true!
 Add projects...
 
 ![Alt text](/docs/eclipse3.png?raw=true "Optional title")
