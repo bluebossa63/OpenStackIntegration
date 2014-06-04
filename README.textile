@@ -43,6 +43,14 @@ I tested it on 4.4.
 
 I recommend http://www.genymotion.com/ (thanks, Frédéric!) as the emulator that comes with the android sdk is much to slow!
 
+On setting up the project please refer to
+
+https://github.com/bluebossa63/OpenStackIntegration/issues/1
+
+and do not hesitate to add your own questions! 
+
+Documentation is something leaving always a lot of room for improvement!
+
 
 
 h2. Maven
