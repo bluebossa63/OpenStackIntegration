@@ -17,7 +17,7 @@ swift-model
 
 were added as eclipse projects by eclipse build path (with export) for the first version:
 
-![That's how it looks in my workspace...](/docs/eclipse1.png?raw=true "That's how it looks in my workspace...")
+!/docs/eclipse1.png?raw=true!
 
 That's how it looks in my workspace...
 As you can see, I have all the projects checked out in the workspace and you see the template.classpath and the template project.
@@ -25,22 +25,23 @@ As you can see, I have all the projects checked out in the workspace and you see
 You can try to close the project and use the to files as .project and .classpath or you set it up manually:
 
 !/docs/eclipse2.png?raw=true!
+
 Add projects...
 
-![Alt text](/docs/eclipse3.png?raw=true "Optional title")
+!/docs/eclipse3.png?raw=true!
 
 check the exports:
 
-![Alt text](/docs/eclipse4.png?raw=true "Optional title")
+!/docs/eclipse4.png?raw=true!
 
 And just in case to be sure: try to start an emulator without any code.
 
 I tested it on 4.4.
 
-![Alt text](/docs/eclipse5.png?raw=true "Optional title")
+!/docs/eclipse5.png?raw=true!
 
 
-I recommend http://www.genymotion.com/ as the emulator that comes with the android sdk is much to slow!
+I recommend http://www.genymotion.com/ (thanks, Frédéric!) as the emulator that comes with the android sdk is much to slow!
 
 
 
