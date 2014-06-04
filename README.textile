@@ -15,12 +15,38 @@ keystone-model
 swift-client
 swift-model
 
-were added as eclipse projects by eclipse build path (with export) for the first version
+were added as eclipse projects by eclipse build path (with export) for the first version:
+
+![That's how it looks in my workspace...](/docs/eclipse1.png?raw=true "That's how it looks in my workspace...")
+
+That's how it looks in my workspace...
+As you can see, I have all the projects checked out in the workspace and you see the template.classpath and the template project.
+
+You can try to close the project and use the to files as .project and .classpath or you set it up manually:
+
+![Alt text](/docs/eclipse2.png?raw=true "Optional title")
+Add projects...
+
+![Alt text](/docs/eclipse3.png?raw=true "Optional title")
+
+check the exports:
+
+![Alt text](/docs/eclipse4.png?raw=true "Optional title")
+
+And just in case to be sure: try to start an emulator without any code.
+
+I tested it on 4.4.
+
+![Alt text](/docs/eclipse5.png?raw=true "Optional title")
+
+
+I recommend http://www.genymotion.com/ as the emulator that comes with the android sdk is much to slow!
+
 
 
 h2. Maven
 
-The project is not mavenized, yet.
+The project is not mavenized, yet. Will be done in 2 weeks.
 
 h3. Maven Repositories
 
