@@ -44,7 +44,7 @@ public class TenantListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getCount()
 	 */
-	@Override
+	
 	public int getCount() {
 		return tenants.size();
 	}
@@ -54,7 +54,7 @@ public class TenantListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getItem(int)
 	 */
-	@Override
+	
 	public Object getItem(int location) {
 		return tenants.get(location);
 	}
@@ -64,7 +64,7 @@ public class TenantListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getItemId(int)
 	 */
-	@Override
+	
 	public long getItemId(int location) {
 		return tenants.get(location).hashCode();
 	}
@@ -75,7 +75,7 @@ public class TenantListAdapter extends BaseAdapter {
 	 * @see android.widget.Adapter#getView(int, android.view.View,
 	 * android.view.ViewGroup)
 	 */
-	@Override
+	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		// ViewHolder holder = null;
 		LayoutInflater mInflater = (LayoutInflater) context

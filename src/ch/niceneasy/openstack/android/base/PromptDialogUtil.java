@@ -73,7 +73,6 @@ public class PromptDialogUtil {
 		if (onOK != null) {
 			alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
 					new DialogInterface.OnClickListener() {
-						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							context.startActivity(onOK);
 							return;

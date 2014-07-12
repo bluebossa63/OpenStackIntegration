@@ -100,7 +100,7 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 	 * .Class)
 	 */
 	@SuppressWarnings("unchecked")
-	@Override
+	
 	public <T> T getEntity(Class<T> returnType) {
 		if (getStatusCode() >= 400) {
 			throw new OpenStackResponseException(getStatusPhrase(),
@@ -125,7 +125,7 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 	 * 
 	 * @see com.woorea.openstack.base.client.OpenStackResponse#getInputStream()
 	 */
-	@Override
+	
 	public InputStream getInputStream() {
 		return is;
 	}
@@ -137,7 +137,7 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 	 * com.woorea.openstack.base.client.OpenStackResponse#header(java.lang.String
 	 * )
 	 */
-	@Override
+	
 	public String header(String name) {
 		return headers.get(name);
 	}
@@ -147,7 +147,7 @@ public class AndroidOpenStackResponse implements OpenStackResponse {
 	 * 
 	 * @see com.woorea.openstack.base.client.OpenStackResponse#headers()
 	 */
-	@Override
+	
 	public Map<String, String> headers() {
 		return headers;
 	}

@@ -28,7 +28,7 @@ public class ServicePreferences extends PreferenceActivity {
 	 * @see android.preference.PreferenceActivity#onCreate(android.os.Bundle)
 	 */
 	@SuppressWarnings("deprecation")
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		addPreferencesFromResource(R.xml.preferences);
@@ -39,7 +39,7 @@ public class ServicePreferences extends PreferenceActivity {
 	 * 
 	 * @see android.app.Activity#finish()
 	 */
-	@Override
+	
 	public void finish() {
 		super.finish();
 		OpenStackClientService.getInstance().resetConnection();

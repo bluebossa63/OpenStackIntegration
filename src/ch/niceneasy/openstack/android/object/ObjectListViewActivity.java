@@ -95,7 +95,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#onCreate(android
 	 * .os.Bundle)
 	 */
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
@@ -110,7 +110,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 					R.layout.actionbar_custom_view_done_cancel, null);
 			customActionBarView.findViewById(R.id.actionbar_done)
 					.setOnClickListener(new View.OnClickListener() {
-						@Override
+						
 						public void onClick(View v) {
 							UploadObjectTask uploadObjectTask = new UploadObjectTask(
 									getApplicationState().getShareIntent());
@@ -119,7 +119,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 					});
 			customActionBarView.findViewById(R.id.actionbar_cancel)
 					.setOnClickListener(new View.OnClickListener() {
-						@Override
+						
 						public void onClick(View v) {
 							getApplicationState().setSelectedTenant(null);
 							finish();
@@ -142,7 +142,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 
 		Button button = (Button) findViewById(R.id.back);
 		button.setOnClickListener(new OnClickListener() {
-			@Override
+			
 			public void onClick(View v) {
 				if (getApplicationState().getSelectedDirectory().getParent() == null) {
 					// startActivity(new Intent(ObjectListViewActivity.this,
@@ -162,7 +162,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		directoryListAdapter = new DirectoryListAdapter(this);
 		directoryListView.setAdapter(directoryListAdapter);
 		directoryListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
+			
 			public void onItemClick(AdapterView<?> arg0, View arg1, int item,
 					long arg3) {
 				getApplicationState().setSelectedDirectory(
@@ -174,7 +174,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		directoryListView
 				.setOnItemLongClickListener(new OnItemLongClickListener() {
 
-					@Override
+					
 					public boolean onItemLongClick(AdapterView<?> arg0,
 							View arg1, int item, long arg3) {
 						PseudoFileSystem fs = (PseudoFileSystem) ObjectListViewActivity.this
@@ -187,7 +187,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 								.setMessage("are you sure that you want to delete this folder?");
 						alertDialog.setButton(DialogInterface.BUTTON_POSITIVE,
 								"OK", new DialogInterface.OnClickListener() {
-									@Override
+									
 									public void onClick(DialogInterface dialog,
 											int which) {
 										DeleteDirectoryTask deleteDirectoryTask = new DeleteDirectoryTask(
@@ -201,7 +201,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 						alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
 								"Cancel",
 								new DialogInterface.OnClickListener() {
-									@Override
+									
 									public void onClick(DialogInterface dialog,
 											int which) {
 										return;
@@ -214,7 +214,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 
 		setListAdapter(new ObjectListAdapter(this));
 		getListView().setOnItemClickListener(new OnItemClickListener() {
-			@Override
+			
 			public void onItemClick(AdapterView<?> arg0, View arg1, int item,
 					long arg3) {
 				getApplicationState().setSelectedObject(
@@ -225,7 +225,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		});
 		getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 
-			@Override
+			
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int item, long arg3) {
 				final Object selectedObject = (Object) getListAdapter()
@@ -237,7 +237,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 						.setMessage("are you sure that you want to delete this folder?");
 				alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
 						new DialogInterface.OnClickListener() {
-							@Override
+							
 							public void onClick(DialogInterface dialog,
 									int which) {
 								DeleteObjectTask deleteObjectTask = new DeleteObjectTask(
@@ -248,7 +248,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 						});
 				alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
 						"Cancel", new DialogInterface.OnClickListener() {
-							@Override
+							
 							public void onClick(DialogInterface dialog,
 									int which) {
 								return;
@@ -291,14 +291,14 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 	 * 
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
 	 */
-	@Override
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.sharemenu, menu);
 		return true;
 	}
 
-	// @Override
+	// 
 	// protected void onSaveInstanceState(Bundle outState) {
 	// super.onSaveInstanceState(outState);
 	// if (mImageUri != null) {
@@ -306,7 +306,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 	// }
 	// }
 	//
-	// @Override
+	// 
 	// protected void onRestoreInstanceState(Bundle savedInstanceState) {
 	// super.onRestoreInstanceState(savedInstanceState);
 	// if (savedInstanceState.containsKey("cameraImageUri")) {
@@ -320,7 +320,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 	 * 
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
-	@Override
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.add:
@@ -361,7 +361,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 	 * @see android.app.Activity#onActivityResult(int, int,
 	 * android.content.Intent)
 	 */
-	@Override
+	
 	protected void onActivityResult(int requestCode, int resultCode,
 			Intent intentData) {
 		super.onActivityResult(requestCode, resultCode, intentData);
@@ -417,7 +417,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
 		@SuppressLint("SdCardPath")
-		@Override
+		
 		protected TaskResult<File> doInBackground(String... params) {
 			File tempFile = null;
 			try {
@@ -468,7 +468,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<File> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
@@ -520,7 +520,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
-		@Override
+		
 		protected TaskResult<Objects> doInBackground(String... params) {
 			try {
 				Swift swift = getService().getSwift(
@@ -541,7 +541,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<Objects> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
@@ -608,7 +608,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
-		@Override
+		
 		protected TaskResult<ObjectForUpload> doInBackground(String... params) {
 			try {
 				Uri imageUri = intentData.getData();
@@ -656,7 +656,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<ObjectForUpload> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
@@ -703,7 +703,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
-		@Override
+		
 		protected TaskResult<List<Object>> doInBackground(String... params) {
 			try {
 				Swift swift = getService().getSwift(
@@ -718,7 +718,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 				tempList.remove(object);
 				Comparator<Object> comparator = new Comparator<Object>() {
 
-					@Override
+					
 					public int compare(Object lhs, Object rhs) {
 						return lhs.getName().compareTo(rhs.getName());
 					}
@@ -736,7 +736,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<List<Object>> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
@@ -783,7 +783,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
-		@Override
+		
 		protected TaskResult<PseudoFileSystem> doInBackground(String... params) {
 			try {
 				Swift swift = getService().getSwift(
@@ -808,7 +808,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<PseudoFileSystem> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
@@ -852,7 +852,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#setContentView
 	 * ()
 	 */
-	@Override
+	
 	protected void setContentView() {
 		setContentView(R.layout.list_objects);
 	}
@@ -905,7 +905,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
-		@Override
+		
 		protected TaskResult<PseudoFileSystem> doInBackground(String... params) {
 			try {
 				Container container = new Container();
@@ -941,7 +941,7 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<PseudoFileSystem> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);

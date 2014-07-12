@@ -60,19 +60,17 @@ public class SignupService {
 	static {
 
 		DO_NOT_VERIFY = new HostnameVerifier() {
-			@Override
+
 			public boolean verify(String hostname, SSLSession session) {
 				return true;
 			}
 		};
 
 		trustAllCerts = new TrustManager[] { new X509TrustManager() {
-			@Override
 			public java.security.cert.X509Certificate[] getAcceptedIssuers() {
 				return new java.security.cert.X509Certificate[] {};
 			}
 
-			@Override
 			public void checkClientTrusted(
 					java.security.cert.X509Certificate[] arg0, String arg1)
 					throws java.security.cert.CertificateException {
@@ -80,7 +78,6 @@ public class SignupService {
 
 			}
 
-			@Override
 			public void checkServerTrusted(
 					java.security.cert.X509Certificate[] chain, String authType)
 					throws java.security.cert.CertificateException {

@@ -43,7 +43,7 @@ public class ObjectListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getCount()
 	 */
-	@Override
+	
 	public int getCount() {
 		return objects.size();
 	}
@@ -53,7 +53,7 @@ public class ObjectListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getItem(int)
 	 */
-	@Override
+	
 	public Object getItem(int location) {
 		return objects.get(location);
 	}
@@ -63,7 +63,7 @@ public class ObjectListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getItemId(int)
 	 */
-	@Override
+	
 	public long getItemId(int location) {
 		return objects.get(location).hashCode();
 	}
@@ -74,7 +74,7 @@ public class ObjectListAdapter extends BaseAdapter {
 	 * @see android.widget.Adapter#getView(int, android.view.View,
 	 * android.view.ViewGroup)
 	 */
-	@Override
+	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

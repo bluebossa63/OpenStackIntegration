@@ -43,7 +43,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#onCreate(android
 	 * .os.Bundle)
 	 */
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ServicePreferences.updateService(this);
@@ -57,7 +57,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		}
 		setListAdapter(new TenantListAdapter(this));
 		getListView().setOnItemClickListener(new OnItemClickListener() {
-			@Override
+			
 			public void onItemClick(AdapterView<?> arg0, View arg1, int item,
 					long arg3) {
 				Intent showTenant = new Intent(TenantListViewActivity.this,
@@ -93,14 +93,13 @@ public class TenantListViewActivity extends OpenstackListActivity {
 				R.layout.ctionbar_custom_view_settings_cancel, null);
 		customActionBarView.findViewById(R.id.menu).setOnClickListener(
 				new View.OnClickListener() {
-					@Override
+					
 					public void onClick(View v) {
 						PopupMenu menu = new PopupMenu(
 								TenantListViewActivity.this, v);
 						menu.getMenuInflater().inflate(R.menu.homemenu,
 								menu.getMenu());
 						menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-							@Override
 							public boolean onMenuItemClick(MenuItem item) {
 								return onOptionsItemSelected(item);
 							}
@@ -110,7 +109,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 				});
 		// customActionBarView.findViewById(R.id.actionbar_cancel)
 		// .setOnClickListener(new View.OnClickListener() {
-		// @Override
+		// 
 		// public void onClick(View v) {
 		// }
 		// });
@@ -141,7 +140,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
-		@Override
+		
 		protected TaskResult<List<Tenant>> doInBackground(String... params) {
 			try {
 				return new TaskResult<List<Tenant>>(OpenStackClientService
@@ -158,7 +157,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<List<Tenant>> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
@@ -183,7 +182,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 	 * 
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
 	 */
-	@Override
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// getMenuInflater().inflate(R.menu.addcontainer, menu);
 		return true;
@@ -194,7 +193,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 	 * 
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
-	@Override
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.action_settings:
@@ -211,7 +210,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 	 * 
 	 * @see android.app.Activity#onRestart()
 	 */
-	@Override
+	
 	protected void onRestart() {
 		super.onRestart();
 		if (!OpenStackClientService.getInstance().isLoggedIn()) {
@@ -224,7 +223,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 	 * 
 	 * @see android.app.Activity#onResume()
 	 */
-	@Override
+	
 	protected void onResume() {
 		super.onResume();
 		// The activity has become visible (it is now "resumed").
@@ -246,7 +245,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#setContentView
 	 * ()
 	 */
-	@Override
+	
 	protected void setContentView() {
 		setContentView(R.layout.list_tenants);
 	}
@@ -256,7 +255,7 @@ public class TenantListViewActivity extends OpenstackListActivity {
 	 * 
 	 * @see android.app.Activity#finish()
 	 */
-	@Override
+	
 	public void finish() {
 		getApplicationState().setShouldReturnToCaller(false);
 		super.finish();

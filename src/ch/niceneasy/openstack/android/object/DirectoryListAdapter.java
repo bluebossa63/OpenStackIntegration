@@ -42,7 +42,7 @@ public class DirectoryListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getCount()
 	 */
-	@Override
+	
 	public int getCount() {
 		return directories.size();
 	}
@@ -52,7 +52,7 @@ public class DirectoryListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getItem(int)
 	 */
-	@Override
+	
 	public Object getItem(int position) {
 		return directories.get(position);
 	}
@@ -62,7 +62,7 @@ public class DirectoryListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getItemId(int)
 	 */
-	@Override
+	
 	public long getItemId(int position) {
 		return directories.get(position).hashCode();
 	}
@@ -73,7 +73,7 @@ public class DirectoryListAdapter extends BaseAdapter {
 	 * @see android.widget.Adapter#getView(int, android.view.View,
 	 * android.view.ViewGroup)
 	 */
-	@Override
+	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

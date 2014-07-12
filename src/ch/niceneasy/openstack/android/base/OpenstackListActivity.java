@@ -25,7 +25,7 @@ public abstract class OpenstackListActivity extends ListActivity {
 	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView();
@@ -104,7 +104,7 @@ public abstract class OpenstackListActivity extends ListActivity {
 	 * 
 	 * @see android.app.Activity#onStart()
 	 */
-	@Override
+	
 	protected void onStart() {
 		super.onStart();
 		if (getApplicationState().shouldReturnToCaller()) {

@@ -51,7 +51,7 @@ public class SignupActivity extends Activity {
 	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.signup);
@@ -72,7 +72,7 @@ public class SignupActivity extends Activity {
 		Button btRegister = (Button) findViewById(R.id.btnRegister);
 		btRegister.setOnClickListener(new Button.OnClickListener() {
 
-			@Override
+			
 			public void onClick(View v) {
 				signupService.getUser().setName(
 						txtUsername.getText().toString());
@@ -89,7 +89,7 @@ public class SignupActivity extends Activity {
 		Button btCancel = (Button) findViewById(R.id.btnCancel);
 		btCancel.setOnClickListener(new Button.OnClickListener() {
 
-			@Override
+			
 			public void onClick(View v) {
 				finish();
 			}
@@ -108,7 +108,7 @@ public class SignupActivity extends Activity {
 		 * 
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
-		@Override
+		
 		protected TaskResult<User> doInBackground(String... params) {
 			try {
 				signupService.register();
@@ -123,7 +123,7 @@ public class SignupActivity extends Activity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<User> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
@@ -145,7 +145,7 @@ public class SignupActivity extends Activity {
 	 * 
 	 * @see android.app.Activity#onResume()
 	 */
-	@Override
+	
 	protected void onResume() {
 		super.onResume();
 		// The activity has become visible (it is now "resumed").

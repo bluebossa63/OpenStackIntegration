@@ -55,12 +55,12 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#onCreate(android
 	 * .os.Bundle)
 	 */
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		Button button = (Button) findViewById(R.id.back);
 		button.setOnClickListener(new OnClickListener() {
-			@Override
+			
 			public void onClick(View v) {
 				startActivity(new Intent(ContainerListViewActivity.this,
 						TenantListViewActivity.class));
@@ -68,7 +68,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		});
 		getListView().setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
+			
 			public void onItemClick(AdapterView<?> arg0, View arg1, int item,
 					long arg3) {
 				Intent showObjects = new Intent(ContainerListViewActivity.this,
@@ -80,7 +80,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		});
 		getListView().setOnItemLongClickListener(new OnItemLongClickListener() {
 
-			@Override
+			
 			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
 					int item, long arg3) {
 				final Container selectedContainer = (Container) getListAdapter()
@@ -92,7 +92,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 						.setMessage("are you sure that you want to delete this folder?");
 				alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, "OK",
 						new DialogInterface.OnClickListener() {
-							@Override
+							
 							public void onClick(DialogInterface dialog,
 									int which) {
 								DeleteContainerTask deleteContainerTask = new DeleteContainerTask(
@@ -103,7 +103,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 						});
 				alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE,
 						"Cancel", new DialogInterface.OnClickListener() {
-							@Override
+							
 							public void onClick(DialogInterface dialog,
 									int which) {
 								return;
@@ -123,7 +123,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 				R.layout.ctionbar_custom_view_settings_cancel, null);
 		customActionBarView.findViewById(R.id.menu).setOnClickListener(
 				new View.OnClickListener() {
-					@Override
+					
 					public void onClick(View v) {
 						PopupMenu menu = new PopupMenu(
 								ContainerListViewActivity.this, v);
@@ -134,7 +134,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 				});
 		// customActionBarView.findViewById(R.id.actionbar_cancel)
 		// .setOnClickListener(new View.OnClickListener() {
-		// @Override
+		// 
 		// public void onClick(View v) {
 		// }
 		// });
@@ -165,7 +165,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
-		@Override
+		
 		protected TaskResult<List<Container>> doInBackground(String... params) {
 			try {
 				Swift swift = getService().getSwift(
@@ -174,7 +174,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 						.getList();
 				Comparator<Container> comparator = new Comparator<Container>() {
 
-					@Override
+					
 					public int compare(Container lhs, Container rhs) {
 						return lhs.getName().compareTo(rhs.getName());
 					}
@@ -192,7 +192,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<List<Container>> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
@@ -243,7 +243,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
-		@Override
+		
 		protected TaskResult<List<Container>> doInBackground(String... params) {
 			try {
 				Swift swift = getService().getSwift(
@@ -257,7 +257,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 				tempList.add(container);
 				Comparator<Container> comparator = new Comparator<Container>() {
 
-					@Override
+					
 					public int compare(Container lhs, Container rhs) {
 						return lhs.getName().compareTo(rhs.getName());
 					}
@@ -275,7 +275,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<List<Container>> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
@@ -315,7 +315,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#doInBackground(java.lang.Object[])
 		 */
-		@Override
+		
 		protected TaskResult<List<Container>> doInBackground(String... params) {
 			try {
 				Swift swift = getService().getSwift(
@@ -327,7 +327,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 				tempList.remove(container);
 				Comparator<Container> comparator = new Comparator<Container>() {
 
-					@Override
+					
 					public int compare(Container lhs, Container rhs) {
 						return lhs.getName().compareTo(rhs.getName());
 					}
@@ -345,7 +345,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 		 * 
 		 * @see android.os.AsyncTask#onPostExecute(java.lang.Object)
 		 */
-		@Override
+		
 		protected void onPostExecute(TaskResult<List<Container>> result) {
 			super.onPostExecute(result);
 			progressBar.setVisibility(View.GONE);
@@ -368,7 +368,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 	 * ch.niceneasy.openstack.android.base.OpenstackListActivity#setContentView
 	 * ()
 	 */
-	@Override
+	
 	protected void setContentView() {
 		setContentView(R.layout.list_containers);
 	}
@@ -378,7 +378,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 	 * 
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
 	 */
-	@Override
+	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.addcontainer, menu);
 		return true;
@@ -389,7 +389,7 @@ public class ContainerListViewActivity extends OpenstackListActivity {
 	 * 
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
-	@Override
+	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.add:

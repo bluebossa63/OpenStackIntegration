@@ -7,19 +7,11 @@
 	<packaging>apk</packaging>
 	<name>OpenStack for Android</name>
 	<properties>
-		<platform.version>4.1.1.4</platform.version>
+		<platform.version>4.4.2</platform.version>
 		<android.plugin.version>3.8.2</android.plugin.version>
 	</properties>
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>gen</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
@@ -43,7 +35,7 @@
 				<plugin>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.1</version>
-				</plugin>			    
+				</plugin>
 				<!--This plugin's configuration is used to store Eclipse m2e settings 
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
@@ -81,16 +73,6 @@
 	</build>
 	<dependencies>
 		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-mapper-asl</artifactId>
-			<version>1.9.13</version>
-		</dependency>
-		<dependency>
-			<groupId>org.codehaus.jackson</groupId>
-			<artifactId>jackson-core-asl</artifactId>
-			<version>1.9.11</version>
-		</dependency>
-		<dependency>
 			<groupId>com.woorea</groupId>
 			<artifactId>keystone-client</artifactId>
 			<version>3.2.2-SNAPSHOT</version>
@@ -116,15 +98,25 @@
 			<version>3.2.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.2.1</version>
+		</dependency>
+		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
-			<version>4.1.1.4</version>
+			<version>${platform.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.google.android</groupId>
+			<artifactId>android-support</artifactId>
+			<version>v4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.android</groupId>
 			<artifactId>android-test</artifactId>
-			<version>${platform.version}</version>
+			<version>4.4.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -134,4 +126,19 @@
 			<scope>provided</scope>
 		</dependency>
 	</dependencies>
+	<repositories>
+		<repository>
+			<id>niceneasy-repository-group</id>
+			<name>niceneasy Maven Repository Group</name>
+			<url>http://nexus.niceneasy.ch/nexus/content/groups/public/</url>
+			<layout>default</layout>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 </project>

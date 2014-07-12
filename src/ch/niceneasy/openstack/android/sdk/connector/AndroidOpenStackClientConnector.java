@@ -41,7 +41,6 @@ public class AndroidOpenStackClientConnector implements
 	static {
 
 		DO_NOT_VERIFY = new HostnameVerifier() {
-			@Override
 			public boolean verify(String hostname, SSLSession session) {
 				return true;
 			}
@@ -55,7 +54,6 @@ public class AndroidOpenStackClientConnector implements
 	 * com.woorea.openstack.base.client.OpenStackClientConnector#request(com
 	 * .woorea.openstack.base.client.OpenStackRequest)
 	 */
-	@Override
 	public <T> OpenStackResponse request(OpenStackRequest<T> request) {
 
 		StringBuilder queryParameters = new StringBuilder();

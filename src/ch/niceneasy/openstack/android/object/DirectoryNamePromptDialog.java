@@ -24,7 +24,7 @@ public class DirectoryNamePromptDialog extends DialogFragment {
 	 * 
 	 * @see android.app.DialogFragment#onCreateDialog(android.os.Bundle)
 	 */
-	@Override
+	
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
 		// Use the Builder class for convenient dialog construction
 		AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -32,7 +32,7 @@ public class DirectoryNamePromptDialog extends DialogFragment {
 		builder.setView(inflater.inflate(R.layout.prompt_folder_name, null))
 				.setPositiveButton(R.string.done,
 						new DialogInterface.OnClickListener() {
-							@Override
+							
 							public void onClick(DialogInterface dialog, int id) {
 								EditText editText = (EditText) DirectoryNamePromptDialog.this
 										.getDialog().findViewById(
@@ -45,7 +45,7 @@ public class DirectoryNamePromptDialog extends DialogFragment {
 						})
 				.setNegativeButton(R.string.cancel,
 						new DialogInterface.OnClickListener() {
-							@Override
+							
 							public void onClick(DialogInterface dialog, int id) {
 								DirectoryNamePromptDialog.this.getDialog()
 										.cancel();

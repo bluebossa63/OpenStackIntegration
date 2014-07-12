@@ -22,14 +22,14 @@ public class SplashScreenActivity extends Activity {
 	 * 
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
-	@Override
+	
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.welcome_splash);
 		Button btRegister = (Button) findViewById(R.id.btnRegister);
 		btRegister.setOnClickListener(new Button.OnClickListener() {
 
-			@Override
+			
 			public void onClick(View v) {
 				startActivity(new Intent(SplashScreenActivity.this,
 						SignupActivity.class));
@@ -38,7 +38,7 @@ public class SplashScreenActivity extends Activity {
 		Button btLogin = (Button) findViewById(R.id.btnLogin);
 		btLogin.setOnClickListener(new Button.OnClickListener() {
 
-			@Override
+			
 			public void onClick(View v) {
 				startActivity(new Intent(SplashScreenActivity.this,
 						LoginActivity.class));
@@ -52,7 +52,7 @@ public class SplashScreenActivity extends Activity {
 	 * 
 	 * @see android.app.Activity#onResume()
 	 */
-	@Override
+	
 	protected void onResume() {
 		super.onResume();
 		// The activity has become visible (it is now "resumed").

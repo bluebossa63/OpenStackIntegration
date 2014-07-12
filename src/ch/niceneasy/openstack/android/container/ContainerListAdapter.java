@@ -44,7 +44,6 @@ public class ContainerListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getCount()
 	 */
-	@Override
 	public int getCount() {
 		return containers.size();
 	}
@@ -54,7 +53,6 @@ public class ContainerListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getItem(int)
 	 */
-	@Override
 	public Object getItem(int location) {
 		return containers.get(location);
 	}
@@ -64,7 +62,7 @@ public class ContainerListAdapter extends BaseAdapter {
 	 * 
 	 * @see android.widget.Adapter#getItemId(int)
 	 */
-	@Override
+	
 	public long getItemId(int location) {
 		return containers.get(location).hashCode();
 	}
@@ -75,7 +73,7 @@ public class ContainerListAdapter extends BaseAdapter {
 	 * @see android.widget.Adapter#getView(int, android.view.View,
 	 * android.view.ViewGroup)
 	 */
-	@Override
+	
 	public View getView(int position, View convertView, ViewGroup parent) {
 		LayoutInflater mInflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
