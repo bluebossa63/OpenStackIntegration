@@ -7,7 +7,7 @@
 	<packaging>apk</packaging>
 	<name>OpenStack for Android</name>
 	<properties>
-		<platform.version>4.4.2</platform.version>
+		<platform.version>4.4.2_r3</platform.version>
 		<android.plugin.version>3.8.2</android.plugin.version>
 	</properties>
 	<build>
@@ -103,21 +103,15 @@
 			<version>2.2.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android</groupId>
+			<groupId>android</groupId>
 			<artifactId>android</artifactId>
 			<version>${platform.version}</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android-support</artifactId>
-			<version>v4</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.android</groupId>
-			<artifactId>android-test</artifactId>
-			<version>4.4.2</version>
-			<scope>provided</scope>
+			<groupId>android.support</groupId>
+			<artifactId>compatibility-v4</artifactId>
+			<version>20.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
