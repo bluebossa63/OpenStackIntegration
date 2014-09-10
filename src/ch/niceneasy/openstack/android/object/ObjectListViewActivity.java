@@ -291,36 +291,32 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 	 * 
 	 * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
 	 */
-	
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.sharemenu, menu);
 		return true;
 	}
 
-	// 
-	// protected void onSaveInstanceState(Bundle outState) {
-	// super.onSaveInstanceState(outState);
-	// if (mImageUri != null) {
-	// outState.putString("cameraImageUri", mImageUri.toString());
-	// }
-	// }
-	//
-	// 
-	// protected void onRestoreInstanceState(Bundle savedInstanceState) {
-	// super.onRestoreInstanceState(savedInstanceState);
-	// if (savedInstanceState.containsKey("cameraImageUri")) {
-	// mImageUri = Uri.parse(savedInstanceState
-	// .getString("cameraImageUri"));
-	// }
-	// }
+	 protected void onSaveInstanceState(Bundle outState) {
+         super.onSaveInstanceState(outState);
+         if (mImageUri != null) {
+            outState.putString("cameraImageUri", mImageUri.toString());
+         }
+	 }
+
+	 protected void onRestoreInstanceState(Bundle savedInstanceState) {
+         super.onRestoreInstanceState(savedInstanceState);
+         if (savedInstanceState.containsKey("cameraImageUri")) {
+             mImageUri = Uri.parse(savedInstanceState
+             .getString("cameraImageUri"));
+         }
+	 }
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see android.app.Activity#onOptionsItemSelected(android.view.MenuItem)
 	 */
-	
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.add:
@@ -328,22 +324,15 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 			dlg.show(getFragmentManager(), "Container Name Prompter");
 			return true;
 		case R.id.camera:
-
-			Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-			startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+			try {
+                 Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                 mImageUri = Uri.fromFile(createTempFiles());
+                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
+                 startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
+			 } catch (IOException e) {
+			    e.printStackTrace();
+			 }
 			return true;
-
-			// try {
-			// Intent cameraIntent = new Intent(
-			// MediaStore.ACTION_IMAGE_CAPTURE);
-			// mImageUri = Uri.fromFile(createTempFiles());
-			// cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-			// startActivityForResult(cameraIntent, CAMERA_PIC_REQUEST);
-			// } catch (IOException e) {
-			// e.printStackTrace();
-			// }
-			// return true;
-
 		case R.id.gallery:
 			Intent photoPickerIntent = new Intent(
 					Intent.ACTION_PICK,
@@ -368,41 +357,42 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		switch (requestCode) {
 		case GALLERY_PIC_REQUEST:
 		case CAMERA_PIC_REQUEST:
-			if (resultCode == RESULT_OK) {
-				getApplicationState().setShareIntent(null);
-				String imagePath = null;
-				if (mCurrentPhotoPath != null) {
-					imagePath = mCurrentPhotoPath;
-					mCurrentPhotoPath = null;
-				} else {
-					Uri uri = intentData.getData();
-					if (uri == null) {
-						if (intentData
-								.getParcelableExtra("android.intent.extra.STREAM") != null) {
-							uri = intentData
-									.getParcelableExtra("android.intent.extra.STREAM");
-						}
-					}
-					imagePath = GraphicsUtil.getOriginalFilePath(
-							ObjectListViewActivity.this, uri);
-				}
-				MimeTypeMap map = MimeTypeMap.getSingleton();
-				if (map.hasExtension(MimeTypeMap
-						.getFileExtensionFromUrl(imagePath))) {
-					intentData.setDataAndType(
-							Uri.fromFile(new File(imagePath)),
-							map.getMimeTypeFromExtension(MimeTypeMap
-									.getFileExtensionFromUrl(imagePath)));
-				}
-				UploadObjectTask uploadObjectTask = new UploadObjectTask(
-						intentData);
-				uploadObjectTask.execute();
-				break;
-			}
+            if (resultCode == RESULT_OK) {
+                getApplicationState().setShareIntent(null);
+                String imagePath = null;
+                Uri uri = null;
+                if ( intentData == null) {
+                    mCurrentPhotoPath = null;
+                    uri = mImageUri;
+                } else {
+                    uri = intentData.getData();
+                    if (uri == null) {
+                        if (intentData
+                                .getParcelableExtra("android.intent.extra.STREAM") != null) {
+                            uri = intentData
+                                    .getParcelableExtra("android.intent.extra.STREAM");
+                        }
+                    }
+
+                    imagePath = GraphicsUtil.getOriginalFilePath(
+                            ObjectListViewActivity.this, uri);
+                }
+                MimeTypeMap map = MimeTypeMap.getSingleton();
+                if (map.hasExtension(MimeTypeMap
+                        .getFileExtensionFromUrl(imagePath))) {
+                    intentData.setDataAndType(
+                            Uri.fromFile(new File(imagePath)),
+                            map.getMimeTypeFromExtension(MimeTypeMap
+                                    .getFileExtensionFromUrl(imagePath)));
+                }
+                UploadObjectTask uploadObjectTask = new UploadObjectTask(
+                        intentData);
+                uploadObjectTask.execute();
+                break;
+            }
 		default:
 			Toast.makeText(this, "Picture NOt taken", Toast.LENGTH_LONG).show();
 		}
-
 	}
 
 	/**
@@ -611,19 +601,27 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 		
 		protected TaskResult<ObjectForUpload> doInBackground(String... params) {
 			try {
-				Uri imageUri = intentData.getData();
-				if (getApplicationState().isInSharingMode()) {
-					if (intentData
-							.getParcelableExtra("android.intent.extra.STREAM") != null) {
-						imageUri = intentData
-								.getParcelableExtra("android.intent.extra.STREAM");
-					}
-				}
-				String imagePath = GraphicsUtil.getOriginalFilePath(
-						ObjectListViewActivity.this, imageUri);
-				ObjectForUpload objectForUpload = new ObjectForUpload();
-				objectForUpload.setContainer(getApplicationState()
-						.getSelectedContainer().getName());
+                String imagePath = null;
+                if ( intentData != null) {
+                    Uri imageUri = null;
+                    if (getApplicationState().isInSharingMode()) {
+                        if (intentData
+                                .getParcelableExtra("android.intent.extra.STREAM") != null) {
+                            imageUri = intentData
+                                    .getParcelableExtra("android.intent.extra.STREAM");
+                        }
+                    }
+                    imagePath = GraphicsUtil.getOriginalFilePath(
+                            ObjectListViewActivity.this, imageUri);
+                } else {
+
+                    imagePath = GraphicsUtil.getOriginalFilePath(
+                            ObjectListViewActivity.this, mImageUri);
+                }
+
+                ObjectForUpload objectForUpload = new ObjectForUpload();
+                objectForUpload.setContainer(getApplicationState()
+                        .getSelectedContainer().getName());
 				String directory = "";
 				if (getApplicationState().getSelectedDirectory().getMetaData() != null) {
 					Log.i("test", getApplicationState().getSelectedDirectory()
@@ -633,8 +631,14 @@ public class ObjectListViewActivity extends OpenstackListActivity {
 				}
 				String[] parts = imagePath.split("/");
 				objectForUpload.setName(directory + parts[parts.length - 1]);
-				objectForUpload.getProperties().put("Content-Type",
-						intentData.getType());
+                if ( intentData != null) {
+                    objectForUpload.getProperties().put("Content-Type",
+                            intentData.getType());
+                } else {
+                    objectForUpload.getProperties().put("Content-Type",
+                            "image/jpeg");
+                }
+
 				objectForUpload.setInputStream(new FileInputStream(imagePath));
 				getService()
 						.getSwift(
