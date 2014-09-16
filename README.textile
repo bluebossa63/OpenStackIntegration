@@ -1,4 +1,4 @@
-h1. Android Client with OpenStack Java SDK v2.0
+h1. Android Swift Client 
 
 <a href="http://www.screencast.com/users/niceneasyIT/folders/Android%20Client/media/bafba539-a99c-4edf-a37b-eb070c20a615" target="_blank"><img src="https://github.com/bluebossa63/OpenStackIntegration/blob/master/video.png?raw=true" 
 alt="Youtube Video" height="250" border="0" /></a>
@@ -43,7 +43,7 @@ I tested it on 4.4.
 !/docs/eclipse5.png?raw=true!
 
 
-I recommend http://www.genymotion.com/ (thanks, Frédéric!) as the emulator that comes with the android sdk is much to slow!
+I recommend http://www.genymotion.com/ (thanks, FrÃ©dÃ©ric!) as the emulator that comes with the android sdk is much to slow!
 
 On setting up the project please refer to
 
